@@ -15,8 +15,7 @@ import RichTextEditor from '@/components/editors/RichTextEditor';
 import { Save, Trash2, ArrowLeft, Globe, Loader, Sparkles } from 'lucide-react';
 import { translations } from '@/utils/translations';
 import ArticleImageEditorModal from './editors/ArticleImageEditorModal';
-import { generateTextWithRetry, generateText } from '@/services/aiService';
-import { canUseRebuild, useRebuild } from '@/services/aiService';
+import { generateTextWithRetry, generateText, canUseRebuild, useRebuild } from '@/services/aiService';
 import { searchUnsplashPhotos } from '@/services/unsplashService';
 
 interface ArticleEditorProps {
@@ -161,34 +160,6 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
         setArticle(prev => ({ ...prev, content: newContent }));
     };
 
-    const generateTextWithRetry = async (prompt: string, format: 'text' | 'json' = 'text', maxRetries: number = 3, toastId?: string): Promise<string> => {
-        for (let attempt = 1; attempt <= maxRetries; attempt++) {
-            try {
-                return await generateText(prompt, format);
-            } catch (error: any) {
-                const errorMessage = error.message || '';
-
-                // If it's an overload error and we haven't exhausted retries, wait and retry
-                if ((errorMessage.includes('overloaded') || errorMessage.includes('503') || errorMessage.includes('UNAVAILABLE')) && attempt < maxRetries) {
-                    const waitTime = attempt * 2000; // 2s, 4s, 6s
-                    console.log(`Gemini overloaded, retrying in ${waitTime}ms (attempt ${attempt}/${maxRetries})`);
-
-                    // Update toast message to show retry status
-                    if (toastId) {
-                        toast.loading(`Se încearcă din nou... (${attempt}/${maxRetries})`, { id: toastId });
-                    }
-
-                    await new Promise(resolve => setTimeout(resolve, waitTime));
-                    continue;
-                }
-
-                // If it's not an overload error or we've exhausted retries, throw the error
-                throw error;
-            }
-        }
-
-        throw new Error('Max retries exceeded');
-    };
 
     const handleGenerateCompleteArticle = async () => {
         if (!aiPrompt.trim()) {
@@ -210,17 +181,17 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
 
         try {
             // Generate content for both languages with retry logic
-            const romanianPrompt = `Based on the following topic, generate a complete blog article in Romanian. The article should be professional, engaging, and well-structured. Topic: "${aiPrompt}". 
+            const romanianPrompt = `Generate a complete blog article in Romanian based on this topic: "${aiPrompt}".
+
+            Requirements:
+            - Title: max 80 characters, engaging and SEO-friendly
+            - Excerpt: max 200 characters, compelling summary
+            - Content: exactly ${wordCount} words with proper HTML formatting (use <h1>, <h2>, <p>, <ul>, <li> tags)
+            - Meta title: max 60 characters for SEO
+            - Meta description: max 160 characters for SEO
+            - Image keywords: 2-3 keywords for image search
             
-            Please provide the following in Romanian:
-            1. A compelling title (max 80 characters)
-            2. A brief excerpt/summary (max 200 characters)
-            3. The main content (exactly ${wordCount} words with proper HTML formatting)
-            4. A meta title for SEO (max 60 characters)
-            5. A meta description for SEO (max 160 characters)
-            6. A relevant image description for the featured image (2-3 keywords for image search)
-            
-            Return the response as a JSON object with the following structure:
+            CRITICAL: Return ONLY valid JSON in this exact format:
             {
                 "title": "Titlul articolului",
                 "excerpt": "Rezumatul articolului",
@@ -230,17 +201,17 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
                 "imageKeywords": "cuvinte cheie pentru imagine"
             }`;
 
-            const englishPrompt = `Based on the following topic, generate a complete blog article in English. The article should be professional, engaging, and well-structured. Topic: "${aiPrompt}". 
+            const englishPrompt = `Generate a complete blog article in English based on this topic: "${aiPrompt}".
+
+            Requirements:
+            - Title: max 80 characters, engaging and SEO-friendly
+            - Excerpt: max 200 characters, compelling summary
+            - Content: exactly ${wordCount} words with proper HTML formatting (use <h1>, <h2>, <p>, <ul>, <li> tags)
+            - Meta title: max 60 characters for SEO
+            - Meta description: max 160 characters for SEO
+            - Image keywords: 2-3 keywords for image search
             
-            Please provide the following in English:
-            1. A compelling title (max 80 characters)
-            2. A brief excerpt/summary (max 200 characters)
-            3. The main content (exactly ${wordCount} words with proper HTML formatting)
-            4. A meta title for SEO (max 60 characters)
-            5. A meta description for SEO (max 160 characters)
-            6. A relevant image description for the featured image (2-3 keywords for image search)
-            
-            Return the response as a JSON object with the following structure:
+            CRITICAL: Return ONLY valid JSON in this exact format:
             {
                 "title": "Article Title",
                 "excerpt": "Article excerpt",
@@ -256,9 +227,17 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
                 generateTextWithRetry(englishPrompt, 'json', 3, toastId)
             ]);
 
-            // Parse the results
-            const roData = JSON.parse(romanianResult);
-            const enData = JSON.parse(englishResult);
+            // Parse the results with better error handling
+            let roData, enData;
+            try {
+                roData = JSON.parse(romanianResult);
+                enData = JSON.parse(englishResult);
+            } catch (parseError) {
+                console.error('JSON Parse Error:', parseError);
+                console.error('Romanian result:', romanianResult);
+                console.error('English result:', englishResult);
+                throw new Error(`Eroare la parsarea răspunsului AI: ${parseError.message}`);
+            }
 
             // Search for a relevant image on Unsplash
             const imageKeywords = (roData.imageKeywords || enData.imageKeywords || aiPrompt).toString();

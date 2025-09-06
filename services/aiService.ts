@@ -31,7 +31,7 @@ const setUsage = (key: string, count: number) => {
 // Verifică dacă suntem în test mode
 const isTestMode = (): boolean => {
     if (typeof window === 'undefined') return false;
-    return window.location.href.includes('test');
+    return window.location.hostname.includes('test');
 };
 
 // Verifică dacă poate folosi rebuild
@@ -90,7 +90,7 @@ export const generateTextWithRetry = async (
         try {
             let finalPrompt = prompt;
             if (format === 'json') {
-                finalPrompt = `${prompt}\n\nReturn only valid JSON.`;
+                finalPrompt = `${prompt}\n\nIMPORTANT: Return ONLY valid JSON. Do not include any text before or after the JSON. Do not use markdown formatting like \`\`\`json\`. The response must start with { and end with }.`;
             }
 
             const response = await ai.models.generateContent({
@@ -98,7 +98,29 @@ export const generateTextWithRetry = async (
                 contents: finalPrompt,
             });
 
-            return response.text;
+            let responseText = response.text.trim();
+
+            // Clean up the response if it contains markdown formatting
+            if (format === 'json') {
+                // Remove markdown code blocks
+                responseText = responseText.replace(/```json\s*/g, '').replace(/```\s*/g, '');
+                // Remove any leading/trailing whitespace
+                responseText = responseText.trim();
+
+                // Validate that it starts and ends with braces
+                if (!responseText.startsWith('{') || !responseText.endsWith('}')) {
+                    throw new Error(`Invalid JSON format: ${responseText.substring(0, 100)}...`);
+                }
+
+                // Try to parse to validate JSON
+                try {
+                    JSON.parse(responseText);
+                } catch (parseError) {
+                    throw new Error(`Invalid JSON: ${parseError.message}`);
+                }
+            }
+
+            return responseText;
         } catch (error: any) {
             const errorMessage = error.message || '';
 
