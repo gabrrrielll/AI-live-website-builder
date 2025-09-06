@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
         if (response.ok) {
             const config: SiteConfig = await response.json();
-            const article = config.articles.find((a: Article) => a.slug === slug);
+            const article = config.articles?.find((a: Article) => a.slug === slug);
 
             if (article) {
                 return {
