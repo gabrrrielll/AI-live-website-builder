@@ -1,0 +1,5 @@
+{
+  "name": "Copy of AI-Powered Live Website Editor",
+  "description": "An interactive website builder that allows for real-time, in-browser editing of text and images. All changes are saved locally, with AI-powered content generation features to assist in creation.",
+  "requestFramePermissions": []
+}
