@@ -73,6 +73,11 @@ temp/
 # nuxt.js build output
 .nuxt
 
+# Build outputs
+dist/
+public/dist/
+utils/dist/
+
 # vuepress build output
 .vuepress/dist
 
