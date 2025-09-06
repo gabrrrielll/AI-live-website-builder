@@ -15,7 +15,7 @@ import RichTextEditor from '@/components/editors/RichTextEditor';
 import { Save, Trash2, ArrowLeft, Globe, Loader, Sparkles } from 'lucide-react';
 import { translations } from '@/utils/translations';
 import ArticleImageEditorModal from './editors/ArticleImageEditorModal';
-import { generateTextWithRetry } from '@/services/aiService';
+import { generateTextWithRetry, generateText } from '@/services/aiService';
 import { canUseRebuild, useRebuild } from '@/services/aiService';
 import { searchUnsplashPhotos } from '@/services/unsplashService';
 
