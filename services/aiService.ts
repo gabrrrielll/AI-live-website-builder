@@ -84,11 +84,6 @@ export const generateTextWithRetry = async (
     maxRetries: number = 3,
     toastId?: string
 ): Promise<string> => {
-    // Verifică limitările pentru test mode
-    if (!canUseRebuild()) {
-        throw new Error('Usage limit reached for test mode');
-    }
-
     const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -102,9 +97,6 @@ export const generateTextWithRetry = async (
                 model: 'gemini-2.5-flash',
                 contents: finalPrompt,
             });
-
-            // Incrementează contorul pentru test mode
-            useRebuild();
 
             return response.text;
         } catch (error: any) {

@@ -202,6 +202,9 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
             return;
         }
 
+        // Incrementează contorul pentru test mode
+        useRebuild();
+
         setIsGeneratingArticle(true);
         const toastId = toast.loading(t.generatingCompleteArticle);
 
