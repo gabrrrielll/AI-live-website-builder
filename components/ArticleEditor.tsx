@@ -270,6 +270,13 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
                 slug: slugify(roData.title)
             };
 
+            console.log('Generated article data:', {
+                roTitle: roData.title,
+                enTitle: enData.title,
+                roContent: roData.content?.substring(0, 100) + '...',
+                enContent: enData.content?.substring(0, 100) + '...'
+            });
+
             setArticle(updatedArticle);
             toast.success(t.completeArticleGenerated, { id: toastId });
             setAiPrompt(''); // Clear the prompt
@@ -331,7 +338,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
                 {resolvedImageUrl && (
                     <img src={resolvedImageUrl} alt={article.imageAlt[language]} className="w-full h-auto rounded-lg shadow-lg mb-8" />
                 )}
-                <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: article.content[language] }} />
+                <div className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-p:leading-relaxed prose-h1:text-3xl prose-h1:font-bold prose-h1:mb-4 prose-h2:text-2xl prose-h2:font-semibold prose-h2:mb-3 prose-h3:text-xl prose-h3:font-semibold prose-h3:mb-2 prose-ul:list-disc prose-ul:pl-6 prose-ol:list-decimal prose-ol:pl-6 prose-li:mb-1 prose-strong:font-semibold prose-em:italic prose-a:text-[#c29a47] prose-a:no-underline hover:prose-a:underline prose-blockquote:border-l-4 prose-blockquote:border-[#c29a47] prose-blockquote:pl-4 prose-blockquote:italic" dangerouslySetInnerHTML={{ __html: article.content[language] }} />
             </article>
         );
     }
