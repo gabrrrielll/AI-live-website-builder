@@ -62,8 +62,8 @@ export function SiteModeProvider({ children }: { children: React.ReactNode }) {
         const url = new URL(window.location.href);
         url.searchParams.delete('edit');
         window.history.replaceState({}, '', url.toString());
-        // Șterge configurația din localStorage
-        localStorage.removeItem('site-config');
+        // NU mai șterge configurația din localStorage - să rămână pentru performanță
+        console.log('🔄 Switched to view mode, keeping localStorage for performance');
     };
 
     const value: SiteModeContextType = {

@@ -108,11 +108,10 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const updateSiteConfig = useCallback((newConfig: SiteConfig) => {
         setSiteConfig(newConfig);
 
-        // Salvează automat în localStorage dacă suntem în mod editare
-        if (isEditMode) {
-            saveToLocalStorage(newConfig);
-        }
-    }, [isEditMode, saveToLocalStorage]);
+        // Salvează automat în localStorage ÎNTOTDEAUNA pentru persistență
+        saveToLocalStorage(newConfig);
+        console.log('💾 Configurația salvată în localStorage');
+    }, [saveToLocalStorage]);
 
     // Funcție pentru salvarea configurației pe server
     const saveConfig = useCallback(async () => {

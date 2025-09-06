@@ -34,7 +34,7 @@ export const Blog: React.FC<BlogProps> = ({ sectionId }) => {
         const additionalNeeded = itemCount - displayedArticles.length;
         for (let i = 0; i < additionalNeeded; i++) {
             const newArticle: Article = {
-                id: `auto-generated-${Date.now()}-${i}`,
+                id: `auto-generated-${i + 1}`,
                 slug: `articol-auto-generat-${i + 1}`,
                 title: {
                     ro: `Articol Auto-Generat ${i + 1}`,
@@ -66,9 +66,11 @@ export const Blog: React.FC<BlogProps> = ({ sectionId }) => {
             };
             displayedArticles.push(newArticle);
 
-            // Add to siteConfig temporarily so routing works
-            if (siteConfig && !siteConfig.articles.find(a => a.slug === newArticle.slug)) {
+            // Add to siteConfig permanently so routing works
+            if (siteConfig && !siteConfig.articles.find(a => a.id === newArticle.id)) {
                 siteConfig.articles.push(newArticle);
+                // Save to localStorage to persist the changes
+                localStorage.setItem('site-config', JSON.stringify(siteConfig));
             }
         }
     }
