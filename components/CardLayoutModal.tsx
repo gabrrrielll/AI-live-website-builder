@@ -488,6 +488,35 @@ const FAQTemplateDefault: React.FC = () => (
     </div>
 );
 
+// Hero Template Components
+const HeroTemplateSlider: React.FC = () => (
+    <div className="w-full h-20 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg relative overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center">
+                <div className="w-4 h-4 bg-gray-500 rounded-full"></div>
+            </div>
+        </div>
+        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
+            <div className="w-2 h-2 bg-white rounded-full"></div>
+            <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+            <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+        </div>
+    </div>
+);
+
+const HeroTemplateGradient: React.FC = () => (
+    <div className="w-full h-20 bg-gradient-to-r from-red-400 via-blue-400 to-green-400 rounded-lg relative overflow-hidden">
+        <div className="absolute inset-0">
+            <div className="absolute w-8 h-8 bg-red-300 rounded-full top-2 left-2 opacity-60 blur-sm"></div>
+            <div className="absolute w-6 h-6 bg-blue-300 rounded-full top-4 right-4 opacity-50 blur-sm"></div>
+            <div className="absolute w-10 h-10 bg-green-300 rounded-full bottom-2 left-1/3 opacity-40 blur-sm"></div>
+        </div>
+        <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-white text-xs font-bold bg-black/20 px-2 py-1 rounded">Gradient Waves</div>
+        </div>
+    </div>
+);
+
 const templatePreviews: { [key: string]: { [key: string]: React.FC } } = {
     About: { 'image-left': AboutTemplateImageLeft, 'image-right': AboutTemplateImageRight, 'image-top': AboutTemplateImageTop, 'overlay': AboutTemplateOverlay },
     Services: { 'default': ServiceTemplateDefault, 'icon-left': ServiceTemplateIconLeft, 'top-border': ServiceTemplateTopBorder, 'circular-icon': ServiceTemplateCircularIcon, 'minimalist': ServiceTemplateMinimalist, 'detailed': ServiceTemplateDetailed },
@@ -500,7 +529,7 @@ const templatePreviews: { [key: string]: { [key: string]: React.FC } } = {
     HowItWorks: { 'default': HowItWorksTemplateDefault, 'left': HowItWorksTemplateLeft, 'minimalist': HowItWorksTemplateMinimalist, 'connected': HowItWorksTemplateConnected, 'tilted': HowItWorksTemplateTilted, 'icon-focus': HowItWorksTemplateIconFocus },
     Clients: { 'default': ClientTemplateDefault, 'boxed': ClientTemplateBoxed, 'minimalist': ClientTemplateMinimalist, 'carousel': ClientTemplateCarousel },
     FAQ: { 'default': FAQTemplateDefault },
-    Hero: {},
+    Hero: { 'slider': HeroTemplateSlider, 'gradient-waves': HeroTemplateGradient },
 };
 
 const CardLayoutModal: React.FC = () => {
@@ -510,7 +539,7 @@ const CardLayoutModal: React.FC = () => {
 
     const section = siteConfig?.sections[editingSectionLayoutId || ''];
 
-    const [selectedTemplate, setSelectedTemplate] = useState(section?.layout?.template || 'default');
+    const [selectedTemplate, setSelectedTemplate] = useState(section?.layout?.variant || section?.layout?.template || 'default');
     const [itemCount, setItemCount] = useState(section?.layout?.itemCount || 1);
     const [imageWidth, setImageWidth] = useState(section?.layout?.imageWidth || 50);
     const [slideDuration, setSlideDuration] = useState(section?.layout?.duration || 5);
@@ -519,9 +548,22 @@ const CardLayoutModal: React.FC = () => {
     const [isCarousel, setIsCarousel] = useState(section?.layout?.carousel || false);
     const [view, setView] = useState<'main' | 'slide-editor'>('main');
 
+    // Hero specific state
+    const [gradientColors, setGradientColors] = useState(section?.layout?.gradientColors || {
+        color1: '#ff1744',
+        color2: '#00e5ff',
+        color3: '#ff6f00',
+        color4: '#76ff03'
+    });
+    const [waveAnimation, setWaveAnimation] = useState(section?.layout?.waveAnimation || {
+        speed: 1,
+        intensity: 1.5,
+        spacing: 3
+    });
+
     useEffect(() => {
         if (section) {
-            setSelectedTemplate(section.layout?.template || 'default');
+            setSelectedTemplate(section.layout?.variant || section.layout?.template || 'default');
             setItemCount(section.layout?.itemCount || (section.items?.length || 1));
             setImageWidth(section.layout?.imageWidth || 50);
             setSlideDuration(section.layout?.duration || 5);
@@ -529,6 +571,21 @@ const CardLayoutModal: React.FC = () => {
             setCardShadow(section.cardStyles?.boxShadow as string || 'none');
             setIsCarousel(section.layout?.carousel || false);
             setView('main');
+
+            // Hero specific
+            if (section.component === 'Hero') {
+                setGradientColors(section.layout?.gradientColors || {
+                    color1: '#ff1744',
+                    color2: '#00e5ff',
+                    color3: '#ff6f00',
+                    color4: '#76ff03'
+                });
+                setWaveAnimation(section.layout?.waveAnimation || {
+                    speed: 1,
+                    intensity: 1.5,
+                    spacing: 3
+                });
+            }
         }
     }, [section]);
 
@@ -545,6 +602,13 @@ const CardLayoutModal: React.FC = () => {
         if (controls.imageWidth) layoutChanges.imageWidth = imageWidth;
         if (controls.slideDuration) layoutChanges.duration = slideDuration;
         if (controls.carousel) layoutChanges.carousel = isCarousel;
+
+        // Hero specific
+        if (sectionComponent === 'Hero') {
+            layoutChanges.variant = selectedTemplate;
+            layoutChanges.gradientColors = gradientColors;
+            layoutChanges.waveAnimation = waveAnimation;
+        }
 
         updateSectionLayout(editingSectionLayoutId, layoutChanges, cardStylesChanges);
         stopEditingSectionLayout();
@@ -573,7 +637,8 @@ const CardLayoutModal: React.FC = () => {
         cardStyling: !['About', 'Hero', 'FAQ'].includes(sectionComponent),
         slideDuration: sectionComponent === 'Hero',
         slideBackgrounds: sectionComponent === 'Hero',
-        carousel: sectionComponent === 'Portfolio'
+        carousel: sectionComponent === 'Portfolio',
+        heroGradient: sectionComponent === 'Hero'
     };
 
     const maxItems: { [key: string]: number } = {
@@ -658,13 +723,6 @@ const CardLayoutModal: React.FC = () => {
                     </div>
                 )}
 
-                {controls.slideDuration && (
-                    <div className="border-t pt-4">
-                        <label htmlFor="slideDuration" className="block text-sm font-medium text-gray-700 mb-2">{t.slideDuration}: <span className="font-bold">{slideDuration} {t.durationSeconds}</span></label>
-                        <input id="slideDuration" type="range" min="2" max="15" step="1" value={slideDuration} onChange={(e) => setSlideDuration(Number(e.target.value))} className="w-full" />
-                    </div>
-                )}
-
                 {controls.cardStyling && (
                     <div className="border-t pt-4 space-y-4">
                         <h3 className="text-lg font-semibold text-gray-800">{t.cardStyling}</h3>
@@ -684,11 +742,181 @@ const CardLayoutModal: React.FC = () => {
                     </div>
                 )}
 
-                {controls.slideBackgrounds && (
+                {controls.slideDuration && selectedTemplate === 'slider' && (
+                    <div className="border-t pt-4">
+                        <label htmlFor="slideDuration" className="block text-sm font-medium text-gray-700 mb-2">{t.slideDuration}: <span className="font-bold">{slideDuration} {t.durationSeconds}</span></label>
+                        <input id="slideDuration" type="range" min="2" max="15" step="1" value={slideDuration} onChange={(e) => setSlideDuration(Number(e.target.value))} className="w-full" />
+                    </div>
+                )}
+
+                {controls.slideBackgrounds && selectedTemplate === 'slider' && (
                     <div className="border-t pt-4">
                         <button onClick={() => setView('slide-editor')} className="w-full text-left p-3 bg-gray-100 hover:bg-gray-200 rounded-md font-medium text-gray-800">
                             {t.slideBackgrounds}
                         </button>
+                    </div>
+                )}
+
+                {/* Hero Gradient Controls */}
+                {controls.heroGradient && selectedTemplate === 'gradient-waves' && (
+                    <div className="border-t pt-4 space-y-4">
+                        <h3 className="text-lg font-semibold text-gray-800">Configurare Gradient Waves</h3>
+
+                        {/* Gradient Colors */}
+                        <div className="space-y-3">
+                            <h4 className="text-md font-medium text-gray-700">Culori Gradient</h4>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-2">
+                                    <label className="block text-sm text-gray-600">Culoare 1</label>
+                                    <div className="flex items-center space-x-2">
+                                        <input
+                                            type="color"
+                                            value={gradientColors.color1}
+                                            onChange={(e) => setGradientColors(prev => ({ ...prev, color1: e.target.value }))}
+                                            className="w-8 h-8 rounded border border-gray-300"
+                                        />
+                                        <input
+                                            type="text"
+                                            value={gradientColors.color1}
+                                            onChange={(e) => setGradientColors(prev => ({ ...prev, color1: e.target.value }))}
+                                            className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="block text-sm text-gray-600">Culoare 2</label>
+                                    <div className="flex items-center space-x-2">
+                                        <input
+                                            type="color"
+                                            value={gradientColors.color2}
+                                            onChange={(e) => setGradientColors(prev => ({ ...prev, color2: e.target.value }))}
+                                            className="w-8 h-8 rounded border border-gray-300"
+                                        />
+                                        <input
+                                            type="text"
+                                            value={gradientColors.color2}
+                                            onChange={(e) => setGradientColors(prev => ({ ...prev, color2: e.target.value }))}
+                                            className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="block text-sm text-gray-600">Culoare 3</label>
+                                    <div className="flex items-center space-x-2">
+                                        <input
+                                            type="color"
+                                            value={gradientColors.color3}
+                                            onChange={(e) => setGradientColors(prev => ({ ...prev, color3: e.target.value }))}
+                                            className="w-8 h-8 rounded border border-gray-300"
+                                        />
+                                        <input
+                                            type="text"
+                                            value={gradientColors.color3}
+                                            onChange={(e) => setGradientColors(prev => ({ ...prev, color3: e.target.value }))}
+                                            className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="block text-sm text-gray-600">Culoare 4</label>
+                                    <div className="flex items-center space-x-2">
+                                        <input
+                                            type="color"
+                                            value={gradientColors.color4}
+                                            onChange={(e) => setGradientColors(prev => ({ ...prev, color4: e.target.value }))}
+                                            className="w-8 h-8 rounded border border-gray-300"
+                                        />
+                                        <input
+                                            type="text"
+                                            value={gradientColors.color4}
+                                            onChange={(e) => setGradientColors(prev => ({ ...prev, color4: e.target.value }))}
+                                            className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Animation Settings */}
+                        <div className="space-y-3">
+                            <h4 className="text-md font-medium text-gray-700">Setări Animație</h4>
+                            <div className="space-y-3">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Viteza Animație: <span className="font-bold">{waveAnimation.speed}x</span>
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min="0.5"
+                                        max="3"
+                                        step="0.1"
+                                        value={waveAnimation.speed}
+                                        onChange={(e) => setWaveAnimation(prev => ({ ...prev, speed: Number(e.target.value) }))}
+                                        className="w-full"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Intensitate Valuri: <span className="font-bold">{waveAnimation.intensity}</span>
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min="0.5"
+                                        max="3"
+                                        step="0.1"
+                                        value={waveAnimation.intensity}
+                                        onChange={(e) => setWaveAnimation(prev => ({ ...prev, intensity: Number(e.target.value) }))}
+                                        className="w-full"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Distanță Valuri: <span className="font-bold">{waveAnimation.spacing}</span>
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min="1"
+                                        max="10"
+                                        step="0.5"
+                                        value={waveAnimation.spacing || 3}
+                                        onChange={(e) => setWaveAnimation(prev => ({ ...prev, spacing: Number(e.target.value) }))}
+                                        className="w-full"
+                                    />
+                                    <div className="text-xs text-gray-500 mt-1">
+                                        <span className="text-red-500">1</span> = Valuri foarte apropiate |
+                                        <span className="text-blue-500"> 5.5</span> = Distanță medie |
+                                        <span className="text-green-500"> 10</span> = Distanță maximă (actual)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Preview */}
+                        <div className="space-y-2">
+                            <h4 className="text-md font-medium text-gray-700">Preview</h4>
+                            <div className="w-full h-16 rounded-lg relative overflow-hidden" style={{
+                                background: `linear-gradient(135deg, ${gradientColors.color1}, ${gradientColors.color2}, ${gradientColors.color3}, ${gradientColors.color4})`,
+                                backgroundSize: '300% 300%',
+                                animation: `gradientShift ${6 / waveAnimation.speed}s ease infinite`
+                            }}>
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className="text-white text-xs font-bold bg-black/20 px-2 py-1 rounded">
+                                        Gradient Waves Preview
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* CSS for gradient animation */}
+                        <style jsx>{`
+                            @keyframes gradientShift {
+                                0% { background-position: 0% 50%; }
+                                25% { background-position: 100% 0%; }
+                                50% { background-position: 100% 100%; }
+                                75% { background-position: 0% 100%; }
+                                100% { background-position: 0% 50%; }
+                            }
+                        `}</style>
                     </div>
                 )}
             </div>

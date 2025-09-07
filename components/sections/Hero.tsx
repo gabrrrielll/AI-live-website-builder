@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Editable from '@/components/Editable';
 import { useSite } from '@/context/SiteContext';
 import { resolveBackgroundImage } from '@/utils/styleUtils';
+import RichTextEditor from '@/components/editors/RichTextEditor';
 
 interface HeroProps {
     sectionId: string;
@@ -13,12 +14,13 @@ interface HeroProps {
 export const Hero: React.FC<HeroProps> = ({ sectionId }) => {
     const { siteConfig, getImageUrl } = useSite();
     const section = siteConfig?.sections[sectionId];
-    
+
     const [currentSlide, setCurrentSlide] = useState(0);
 
     const items = section?.items || [];
     const totalSlides = items.length;
     const duration = section?.layout?.duration || 5;
+    const variant = section?.layout?.variant || 'slider';
 
     const nextSlide = useCallback(() => {
         setCurrentSlide(prev => (prev === totalSlides - 1 ? 0 : prev + 1));
@@ -27,7 +29,7 @@ export const Hero: React.FC<HeroProps> = ({ sectionId }) => {
     const prevSlide = () => {
         setCurrentSlide(prev => (prev === 0 ? totalSlides - 1 : prev - 1));
     };
-    
+
     const goToSlide = (index: number) => {
         setCurrentSlide(index);
     };
@@ -38,9 +40,19 @@ export const Hero: React.FC<HeroProps> = ({ sectionId }) => {
             return () => clearTimeout(timer);
         }
     }, [currentSlide, nextSlide, totalSlides, duration]);
-    
-    if (!section || !items || totalSlides === 0) {
+
+    if (!section) {
         return null; // Or a fallback component
+    }
+
+    // Render gradient waves variant
+    if (variant === 'gradient-waves') {
+        return <GradientWavesHero sectionId={sectionId} />;
+    }
+
+    // Default slider variant
+    if (!items || totalSlides === 0) {
+        return null;
     }
 
     return (
@@ -100,6 +112,164 @@ export const Hero: React.FC<HeroProps> = ({ sectionId }) => {
                     ))}
                 </div>
             )}
+        </section>
+    );
+};
+
+// Gradient Waves Hero Component - NEW APPROACH
+const GradientWavesHero: React.FC<{ sectionId: string }> = ({ sectionId }) => {
+    const { siteConfig, isEditMode, updateElement } = useSite();
+    const section = siteConfig?.sections[sectionId];
+
+    const gradientColors = section?.layout?.gradientColors || {
+        color1: '#ff1744',
+        color2: '#00e5ff',
+        color3: '#ff6f00',
+        color4: '#76ff03'
+    };
+
+    const waveAnimation = section?.layout?.waveAnimation || {
+        speed: 1,
+        intensity: 1.5
+    };
+
+    const handleContentChange = (newContent: any) => {
+        updateElement(sectionId, 'hero-content', {
+            type: 'rich-text',
+            content: newContent
+        });
+    };
+
+    return (
+        <section className="relative w-full h-[80vh] overflow-hidden">
+            {/* Gradient Background */}
+            <div
+                className="absolute inset-0 w-full h-full"
+                style={{
+                    background: `linear-gradient(135deg, ${gradientColors.color1}, ${gradientColors.color2}, ${gradientColors.color3}, ${gradientColors.color4})`,
+                    backgroundSize: '300% 300%',
+                    animation: `gradientShift ${6 / waveAnimation.speed}s ease infinite`
+                }}
+                key={`gradient-${gradientColors.color1}-${gradientColors.color2}-${gradientColors.color3}-${gradientColors.color4}`}
+            />
+
+            {/* Animated SVG Waves */}
+            <div className="absolute bottom-0 left-0 w-full h-48 overflow-hidden">
+                <svg
+                    className="waves"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 24 150 28"
+                    preserveAspectRatio="none"
+                    style={{
+                        position: 'absolute',
+                        width: '100%',
+                        height: '100%',
+                        bottom: 0
+                    }}
+                >
+                    <defs>
+                        <path
+                            id={`gentle-wave-${sectionId}`}
+                            d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18v44h-352z"
+                        />
+                    </defs>
+                    <g className="parallax">
+                        <use
+                            xlinkHref={`#gentle-wave-${sectionId}`}
+                            x="48"
+                            y="0"
+                            fill={`${gradientColors.color1}70`}
+                            style={{
+                                animation: `move-forever-1 ${7 / waveAnimation.speed}s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite`,
+                                animationDelay: '-2s'
+                            }}
+                        />
+                        <use
+                            xlinkHref={`#gentle-wave-${sectionId}`}
+                            x="48"
+                            y={waveAnimation.spacing || 3}
+                            fill={`${gradientColors.color2}50`}
+                            style={{
+                                animation: `move-forever-2 ${10 / waveAnimation.speed}s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite`,
+                                animationDelay: '-3s'
+                            }}
+                        />
+                        <use
+                            xlinkHref={`#gentle-wave-${sectionId}`}
+                            x="48"
+                            y={(waveAnimation.spacing || 3) * 1.7}
+                            fill={`${gradientColors.color3}30`}
+                            style={{
+                                animation: `move-forever-3 ${13 / waveAnimation.speed}s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite`,
+                                animationDelay: '-4s'
+                            }}
+                        />
+                        <use
+                            xlinkHref={`#gentle-wave-${sectionId}`}
+                            x="48"
+                            y={(waveAnimation.spacing || 3) * 2.3}
+                            fill="white"
+                            style={{
+                                animation: `move-forever-4 ${20 / waveAnimation.speed}s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite`,
+                                animationDelay: '-5s'
+                            }}
+                        />
+                    </g>
+                </svg>
+            </div>
+
+            {/* Content Overlay */}
+            <div className="absolute inset-0 flex items-center justify-center p-8">
+                {isEditMode ? (
+                    <RichTextEditor
+                        element={{
+                            type: 'rich-text',
+                            content: section?.elements?.['hero-content']?.content || { ro: '', en: '' }
+                        }}
+                        onChange={handleContentChange}
+                        hideSaveButton={true}
+                    />
+                ) : (
+                    <div
+                        className="text-center max-w-4xl"
+                        dangerouslySetInnerHTML={{
+                            __html: section?.elements?.['hero-content']?.content?.ro ||
+                                '<h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6 bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent drop-shadow-lg">Financial infrastructure to grow your revenue</h1><p class="text-xl md:text-2xl text-gray-100 mb-8 max-w-3xl mx-auto drop-shadow-md">Join the millions of companies that use our platform to accept payments, embed financial services, and build a more profitable business.</p><button class="bg-white text-gray-900 font-bold py-4 px-8 rounded-full text-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-xl">Start now</button>'
+                        }}
+                    />
+                )}
+            </div>
+
+            {/* CSS Animations */}
+            <style jsx key={`animations-${gradientColors.color1}-${gradientColors.color2}-${gradientColors.color3}-${gradientColors.color4}-${waveAnimation.speed}-${waveAnimation.intensity}-${waveAnimation.spacing || 3}`}>{`
+                @keyframes gradientShift {
+                    0% { background-position: 0% 50%; }
+                    25% { background-position: 100% 0%; }
+                    50% { background-position: 100% 100%; }
+                    75% { background-position: 0% 100%; }
+                    100% { background-position: 0% 50%; }
+                }
+
+                @keyframes move-forever-1 {
+                    0% { transform: translate3d(-90px, 0, 0); }
+                    100% { transform: translate3d(85px, 0, 0); }
+                }
+
+                @keyframes move-forever-2 {
+                    0% { transform: translate3d(-90px, 0, 0); }
+                    100% { transform: translate3d(85px, 0, 0); }
+                }
+
+                @keyframes move-forever-3 {
+                    0% { transform: translate3d(-90px, 0, 0); }
+                    100% { transform: translate3d(85px, 0, 0); }
+                }
+
+                @keyframes move-forever-4 {
+                    0% { transform: translate3d(-90px, 0, 0); }
+                    100% { transform: translate3d(85px, 0, 0); }
+                }
+            `}</style>
         </section>
     );
 };

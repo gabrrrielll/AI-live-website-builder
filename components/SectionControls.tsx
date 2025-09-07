@@ -31,6 +31,7 @@ const SectionControls: React.FC<SectionControlsProps> = ({ sectionId }) => {
   const canBeDuplicated = section.component === 'About';
   const isDeletable = section.component === 'About' && section.id.startsWith('about-clone-');
   const isBlogSection = section.component === 'Blog';
+  const isHeroSection = section.component === 'Hero';
 
   const sectionOrder = siteConfig.sectionOrder;
   const currentIndex = sectionOrder.indexOf(sectionId);
@@ -38,42 +39,50 @@ const SectionControls: React.FC<SectionControlsProps> = ({ sectionId }) => {
   const canMoveDown = currentIndex < sectionOrder.length - 2; // Cannot move below the section before the footer
 
   const handleAddArticle = () => {
-      const newArticle = addArticle();
-      if (newArticle) {
-        router.push(`/blog/${newArticle.slug}`);
-      }
+    const newArticle = addArticle();
+    if (newArticle) {
+      router.push(`/blog/${newArticle.slug}`);
+    }
   };
 
   return (
-    <div className={`absolute z-30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center space-x-1 bg-white/80 backdrop-blur-md p-1.5 rounded-full shadow-md ${
-      isHeaderFooter ? 'top-2 left-2 md:block hidden' : 'top-2 right-2'
-    }`}>
+    <div className={`absolute z-30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center space-x-1 bg-white/80 backdrop-blur-md p-1.5 rounded-full shadow-md ${isHeaderFooter ? 'top-2 left-2 md:block hidden' : 'top-2 right-2'
+      }`}>
       {isBlogSection && (
-          <button
-            onClick={handleAddArticle}
-            className="p-2 text-gray-700 hover:bg-gray-200 rounded-full"
-            title={t.addArticle}
-          >
-            <PlusCircle size={18} />
-          </button>
+        <button
+          onClick={handleAddArticle}
+          className="p-2 text-gray-700 hover:bg-gray-200 rounded-full"
+          title={t.addArticle}
+        >
+          <PlusCircle size={18} />
+        </button>
       )}
       {canBeDuplicated && (
-          <button
-            onClick={() => duplicateSection(sectionId)}
-            className="p-2 text-gray-700 hover:bg-gray-200 rounded-full"
-            title={t.duplicateSection}
-          >
-            <Copy size={18} />
-          </button>
+        <button
+          onClick={() => duplicateSection(sectionId)}
+          className="p-2 text-gray-700 hover:bg-gray-200 rounded-full"
+          title={t.duplicateSection}
+        >
+          <Copy size={18} />
+        </button>
       )}
-      {hasLayouts && (
-         <button
-            onClick={() => startEditingSectionLayout(sectionId)}
-            className="p-2 text-gray-700 hover:bg-gray-200 rounded-full"
-            title={t.editLayout}
-          >
-            <LayoutGrid size={18} />
-          </button>
+      {hasLayouts && !isHeroSection && (
+        <button
+          onClick={() => startEditingSectionLayout(sectionId)}
+          className="p-2 text-gray-700 hover:bg-gray-200 rounded-full"
+          title={t.editLayout}
+        >
+          <LayoutGrid size={18} />
+        </button>
+      )}
+      {isHeroSection && (
+        <button
+          onClick={() => startEditingSectionLayout(sectionId)}
+          className="p-2 text-gray-700 hover:bg-gray-200 rounded-full"
+          title={t.editLayout}
+        >
+          <LayoutGrid size={18} />
+        </button>
       )}
       {!hidePalette && (
         <button

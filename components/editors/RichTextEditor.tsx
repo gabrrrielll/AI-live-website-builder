@@ -25,7 +25,7 @@ const ReactQuill = dynamic(
 );
 
 interface RichTextEditorProps {
-  element: RichTextElement;
+  element?: RichTextElement;
   onSave: (updatedElement: Partial<RichTextElement>) => void;
   onChange?: (newContent: LocalizedString) => void;
   hideSaveButton?: boolean;
@@ -43,15 +43,17 @@ const modules = {
 };
 
 const RichTextEditor: React.FC<RichTextEditorProps> = ({ element, onSave, onChange, hideSaveButton = false }) => {
-  const [content, setContent] = useState<LocalizedString>(element.content);
+  const [content, setContent] = useState<LocalizedString>(element?.content || { ro: '', en: '' });
   const [activeLang, setActiveLang] = useState<Language>('ro');
   const [editorView, setEditorView] = useState<'visual' | 'text'>('visual');
   const { language } = useLanguage();
   const t = useMemo(() => translations[language].editors, [language]);
 
   useEffect(() => {
-    setContent(element.content);
-  }, [element.content]);
+    if (element?.content) {
+      setContent(element.content);
+    }
+  }, [element?.content]);
 
   const handleContentChange = (value: string) => {
     const newContent = { ...content, [activeLang]: value };

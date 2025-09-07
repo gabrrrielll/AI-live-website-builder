@@ -28,16 +28,16 @@ export interface MapElement extends BaseElement {
 }
 
 export interface LogoElement extends BaseElement {
-    type: 'logo';
-    logoType: 'text' | 'image';
-    content: LocalizedString; // for text logo
-    imageUrl: string; // for image logo
-    alt: LocalizedString; // for image logo
+  type: 'logo';
+  logoType: 'text' | 'image';
+  content: LocalizedString; // for text logo
+  imageUrl: string; // for image logo
+  alt: LocalizedString; // for image logo
 }
 
 export interface FormConfigElement extends BaseElement {
-    type: 'form-config';
-    recipientEmail: string;
+  type: 'form-config';
+  recipientEmail: string;
 }
 
 export interface IconElement extends BaseElement {
@@ -62,10 +62,23 @@ export interface Section {
   items?: any[]; // For dynamic lists of items like FAQs, Services, Team members
   layout?: {
     template?: string; // e.g., 'default', 'alternative'
+    variant?: string; // e.g., 'slider', 'gradient-waves'
     itemCount?: number;
     imageWidth?: number;
     duration?: number; // in seconds, for carousels
     carousel?: boolean;
+    // Gradient waves specific settings
+    gradientColors?: {
+      color1: string;
+      color2: string;
+      color3: string;
+      color4: string;
+    };
+    waveAnimation?: {
+      speed: number; // animation speed multiplier
+      intensity: number; // wave intensity
+      spacing: number; // distance between waves (1-10)
+    };
   };
   cardStyles?: React.CSSProperties;
 }
@@ -73,7 +86,7 @@ export interface Section {
 export interface Page {
   id: string;
   elements: {
-    [id:string]: SiteElement;
+    [id: string]: SiteElement;
   };
 }
 
