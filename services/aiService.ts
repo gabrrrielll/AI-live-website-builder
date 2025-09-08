@@ -2,80 +2,13 @@
 
 import { GoogleGenAI } from "@google/genai";
 import { GEMINI_API_KEY } from '@/env';
-import { APP_CONFIG } from '@/constants.js';
-
-// Rate limiting pentru test mode
-const REBUILD_LIMIT = APP_CONFIG.TEST_MODE.REBUILD_LIMIT;
-const IMAGE_GEN_LIMIT = APP_CONFIG.TEST_MODE.IMAGE_GEN_LIMIT;
-
-// Helper pentru localStorage
-const getUsage = (key: string): number => {
-    if (typeof window === 'undefined') return 0;
-    try {
-        const item = localStorage.getItem(key);
-        return item ? parseInt(item, 10) : 0;
-    } catch {
-        return 0;
-    }
-};
-
-const setUsage = (key: string, count: number) => {
-    if (typeof window === 'undefined') return;
-    try {
-        localStorage.setItem(key, count.toString());
-    } catch (error) {
-        console.error("Could not save usage to localStorage", error);
-    }
-};
-
-// Verifică dacă suntem în test mode
-const isTestMode = (): boolean => {
-    if (typeof window === 'undefined') return false;
-    return window.location.hostname.includes('test');
-};
-
-// Verifică dacă poate folosi rebuild
-export const canUseRebuild = (): boolean => {
-    if (!isTestMode()) return true;
-    const usage = getUsage('ai_rebuild_usage');
-    return usage < REBUILD_LIMIT;
-};
-
-// Verifică dacă poate folosi image generation
-export const canUseImageGen = (): boolean => {
-    if (!isTestMode()) return true;
-    const usage = getUsage('ai_image_gen_usage');
-    return usage < IMAGE_GEN_LIMIT;
-};
-
-// Incrementează contorul rebuild
-export const useRebuild = (): void => {
-    if (isTestMode()) {
-        const currentUsage = getUsage('ai_rebuild_usage');
-        setUsage('ai_rebuild_usage', currentUsage + 1);
-    }
-};
-
-// Incrementează contorul image generation
-export const useImageGen = (): void => {
-    if (isTestMode()) {
-        const currentUsage = getUsage('ai_image_gen_usage');
-        setUsage('ai_image_gen_usage', currentUsage + 1);
-    }
-};
-
-// Obține numărul de utilizări rămase
-export const getRebuildsLeft = (): number => {
-    if (!isTestMode()) return Infinity;
-    const usage = getUsage('ai_rebuild_usage');
-    return Math.max(0, REBUILD_LIMIT - usage);
-};
-
-export const getImagesLeft = (): number => {
-    if (!isTestMode()) return Infinity;
-    const usage = getUsage('ai_image_gen_usage');
-    return Math.max(0, IMAGE_GEN_LIMIT - usage);
-};
+import {
+    canUseService,
+    useService,
+    getServiceUsageLeft,
+    getServiceProvider,
+    getDomainType
+} from './plansService';
 
 // Generare text cu retry logic
 export const generateTextWithRetry = async (
@@ -84,6 +17,18 @@ export const generateTextWithRetry = async (
     maxRetries: number = 3,
     toastId?: string
 ): Promise<string> => {
+    console.log('📝 [AI Service] Starting text generation...');
+    console.log('📝 [AI Service] Prompt:', prompt.substring(0, 100) + '...');
+    console.log('📝 [AI Service] Domain type:', getDomainType());
+    console.log('📝 [AI Service] Can use service:', canUseService('ai_text_generation'));
+
+    // Verifică dacă serviciul poate fi folosit
+    if (!canUseService('ai_text_generation')) {
+        console.log('❌ [AI Service] Service usage limit reached');
+        throw new Error('Service usage limit reached for text generation');
+    }
+
+    // Use real AI for all domains
     const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -120,6 +65,10 @@ export const generateTextWithRetry = async (
                 }
             }
 
+            // Incrementează contorul pentru serviciu
+            useService('ai_text_generation');
+            console.log('✅ [AI Service] Text generation successful!');
+
             return responseText;
         } catch (error: any) {
             const errorMessage = error.message || '';
@@ -141,34 +90,45 @@ export const generateTextWithRetry = async (
     throw new Error('Max retries exceeded');
 };
 
-// Generare imagine
+// Generare imagine cu Craiyon (gratuit)
 export const generateImage = async (prompt: string): Promise<string> => {
-    // Verifică limitările pentru test mode
-    if (!canUseImageGen()) {
-        throw new Error('Usage limit reached for image generation in test mode');
+    console.log('🖼️ [AI Service] Starting image generation...');
+    console.log('🖼️ [AI Service] Prompt:', prompt);
+    console.log('🖼️ [AI Service] Domain type:', getDomainType());
+    console.log('🖼️ [AI Service] Can use service:', canUseService('ai_image_generation'));
+
+    // Verifică dacă serviciul poate fi folosit
+    if (!canUseService('ai_image_generation')) {
+        console.log('❌ [AI Service] Service usage limit reached');
+        throw new Error('Service usage limit reached for image generation');
     }
 
     try {
-        const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
-        const response = await ai.models.generateImages({
-            model: 'imagen-4.0-generate-001',
-            prompt
-        });
+        console.log('🖼️ [AI Service] Importing image generation service...');
+        const { generateImage: imageGenerateImage } = await import('./craiyonService');
 
-        if (!response.generatedImages?.[0]?.image?.imageBytes) {
-            throw new Error("AI did not return a valid image. The prompt may have been blocked for safety reasons.");
-        }
+        console.log('🖼️ [AI Service] Calling image generation API...');
+        console.log('🖼️ [AI Service] This may take 30-60 seconds...');
 
-        // Incrementează contorul pentru test mode
-        useImageGen();
+        const result = await imageGenerateImage(prompt);
 
-        return response.generatedImages[0].image.imageBytes;
+        console.log('✅ [AI Service] Image generation successful!');
+        console.log('🖼️ [AI Service] Result type:', typeof result);
+        console.log('🖼️ [AI Service] Result length:', result?.length || 0);
+
+        return result;
     } catch (error: any) {
-        console.error("Image generation failed:", error);
+        console.error('❌ [AI Service] Image generation failed:');
+        console.error('❌ [AI Service] Error type:', typeof error);
+        console.error('❌ [AI Service] Error message:', error.message);
+        console.error('❌ [AI Service] Error toString:', error.toString());
+        console.error('❌ [AI Service] Full error object:', error);
+
         const errorMessage = error.message || "An unknown error occurred with the AI service.";
 
         // Verifică pentru mesaje specifice legate de siguranță
-        if (error.toString().includes('SAFETY')) {
+        if (error.toString().includes('SAFETY') || error.toString().includes('blocked')) {
+            console.log('❌ [AI Service] Safety error detected');
             throw new Error("The request was blocked due to safety settings. Please modify your prompt.");
         }
 
@@ -181,3 +141,27 @@ export const generateText = async (prompt: string, format: 'text' | 'json' = 'te
     return generateTextWithRetry(prompt, format);
 };
 
+// Funcții de compatibilitate pentru codul existent
+export const canUseRebuild = (): boolean => {
+    return canUseService('ai_text_generation');
+};
+
+export const canUseImageGen = (): boolean => {
+    return canUseService('ai_image_generation');
+};
+
+export const useRebuild = (): void => {
+    useService('ai_text_generation');
+};
+
+export const useImageGen = (): void => {
+    useService('ai_image_generation');
+};
+
+export const getRebuildsLeft = (): number => {
+    return getServiceUsageLeft('ai_text_generation');
+};
+
+export const getImagesLeft = (): number => {
+    return getServiceUsageLeft('ai_image_generation');
+};

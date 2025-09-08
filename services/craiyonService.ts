@@ -1,64 +1,25 @@
 "use client";
 
-// Verifică dacă suntem în test mode
-const isTestMode = (): boolean => {
-    if (typeof window === 'undefined') return false;
-    return window.location.hostname.includes('test');
-};
-
-// Helper pentru localStorage
-const getUsage = (key: string): number => {
-    if (typeof window === 'undefined') return 0;
-    try {
-        const item = localStorage.getItem(key);
-        return item ? parseInt(item, 10) : 0;
-    } catch {
-        return 0;
-    }
-};
-
-const setUsage = (key: string, count: number) => {
-    if (typeof window === 'undefined') return;
-    try {
-        localStorage.setItem(key, count.toString());
-    } catch (error) {
-        console.error("Could not save usage to localStorage", error);
-    }
-};
-
-// Verifică dacă poate folosi image generation
-export const canUseImageGen = (): boolean => {
-    if (!isTestMode()) return true;
-    const usage = getUsage('ai_image_gen_usage');
-    return usage < 3; // Limitare de 3 pentru domenii cu "test"
-};
-
-// Incrementează contorul image generation
-export const useImageGen = (): void => {
-    if (isTestMode()) {
-        const currentUsage = getUsage('ai_image_gen_usage');
-        setUsage('ai_image_gen_usage', currentUsage + 1);
-    }
-};
-
-// Obține numărul de utilizări rămase
-export const getImagesLeft = (): number => {
-    if (!isTestMode()) return Infinity;
-    const usage = getUsage('ai_image_gen_usage');
-    return Math.max(0, 3 - usage);
-};
+import {
+    canUseService,
+    useService,
+    getServiceUsageLeft,
+    getServiceProvider,
+    getServiceFallbackProvider,
+    getDomainType
+} from './plansService';
 
 // Generare imagine cu Pollinations.ai (GRATUIT și client-side!)
 export const generateImage = async (prompt: string): Promise<string> => {
     console.log('🖼️ [Pollinations] Starting image generation...');
     console.log('🖼️ [Pollinations] Prompt:', prompt);
-    console.log('🖼️ [Pollinations] Test mode:', isTestMode());
-    console.log('🖼️ [Pollinations] Can use image gen:', canUseImageGen());
+    console.log('🖼️ [Pollinations] Domain type:', getDomainType());
+    console.log('🖼️ [Pollinations] Can use service:', canUseService('ai_image_generation'));
 
-    // Verifică limitările pentru test mode
-    if (!canUseImageGen()) {
-        console.log('❌ [Pollinations] Usage limit reached for test mode');
-        throw new Error('Usage limit reached for image generation in test mode');
+    // Verifică dacă serviciul poate fi folosit
+    if (!canUseService('ai_image_generation')) {
+        console.log('❌ [Pollinations] Service usage limit reached');
+        throw new Error('Service usage limit reached for image generation');
     }
 
     try {
@@ -74,8 +35,8 @@ export const generateImage = async (prompt: string): Promise<string> => {
         // Convertim URL-ul în base64
         const imageBase64 = await urlToBase64(imageUrl);
 
-        // Incrementează contorul pentru test mode
-        useImageGen();
+        // Incrementează contorul pentru serviciu
+        useService('ai_image_generation');
         console.log('✅ [Pollinations] Image generation successful!');
 
         return imageBase64;
@@ -171,8 +132,8 @@ async function generateWithFreeService(prompt: string): Promise<string> {
                     ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
                     ctx.fillText('AI Generated Image (Free Service)', 512, 500);
 
-                    // Incrementează contorul pentru test mode
-                    useImageGen();
+                    // Incrementează contorul pentru serviciu
+                    useService('ai_image_generation');
                     console.log('✅ [Free Service] Image generation successful!');
 
                     resolve(canvas.toDataURL('image/jpeg', 0.9));
@@ -193,6 +154,19 @@ async function generateWithFreeService(prompt: string): Promise<string> {
         throw new Error('Failed to generate image with free service');
     }
 }
+
+// Funcții de compatibilitate pentru codul existent
+export const canUseImageGen = (): boolean => {
+    return canUseService('ai_image_generation');
+};
+
+export const useImageGen = (): void => {
+    useService('ai_image_generation');
+};
+
+export const getImagesLeft = (): number => {
+    return getServiceUsageLeft('ai_image_generation');
+};
 
 // Convertim URL-ul imaginii în base64
 async function urlToBase64(url: string): Promise<string> {
