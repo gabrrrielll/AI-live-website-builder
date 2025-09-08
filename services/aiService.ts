@@ -105,7 +105,7 @@ export const generateImage = async (prompt: string): Promise<string> => {
 
     try {
         console.log('🖼️ [AI Service] Importing image generation service...');
-        const { generateImage: imageGenerateImage } = await import('./craiyonService');
+        const { generateImage: imageGenerateImage } = await import('./imageGenerationService');
 
         console.log('🖼️ [AI Service] Calling image generation API...');
         console.log('🖼️ [AI Service] This may take 30-60 seconds...');
