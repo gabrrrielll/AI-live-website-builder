@@ -557,8 +557,9 @@ const CardLayoutModal: React.FC = () => {
     });
     const [waveAnimation, setWaveAnimation] = useState(section?.layout?.waveAnimation || {
         speed: 1,
-        intensity: 1.5,
-        spacing: 3
+        intensity: 1.2,
+        spacing: 0.1,
+        diffusion: 50
     });
 
     useEffect(() => {
@@ -582,8 +583,9 @@ const CardLayoutModal: React.FC = () => {
                 });
                 setWaveAnimation(section.layout?.waveAnimation || {
                     speed: 1,
-                    intensity: 1.5,
-                    spacing: 3
+                    intensity: 1.2,
+                    spacing: 0.1,
+                    diffusion: 50
                 });
             }
         }
@@ -857,17 +859,22 @@ const CardLayoutModal: React.FC = () => {
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Intensitate Valuri: <span className="font-bold">{waveAnimation.intensity}</span>
+                                        Înălțime Valuri: <span className="font-bold">{waveAnimation.intensity}x</span>
                                     </label>
                                     <input
                                         type="range"
                                         min="0.5"
-                                        max="3"
+                                        max="1.2"
                                         step="0.1"
                                         value={waveAnimation.intensity}
                                         onChange={(e) => setWaveAnimation(prev => ({ ...prev, intensity: Number(e.target.value) }))}
                                         className="w-full"
                                     />
+                                    <div className="text-xs text-gray-500 mt-1">
+                                        <span className="text-red-500">0.5</span> = Valuri joase |
+                                        <span className="text-blue-500"> 0.85</span> = Înălțime medie |
+                                        <span className="text-green-500"> 1.2</span> = Înălțime maximă
+                                    </div>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -875,17 +882,36 @@ const CardLayoutModal: React.FC = () => {
                                     </label>
                                     <input
                                         type="range"
-                                        min="1"
+                                        min="0.1"
                                         max="10"
-                                        step="0.5"
-                                        value={waveAnimation.spacing || 3}
+                                        step="0.1"
+                                        value={waveAnimation.spacing || 0.1}
                                         onChange={(e) => setWaveAnimation(prev => ({ ...prev, spacing: Number(e.target.value) }))}
                                         className="w-full"
                                     />
                                     <div className="text-xs text-gray-500 mt-1">
-                                        <span className="text-red-500">1</span> = Valuri foarte apropiate |
-                                        <span className="text-blue-500"> 5.5</span> = Distanță medie |
-                                        <span className="text-green-500"> 10</span> = Distanță maximă (actual)
+                                        <span className="text-red-500">0.1</span> = Valuri extrem de apropiate |
+                                        <span className="text-blue-500"> 1</span> = Distanță medie |
+                                        <span className="text-green-500"> 10</span> = Distanță maximă
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Umbră Valuri: <span className="font-bold">{waveAnimation.diffusion}%</span>
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="100"
+                                        step="5"
+                                        value={waveAnimation.diffusion || 50}
+                                        onChange={(e) => setWaveAnimation(prev => ({ ...prev, diffusion: Number(e.target.value) }))}
+                                        className="w-full"
+                                    />
+                                    <div className="text-xs text-gray-500 mt-1">
+                                        <span className="text-red-500">0%</span> = Valuri clare |
+                                        <span className="text-blue-500"> 50%</span> = Umbră medie |
+                                        <span className="text-green-500"> 100%</span> = Umbră intensă (întrepătrundere)
                                     </div>
                                 </div>
                             </div>

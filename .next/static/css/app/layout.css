@@ -1406,9 +1406,6 @@ video {
 .-top-96 {
   top: -24rem;
 }
-.bottom-0 {
-  bottom: 0px;
-}
 .bottom-2 {
   bottom: 0.5rem;
 }
@@ -2034,6 +2031,9 @@ video {
 }
 .overflow-hidden {
   overflow: hidden;
+}
+.overflow-visible {
+  overflow: visible;
 }
 .overflow-y-auto {
   overflow-y: auto;

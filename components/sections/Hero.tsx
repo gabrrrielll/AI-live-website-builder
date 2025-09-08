@@ -130,7 +130,9 @@ const GradientWavesHero: React.FC<{ sectionId: string }> = ({ sectionId }) => {
 
     const waveAnimation = section?.layout?.waveAnimation || {
         speed: 1,
-        intensity: 1.5
+        intensity: 1.2,
+        spacing: 0.1,
+        diffusion: 50
     };
 
     const handleContentChange = (newContent: any) => {
@@ -148,37 +150,47 @@ const GradientWavesHero: React.FC<{ sectionId: string }> = ({ sectionId }) => {
                 style={{
                     background: `linear-gradient(135deg, ${gradientColors.color1}, ${gradientColors.color2}, ${gradientColors.color3}, ${gradientColors.color4})`,
                     backgroundSize: '300% 300%',
-                    animation: `gradientShift ${6 / waveAnimation.speed}s ease infinite`
+                    animation: `gradientShift ${6 / waveAnimation.speed}s ease infinite`,
+                    opacity: 0.7
                 }}
                 key={`gradient-${gradientColors.color1}-${gradientColors.color2}-${gradientColors.color3}-${gradientColors.color4}`}
             />
 
-            {/* Animated SVG Waves */}
-            <div className="absolute bottom-0 left-0 w-full h-48 overflow-hidden">
+            {/* Animated SVG Waves - Full Hero Coverage */}
+            <div className="absolute inset-0 w-full h-full overflow-visible">
                 <svg
                     className="waves"
                     xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 24 150 28"
+                    viewBox="0 0 150 100"
                     preserveAspectRatio="none"
                     style={{
                         position: 'absolute',
                         width: '100%',
-                        height: '100%',
-                        bottom: 0
+                        height: '150%',
+                        top: '50%',
+                        left: '0px'
                     }}
                 >
                     <defs>
                         <path
                             id={`gentle-wave-${sectionId}`}
-                            d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18v44h-352z"
+                            d={`M-160 ${20 - (8 * waveAnimation.intensity)}c15 0 29-${8 * waveAnimation.intensity} 44-${8 * waveAnimation.intensity}s29 ${8 * waveAnimation.intensity} 44 ${8 * waveAnimation.intensity} 29-${8 * waveAnimation.intensity} 44-${8 * waveAnimation.intensity} 29 ${8 * waveAnimation.intensity} 44 ${8 * waveAnimation.intensity} 29-${8 * waveAnimation.intensity} 44-${8 * waveAnimation.intensity} 29 ${8 * waveAnimation.intensity} 44 ${8 * waveAnimation.intensity} 29-${8 * waveAnimation.intensity} 44-${8 * waveAnimation.intensity} 29 ${8 * waveAnimation.intensity} 44 ${8 * waveAnimation.intensity} 29-${8 * waveAnimation.intensity} 44-${8 * waveAnimation.intensity} 29 ${8 * waveAnimation.intensity} 44 ${8 * waveAnimation.intensity} 29-${8 * waveAnimation.intensity} 44-${8 * waveAnimation.intensity} 29 ${8 * waveAnimation.intensity} 44 ${8 * waveAnimation.intensity}v${60 + (8 * waveAnimation.intensity)}h-352z`}
                         />
+                        <filter id={`wave-shadow-${sectionId}`}>
+                            <feGaussianBlur stdDeviation={`${waveAnimation.diffusion / 20}`} result="coloredOut" />
+                            <feMerge>
+                                <feMergeNode in="coloredOut" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
                     </defs>
                     <g className="parallax">
                         <use
                             xlinkHref={`#gentle-wave-${sectionId}`}
                             x="48"
-                            y="0"
-                            fill={`${gradientColors.color1}70`}
+                            y="20"
+                            fill={gradientColors.color1}
+                            filter={`url(#wave-shadow-${sectionId})`}
                             style={{
                                 animation: `move-forever-1 ${7 / waveAnimation.speed}s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite`,
                                 animationDelay: '-2s'
@@ -187,8 +199,9 @@ const GradientWavesHero: React.FC<{ sectionId: string }> = ({ sectionId }) => {
                         <use
                             xlinkHref={`#gentle-wave-${sectionId}`}
                             x="48"
-                            y={waveAnimation.spacing || 3}
-                            fill={`${gradientColors.color2}50`}
+                            y={20 + (waveAnimation.spacing || 0.1) * 0.5}
+                            fill={gradientColors.color2}
+                            filter={`url(#wave-shadow-${sectionId})`}
                             style={{
                                 animation: `move-forever-2 ${10 / waveAnimation.speed}s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite`,
                                 animationDelay: '-3s'
@@ -197,8 +210,9 @@ const GradientWavesHero: React.FC<{ sectionId: string }> = ({ sectionId }) => {
                         <use
                             xlinkHref={`#gentle-wave-${sectionId}`}
                             x="48"
-                            y={(waveAnimation.spacing || 3) * 1.7}
-                            fill={`${gradientColors.color3}30`}
+                            y={20 + (waveAnimation.spacing || 0.1) * 1.0}
+                            fill={gradientColors.color3}
+                            filter={`url(#wave-shadow-${sectionId})`}
                             style={{
                                 animation: `move-forever-3 ${13 / waveAnimation.speed}s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite`,
                                 animationDelay: '-4s'
@@ -207,7 +221,7 @@ const GradientWavesHero: React.FC<{ sectionId: string }> = ({ sectionId }) => {
                         <use
                             xlinkHref={`#gentle-wave-${sectionId}`}
                             x="48"
-                            y={(waveAnimation.spacing || 3) * 2.3}
+                            y={20 + (waveAnimation.spacing || 0.1) * 1.5}
                             fill="white"
                             style={{
                                 animation: `move-forever-4 ${20 / waveAnimation.speed}s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite`,
@@ -241,7 +255,7 @@ const GradientWavesHero: React.FC<{ sectionId: string }> = ({ sectionId }) => {
             </div>
 
             {/* CSS Animations */}
-            <style jsx key={`animations-${gradientColors.color1}-${gradientColors.color2}-${gradientColors.color3}-${gradientColors.color4}-${waveAnimation.speed}-${waveAnimation.intensity}-${waveAnimation.spacing || 3}`}>{`
+            <style jsx key={`animations-${gradientColors.color1}-${gradientColors.color2}-${gradientColors.color3}-${gradientColors.color4}-${waveAnimation.speed}-${waveAnimation.intensity}-${waveAnimation.spacing || 0.1}-${waveAnimation.diffusion || 50}`}>{`
                 @keyframes gradientShift {
                     0% { background-position: 0% 50%; }
                     25% { background-position: 100% 0%; }

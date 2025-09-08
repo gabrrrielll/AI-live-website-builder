@@ -77,7 +77,8 @@ export interface Section {
     waveAnimation?: {
       speed: number; // animation speed multiplier
       intensity: number; // wave intensity
-      spacing: number; // distance between waves (1-10)
+      spacing: number; // distance between waves (0.1-10)
+      diffusion: number; // color diffusion/transparency at wave edges (0-100)
     };
   };
   cardStyles?: React.CSSProperties;
