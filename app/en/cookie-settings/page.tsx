@@ -28,45 +28,45 @@ const CookieSettingsPage: React.FC = () => {
     }, []);
 
     const handlePreferenceChange = (key: keyof CookiePreferences, value: boolean) => {
-        if (key === 'necessary') return; // Cookie-urile necesare nu pot fi dezactivate
+        if (key === 'necessary') return; // Necessary cookies cannot be disabled
         setPreferences(prev => ({ ...prev, [key]: value }));
     };
 
     const handleSavePreferences = () => {
         localStorage.setItem('gdpr-consent', JSON.stringify(preferences));
-        // Redirecționează înapoi la pagina principală
+        // Redirect back to main page
         window.location.href = '/';
     };
 
     const cookieTypes = [
         {
             key: 'necessary' as keyof CookiePreferences,
-            title: 'Cookie-uri Necesare',
-            description: 'Aceste cookie-uri sunt esențiale pentru funcționarea site-ului și nu pot fi dezactivate.',
+            title: 'Necessary Cookies',
+            description: 'These cookies are essential for the website to function and cannot be disabled.',
             icon: Shield,
-            examples: ['Sesiuni de utilizator', 'Preferințe de limbă', 'Securitate'],
+            examples: ['User sessions', 'Language preferences', 'Security'],
             alwaysActive: true
         },
         {
             key: 'analytics' as keyof CookiePreferences,
-            title: 'Cookie-uri de Analiză',
-            description: 'Ne ajută să înțelegem cum interacționezi cu site-ul pentru a-l îmbunătăți.',
+            title: 'Analytics Cookies',
+            description: 'Help us understand how you interact with the website to improve it.',
             icon: BarChart3,
-            examples: ['Google Analytics', 'Statistici de utilizare', 'Raportare de erori']
+            examples: ['Google Analytics', 'Usage statistics', 'Error reporting']
         },
         {
             key: 'functional' as keyof CookiePreferences,
-            title: 'Cookie-uri Funcționale',
-            description: 'Permit funcționalități avansate și personalizare.',
+            title: 'Functional Cookies',
+            description: 'Enable advanced features and personalization.',
             icon: Settings,
-            examples: ['Preferințe de afișare', 'Setări personalizate', 'Funcții interactive']
+            examples: ['Display preferences', 'Custom settings', 'Interactive features']
         },
         {
             key: 'marketing' as keyof CookiePreferences,
-            title: 'Cookie-uri de Marketing',
-            description: 'Folosite pentru a afișa reclame relevante și pentru măsurarea eficienței campaniilor.',
+            title: 'Marketing Cookies',
+            description: 'Used to display relevant ads and measure campaign effectiveness.',
             icon: Target,
-            examples: ['Reclame personalizate', 'Retargeting', 'Măsurarea conversiilor']
+            examples: ['Personalized ads', 'Retargeting', 'Conversion tracking']
         }
     ];
 
@@ -81,18 +81,18 @@ const CookieSettingsPage: React.FC = () => {
                             className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4"
                         >
                             <ArrowLeft className="w-4 h-4 mr-2" />
-                            Înapoi la site
+                            Back to site
                         </Link>
 
                         <div className="flex items-center mb-4">
                             <Cookie className="w-8 h-8 text-blue-600 mr-3" />
                             <h1 className="text-3xl font-bold text-gray-900">
-                                Setări Cookie-uri
+                                Cookie Settings
                             </h1>
                         </div>
 
                         <p className="text-gray-600 text-lg">
-                            Gestionează preferințele tale pentru cookie-uri. Poți activa sau dezactiva diferite tipuri de cookie-uri.
+                            Manage your cookie preferences. You can enable or disable different types of cookies.
                         </p>
                     </div>
 
@@ -119,7 +119,7 @@ const CookieSettingsPage: React.FC = () => {
 
                                             <div className="mb-4">
                                                 <h4 className="text-sm font-medium text-gray-700 mb-2">
-                                                    Exemple de cookie-uri:
+                                                    Cookie examples:
                                                 </h4>
                                                 <ul className="text-sm text-gray-600 space-y-1">
                                                     {type.examples.map((example, index) => (
@@ -142,7 +142,7 @@ const CookieSettingsPage: React.FC = () => {
                                                     className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                                 />
                                                 <span className="ml-2 text-sm font-medium text-gray-700">
-                                                    {type.alwaysActive ? 'Întotdeauna activ' : (isActive ? 'Activat' : 'Dezactivat')}
+                                                    {type.alwaysActive ? 'Always active' : (isActive ? 'Enabled' : 'Disabled')}
                                                 </span>
                                             </label>
                                         </div>
@@ -157,7 +157,7 @@ const CookieSettingsPage: React.FC = () => {
                         <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
                             <div className="text-sm text-gray-600">
                                 <p>
-                                    Modificările vor fi aplicate imediat. Poți reveni la aceste setări oricând.
+                                    Changes will be applied immediately. You can return to these settings anytime.
                                 </p>
                             </div>
 
@@ -174,7 +174,7 @@ const CookieSettingsPage: React.FC = () => {
                                     }}
                                     className="px-6 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
                                 >
-                                    Respinge toate
+                                    Reject all
                                 </button>
 
                                 <button
@@ -189,14 +189,14 @@ const CookieSettingsPage: React.FC = () => {
                                     }}
                                     className="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors"
                                 >
-                                    Acceptă toate
+                                    Accept all
                                 </button>
 
                                 <button
                                     onClick={handleSavePreferences}
                                     className="px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
                                 >
-                                    Salvează preferințele
+                                    Save preferences
                                 </button>
                             </div>
                         </div>
@@ -205,13 +205,13 @@ const CookieSettingsPage: React.FC = () => {
                     {/* Additional Info */}
                     <div className="mt-8 text-center text-sm text-gray-500">
                         <p>
-                            Pentru mai multe informații, consultă{' '}
-                            <Link href="/privacy-policy" className="text-blue-600 hover:underline">
-                                Politica de Confidențialitate
+                            For more information, see{' '}
+                            <Link href="/en/privacy-policy" className="text-blue-600 hover:underline">
+                                Privacy Policy
                             </Link>
-                            {' '}și{' '}
-                            <Link href="/cookie-policy" className="text-blue-600 hover:underline">
-                                Politica Cookie-urilor
+                            {' '}and{' '}
+                            <Link href="/en/cookie-policy" className="text-blue-600 hover:underline">
+                                Cookie Policy
                             </Link>
                         </p>
                     </div>

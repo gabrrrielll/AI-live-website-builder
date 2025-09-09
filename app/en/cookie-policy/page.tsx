@@ -7,38 +7,38 @@ import Link from 'next/link';
 const CookiePolicyPage: React.FC = () => {
     const cookieTypes = [
         {
-            type: 'Necesare',
+            type: 'Necessary',
             icon: Shield,
             color: 'green',
-            description: 'Aceste cookie-uri sunt esențiale pentru funcționarea site-ului.',
+            description: 'These cookies are essential for the website to function.',
             examples: [
-                { name: 'session_id', purpose: 'Menține sesiunea utilizatorului', duration: 'Sesiune' },
-                { name: 'language_pref', purpose: 'Salvează preferința de limbă', duration: '1 an' },
-                { name: 'csrf_token', purpose: 'Protecție împotriva atacurilor CSRF', duration: 'Sesiune' }
+                { name: 'session_id', purpose: 'Maintains user session', duration: 'Session' },
+                { name: 'language_pref', purpose: 'Saves language preference', duration: '1 year' },
+                { name: 'csrf_token', purpose: 'Protection against CSRF attacks', duration: 'Session' }
             ],
             alwaysActive: true
         },
         {
-            type: 'Analiză',
+            type: 'Analytics',
             icon: BarChart3,
             color: 'blue',
-            description: 'Ne ajută să înțelegem cum interacționezi cu site-ul.',
+            description: 'Help us understand how you interact with the website.',
             examples: [
-                { name: '_ga', purpose: 'Google Analytics - identificare unică', duration: '2 ani' },
-                { name: '_gid', purpose: 'Google Analytics - identificare sesiune', duration: '24 ore' },
-                { name: 'page_views', purpose: 'Numărul de pagini vizitate', duration: '30 zile' }
+                { name: '_ga', purpose: 'Google Analytics - unique identification', duration: '2 years' },
+                { name: '_gid', purpose: 'Google Analytics - session identification', duration: '24 hours' },
+                { name: 'page_views', purpose: 'Number of pages visited', duration: '30 days' }
             ],
             alwaysActive: false
         },
         {
-            type: 'Funcționale',
+            type: 'Functional',
             icon: Settings,
             color: 'purple',
-            description: 'Permit funcționalități avansate și personalizare.',
+            description: 'Enable advanced features and personalization.',
             examples: [
-                { name: 'theme_preference', purpose: 'Salvează tema aleasă (dark/light)', duration: '1 an' },
-                { name: 'font_size', purpose: 'Mărimea fontului preferată', duration: '6 luni' },
-                { name: 'sidebar_collapsed', purpose: 'Starea barei laterale', duration: 'Sesiune' }
+                { name: 'theme_preference', purpose: 'Saves chosen theme (dark/light)', duration: '1 year' },
+                { name: 'font_size', purpose: 'Preferred font size', duration: '6 months' },
+                { name: 'sidebar_collapsed', purpose: 'Sidebar state', duration: 'Session' }
             ],
             alwaysActive: false
         },
@@ -46,11 +46,11 @@ const CookiePolicyPage: React.FC = () => {
             type: 'Marketing',
             icon: Target,
             color: 'orange',
-            description: 'Folosite pentru reclame personalizate și măsurarea conversiilor.',
+            description: 'Used for personalized ads and conversion tracking.',
             examples: [
-                { name: '_fbp', purpose: 'Facebook Pixel - tracking conversii', duration: '90 zile' },
-                { name: 'ad_clicked', purpose: 'Tracking click-uri pe reclame', duration: '30 zile' },
-                { name: 'campaign_source', purpose: 'Sursa campaniei de marketing', duration: '7 zile' }
+                { name: '_fbp', purpose: 'Facebook Pixel - conversion tracking', duration: '90 days' },
+                { name: 'ad_clicked', purpose: 'Ad click tracking', duration: '30 days' },
+                { name: 'campaign_source', purpose: 'Marketing campaign source', duration: '7 days' }
             ],
             alwaysActive: false
         }
@@ -77,44 +77,44 @@ const CookiePolicyPage: React.FC = () => {
                             className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4"
                         >
                             <ArrowLeft className="w-4 h-4 mr-2" />
-                            Înapoi la site
+                            Back to site
                         </Link>
 
                         <div className="flex items-center mb-4">
                             <Cookie className="w-8 h-8 text-blue-600 mr-3" />
                             <h1 className="text-3xl font-bold text-gray-900">
-                                Politica Cookie-urilor
+                                Cookie Policy
                             </h1>
                         </div>
 
                         <p className="text-gray-600 text-lg">
-                            Ultima actualizare: {new Date().toLocaleDateString('ro-RO')}
+                            Last updated: {new Date().toLocaleDateString('en-US')}
                         </p>
                     </div>
 
                     {/* Content */}
                     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 space-y-8">
 
-                        {/* Introducere */}
+                        {/* Introduction */}
                         <section>
                             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                                Ce sunt cookie-urile?
+                                What are cookies?
                             </h2>
                             <p className="text-gray-600 leading-relaxed mb-4">
-                                Cookie-urile sunt fișiere text mici care sunt plasate pe dispozitivul tău când vizitezi un site web.
-                                Ele sunt folosite pentru a face site-urile să funcționeze mai eficient și pentru a furniza informații
-                                proprietarilor site-ului.
+                                Cookies are small text files that are placed on your device when you visit a website.
+                                They are used to make websites work more efficiently and to provide information
+                                to website owners.
                             </p>
                             <p className="text-gray-600 leading-relaxed">
-                                Folosim cookie-uri pentru a îmbunătăți experiența ta pe site, pentru analiză și pentru a furniza
-                                funcționalități personalizate.
+                                We use cookies to improve your experience on our website, for analytics, and to provide
+                                personalized features.
                             </p>
                         </section>
 
-                        {/* Tipuri de cookie-uri */}
+                        {/* Cookie types */}
                         <section>
                             <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-                                Tipuri de cookie-uri pe care le folosim
+                                Types of cookies we use
                             </h2>
 
                             <div className="space-y-6">
@@ -127,11 +127,11 @@ const CookiePolicyPage: React.FC = () => {
                                             <div className="flex items-center mb-4">
                                                 <IconComponent className="w-6 h-6 mr-3" />
                                                 <h3 className="text-xl font-semibold">
-                                                    Cookie-uri {cookieType.type}
+                                                    {cookieType.type} Cookies
                                                 </h3>
                                                 {cookieType.alwaysActive && (
                                                     <span className="ml-3 px-2 py-1 text-xs font-medium bg-white bg-opacity-50 rounded-full">
-                                                        Întotdeauna active
+                                                        Always active
                                                     </span>
                                                 )}
                                             </div>
@@ -141,7 +141,7 @@ const CookiePolicyPage: React.FC = () => {
                                             </p>
 
                                             <div>
-                                                <h4 className="font-medium mb-3">Exemple de cookie-uri:</h4>
+                                                <h4 className="font-medium mb-3">Cookie examples:</h4>
                                                 <div className="space-y-2">
                                                     {cookieType.examples.map((example, exampleIndex) => (
                                                         <div key={exampleIndex} className="bg-white bg-opacity-50 p-3 rounded">
@@ -169,61 +169,61 @@ const CookiePolicyPage: React.FC = () => {
                             </div>
                         </section>
 
-                        {/* Gestionarea cookie-urilor */}
+                        {/* Managing cookies */}
                         <section>
                             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                                Cum poți gestiona cookie-urile
+                                How you can manage cookies
                             </h2>
 
                             <div className="space-y-4">
                                 <div className="bg-blue-50 p-4 rounded-lg">
                                     <h3 className="font-medium text-blue-900 mb-2">
-                                        Prin banner-ul de consimțământ
+                                        Through the consent banner
                                     </h3>
                                     <p className="text-blue-800 text-sm">
-                                        La prima vizită, vei vedea un banner care îți permite să alegi ce tipuri de cookie-uri să accepti.
+                                        On your first visit, you'll see a banner that allows you to choose which types of cookies to accept.
                                     </p>
                                 </div>
 
                                 <div className="bg-green-50 p-4 rounded-lg">
                                     <h3 className="font-medium text-green-900 mb-2">
-                                        Prin setările de cookie-uri
+                                        Through cookie settings
                                     </h3>
                                     <p className="text-green-800 text-sm">
-                                        Poți modifica preferințele oricând prin{' '}
-                                        <Link href="/cookie-settings" className="underline">
-                                            setările de cookie-uri
+                                        You can modify your preferences anytime through{' '}
+                                        <Link href="/en/cookie-settings" className="underline">
+                                            cookie settings
                                         </Link>.
                                     </p>
                                 </div>
 
                                 <div className="bg-gray-50 p-4 rounded-lg">
                                     <h3 className="font-medium text-gray-900 mb-2">
-                                        Prin browser-ul tău
+                                        Through your browser
                                     </h3>
                                     <p className="text-gray-700 text-sm">
-                                        Majoritatea browserelor îți permit să controlezi cookie-urile prin setările lor.
-                                        Poți șterge cookie-urile existente sau să blochezi cookie-urile noi.
+                                        Most browsers allow you to control cookies through their settings.
+                                        You can delete existing cookies or block new ones.
                                     </p>
                                 </div>
                             </div>
                         </section>
 
-                        {/* Cookie-uri terțe */}
+                        {/* Third-party cookies */}
                         <section>
                             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                                Cookie-uri de la terțe părți
+                                Third-party cookies
                             </h2>
 
                             <p className="text-gray-600 mb-4">
-                                Site-ul nostru poate conține cookie-uri de la terțe părți pentru servicii precum:
+                                Our website may contain cookies from third parties for services such as:
                             </p>
 
                             <div className="grid md:grid-cols-2 gap-4">
                                 <div className="border border-gray-200 rounded-lg p-4">
                                     <h3 className="font-medium text-gray-900 mb-2">Google Analytics</h3>
                                     <p className="text-gray-600 text-sm mb-2">
-                                        Pentru analiza traficului și comportamentului utilizatorilor.
+                                        For traffic analysis and user behavior insights.
                                     </p>
                                     <a
                                         href="https://policies.google.com/privacy"
@@ -231,14 +231,14 @@ const CookiePolicyPage: React.FC = () => {
                                         rel="noopener noreferrer"
                                         className="text-blue-600 text-sm hover:underline"
                                     >
-                                        Politica de confidențialitate Google
+                                        Google Privacy Policy
                                     </a>
                                 </div>
 
                                 <div className="border border-gray-200 rounded-lg p-4">
                                     <h3 className="font-medium text-gray-900 mb-2">Facebook Pixel</h3>
                                     <p className="text-gray-600 text-sm mb-2">
-                                        Pentru tracking-ul conversiilor și reclame personalizate.
+                                        For conversion tracking and personalized ads.
                                     </p>
                                     <a
                                         href="https://www.facebook.com/privacy/explanation"
@@ -246,25 +246,25 @@ const CookiePolicyPage: React.FC = () => {
                                         rel="noopener noreferrer"
                                         className="text-blue-600 text-sm hover:underline"
                                     >
-                                        Politica de confidențialitate Facebook
+                                        Facebook Privacy Policy
                                     </a>
                                 </div>
                             </div>
                         </section>
 
-                        {/* Impactul dezactivării */}
+                        {/* Impact of disabling */}
                         <section>
                             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                                Impactul dezactivării cookie-urilor
+                                Impact of disabling cookies
                             </h2>
 
                             <div className="space-y-3">
                                 <div className="flex items-start">
                                     <div className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3"></div>
                                     <div>
-                                        <strong className="text-gray-900">Cookie-uri necesare:</strong>
+                                        <strong className="text-gray-900">Necessary cookies:</strong>
                                         <span className="text-gray-600 ml-2">
-                                            Site-ul nu va funcționa corect fără acestea.
+                                            The website will not function properly without these.
                                         </span>
                                     </div>
                                 </div>
@@ -272,9 +272,9 @@ const CookiePolicyPage: React.FC = () => {
                                 <div className="flex items-start">
                                     <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3"></div>
                                     <div>
-                                        <strong className="text-gray-900">Cookie-uri de analiză:</strong>
+                                        <strong className="text-gray-900">Analytics cookies:</strong>
                                         <span className="text-gray-600 ml-2">
-                                            Nu vom putea analiza utilizarea site-ului pentru îmbunătățiri.
+                                            We won't be able to analyze website usage for improvements.
                                         </span>
                                     </div>
                                 </div>
@@ -282,9 +282,9 @@ const CookiePolicyPage: React.FC = () => {
                                 <div className="flex items-start">
                                     <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3"></div>
                                     <div>
-                                        <strong className="text-gray-900">Cookie-uri funcționale:</strong>
+                                        <strong className="text-gray-900">Functional cookies:</strong>
                                         <span className="text-gray-600 ml-2">
-                                            Unele funcționalități personalizate nu vor fi disponibile.
+                                            Some personalized features will not be available.
                                         </span>
                                     </div>
                                 </div>
@@ -292,9 +292,9 @@ const CookiePolicyPage: React.FC = () => {
                                 <div className="flex items-start">
                                     <div className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3"></div>
                                     <div>
-                                        <strong className="text-gray-900">Cookie-uri de marketing:</strong>
+                                        <strong className="text-gray-900">Marketing cookies:</strong>
                                         <span className="text-gray-600 ml-2">
-                                            Reclamele nu vor fi personalizate pentru preferințele tale.
+                                            Ads will not be personalized to your preferences.
                                         </span>
                                     </div>
                                 </div>
@@ -308,43 +308,43 @@ const CookiePolicyPage: React.FC = () => {
                             </h2>
 
                             <p className="text-gray-600 mb-4">
-                                Pentru întrebări despre cookie-uri sau pentru a-ți exercita drepturile GDPR,
-                                ne poți contacta la:
+                                For questions about cookies or to exercise your GDPR rights,
+                                you can contact us at:
                             </p>
 
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <p className="text-gray-700">
                                     <strong>Email:</strong> privacy@example.com<br />
-                                    <strong>Telefon:</strong> +40 XXX XXX XXX<br />
-                                    <strong>Adresă:</strong> Strada Exemplu, Nr. 1, București, România
+                                    <strong>Phone:</strong> +40 XXX XXX XXX<br />
+                                    <strong>Address:</strong> Example Street, No. 1, Bucharest, Romania
                                 </p>
                             </div>
                         </section>
 
-                        {/* Link-uri utile */}
+                        {/* Useful links */}
                         <section>
                             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                                Link-uri utile
+                                Useful Links
                             </h2>
 
                             <div className="grid md:grid-cols-2 gap-4">
                                 <Link
-                                    href="/cookie-settings"
+                                    href="/en/cookie-settings"
                                     className="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                                 >
-                                    <h3 className="font-medium text-gray-900 mb-2">Setări Cookie-uri</h3>
+                                    <h3 className="font-medium text-gray-900 mb-2">Cookie Settings</h3>
                                     <p className="text-gray-600 text-sm">
-                                        Gestionează preferințele tale pentru cookie-uri
+                                        Manage your cookie preferences
                                     </p>
                                 </Link>
 
                                 <Link
-                                    href="/privacy-policy"
+                                    href="/en/privacy-policy"
                                     className="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                                 >
-                                    <h3 className="font-medium text-gray-900 mb-2">Politica de Confidențialitate</h3>
+                                    <h3 className="font-medium text-gray-900 mb-2">Privacy Policy</h3>
                                     <p className="text-gray-600 text-sm">
-                                        Informații complete despre protecția datelor
+                                        Complete information about data protection
                                     </p>
                                 </Link>
                             </div>

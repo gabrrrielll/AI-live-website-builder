@@ -74,7 +74,7 @@ const GDPRBanner: React.FC = () => {
                             </h3>
                         </div>
                         <p className="text-gray-600 text-sm mb-4">
-                            Folosim cookie-uri pentru a îmbunătăți experiența ta pe site, pentru analiză și personalizare. 
+                            Folosim cookie-uri pentru a îmbunătăți experiența ta pe site, pentru analiză și personalizare.
                             Cookie-urile necesare sunt întotdeauna active, dar poți alege pentru celelalte.
                         </p>
                         <div className="flex items-center text-xs text-gray-500">
@@ -91,7 +91,7 @@ const GDPRBanner: React.FC = () => {
                             </span>
                         </div>
                     </div>
-                    
+
                     <div className="flex flex-col sm:flex-row gap-2 ml-4">
                         <button
                             onClick={handleRejectAll}
@@ -113,7 +113,7 @@ const GDPRBanner: React.FC = () => {
                             Acceptă toate
                         </button>
                     </div>
-                    
+
                     <button
                         onClick={() => setIsVisible(false)}
                         className="ml-2 p-1 text-gray-400 hover:text-gray-600 transition-colors"

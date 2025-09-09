@@ -27,7 +27,7 @@ export function SiteModeProvider({ children }: { children: React.ReactNode }) {
 
         // Verifică dacă site-ul poate fi editat
         const editable = isSiteEditable();
-        
+
         if (!editable) {
             // Dacă site-ul nu este editabil, forțează modul view
             setMode('view');
@@ -51,7 +51,7 @@ export function SiteModeProvider({ children }: { children: React.ReactNode }) {
         if (!isSiteEditable()) {
             return; // Nu permite trecerea în modul edit dacă site-ul nu este editabil
         }
-        
+
         setMode('edit');
         // Adaugă parametrul edit în URL
         const url = new URL(window.location.href);
