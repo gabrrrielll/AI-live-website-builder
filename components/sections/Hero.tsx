@@ -247,7 +247,7 @@ const GradientWavesHero: React.FC<{ sectionId: string }> = ({ sectionId }) => {
                             }}
                         />
                         <button className="bg-white text-gray-900 font-bold py-4 px-8 rounded-full text-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-xl">
-                            {section?.elements?.[`${sectionId}-cta-1`]?.content?.ro || 'Începe Acum'}
+                            {section?.elements?.[`${sectionId}-cta-1`]?.content?.ro?.replace(/<[^>]*>/g, '') || 'Începe Acum'}
                         </button>
                     </div>
                 )}
