@@ -45,6 +45,7 @@ interface SiteContextType {
     editingSectionId: string | null;
     editingSectionLayoutId: string | null;
     toggleSectionVisibility: (sectionId: string) => void;
+    toggleNavLinkVisibility: (sectionId: string) => void;
     startEditingSectionStyles: (sectionId: string) => void;
     stopEditingSectionStyles: () => void;
     startEditingSectionLayout: (sectionId: string) => void;
@@ -290,6 +291,15 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, [siteConfig, updateSiteConfig]);
 
+    const toggleNavLinkVisibility = useCallback((sectionId: string) => {
+        if (!siteConfig) return;
+        const newConfig = { ...siteConfig };
+        if (newConfig.sections[sectionId]) {
+            newConfig.sections[sectionId].navLinkVisible = !newConfig.sections[sectionId].navLinkVisible;
+            updateSiteConfig(newConfig);
+        }
+    }, [siteConfig, updateSiteConfig]);
+
     const startEditingSectionStyles = useCallback((sectionId: string) => {
         setEditingSectionId(sectionId);
     }, []);
@@ -428,6 +438,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         editingSectionId,
         editingSectionLayoutId,
         toggleSectionVisibility,
+        toggleNavLinkVisibility,
         startEditingSectionStyles,
         stopEditingSectionStyles,
         startEditingSectionLayout,
