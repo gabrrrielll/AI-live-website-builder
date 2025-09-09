@@ -5,7 +5,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Editable from '@/components/Editable';
 import { useSite } from '@/context/SiteContext';
 import { resolveBackgroundImage } from '@/utils/styleUtils';
-import RichTextEditor from '@/components/editors/RichTextEditor';
 
 interface HeroProps {
     sectionId: string;
@@ -118,7 +117,7 @@ export const Hero: React.FC<HeroProps> = ({ sectionId }) => {
 
 // Gradient Waves Hero Component - NEW APPROACH
 const GradientWavesHero: React.FC<{ sectionId: string }> = ({ sectionId }) => {
-    const { siteConfig, isEditMode, updateElement } = useSite();
+    const { siteConfig } = useSite();
     const section = siteConfig?.sections[sectionId];
 
     const gradientColors = section?.layout?.gradientColors || {
@@ -133,13 +132,6 @@ const GradientWavesHero: React.FC<{ sectionId: string }> = ({ sectionId }) => {
         intensity: 1.2,
         spacing: 0.1,
         diffusion: 50
-    };
-
-    const handleContentChange = (newContent: any) => {
-        updateElement(sectionId, 'hero-content', {
-            type: 'rich-text',
-            content: newContent
-        });
     };
 
     return (
@@ -235,19 +227,16 @@ const GradientWavesHero: React.FC<{ sectionId: string }> = ({ sectionId }) => {
             {/* Content Overlay */}
             <div className="absolute inset-0 flex items-center justify-center p-8">
                 {isEditMode ? (
-                    <RichTextEditor
-                        element={{
-                            type: 'rich-text',
-                            content: section?.elements?.['hero-content']?.content || { ro: '', en: '' }
-                        }}
-                        onChange={handleContentChange}
-                        hideSaveButton={true}
-                    />
+                    <div className="text-center max-w-4xl">
+                        <Editable sectionId={sectionId} elementId={`${sectionId}-title-1`} as="h1" className="text-5xl md:text-7xl font-extrabold leading-tight mb-6 bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent drop-shadow-lg" />
+                        <Editable sectionId={sectionId} elementId={`${sectionId}-subtitle-1`} as="div" className="text-xl md:text-2xl text-gray-100 mb-8 max-w-3xl mx-auto drop-shadow-md" />
+                        <Editable sectionId={sectionId} elementId={`${sectionId}-cta-1`} as="button" className="bg-white text-gray-900 font-bold py-4 px-8 rounded-full text-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-xl" />
+                    </div>
                 ) : (
                     <div
                         className="text-center max-w-4xl"
                         dangerouslySetInnerHTML={{
-                            __html: section?.elements?.['hero-content']?.content?.ro ||
+                            __html: section?.elements?.[`${sectionId}-title-1`]?.content?.ro ||
                                 '<h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6 bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent drop-shadow-lg">Financial infrastructure to grow your revenue</h1><p class="text-xl md:text-2xl text-gray-100 mb-8 max-w-3xl mx-auto drop-shadow-md">Join the millions of companies that use our platform to accept payments, embed financial services, and build a more profitable business.</p><button class="bg-white text-gray-900 font-bold py-4 px-8 rounded-full text-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-xl">Start now</button>'
                         }}
                     />
