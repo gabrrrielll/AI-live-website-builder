@@ -32,6 +32,8 @@ const PrivacyPolicyPage: React.FC = () => {
         .map(id => siteConfig.sections[id])
         .find(section => section?.component === 'Footer');
 
+    const footerStyles = resolveBackgroundImage(footerSection?.styles, getImageUrl);
+
     return (
         <App>
             <>
