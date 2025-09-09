@@ -11,7 +11,6 @@ import GDPRBanner from '@/components/GDPRBanner';
 import AppSkeleton from '@/components/skeletons/AppSkeleton';
 import SectionControls from '@/components/SectionControls';
 import SectionStyleEditorModal from '@/components/SectionStyleEditorModal';
-import PageModal from '@/components/PageModal';
 import AIRebuildModal from '@/components/AIRebuildModal';
 import CardLayoutModal from '@/components/CardLayoutModal';
 import SlideStyleEditorModal from '@/components/SlideStyleEditorModal';
@@ -139,7 +138,6 @@ interface AppProps {
 }
 
 const App: React.FC<AppProps> = ({ children }) => {
-    const { openPage } = useSite();
     const { isEditMode } = useSiteMode();
 
     useEffect(() => {
@@ -157,14 +155,6 @@ const App: React.FC<AppProps> = ({ children }) => {
                     return;
                 }
 
-                // Handle custom 'page:' protocol for opening modals
-                if (href.startsWith('page:')) {
-                    e.preventDefault();
-                    const pageId = href.replace('page:', '');
-                    if (pageId) {
-                        openPage(pageId);
-                    }
-                }
                 // Handle in-page anchor links
                 else if (href.startsWith('#') && href.length > 1) {
                     e.preventDefault();
@@ -184,7 +174,7 @@ const App: React.FC<AppProps> = ({ children }) => {
         return () => {
             document.removeEventListener('click', handleClick);
         };
-    }, [openPage]);
+    }, []);
 
     return (
         <>
@@ -199,7 +189,6 @@ const App: React.FC<AppProps> = ({ children }) => {
                     <SectionStyleEditorModal />
                     <CardLayoutModal />
                     <SlideStyleEditorModal />
-                    <PageModal />
                     <AIRebuildModal />
                 </>
             )}

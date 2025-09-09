@@ -25,10 +25,6 @@ interface SiteContextType {
     getArticleBySlug: (slug: string) => Article | undefined;
     getImageUrl: (id: string) => string | undefined;
     storeImage: (dataUrl: string) => Promise<string>;
-    // Funcții pentru pagini (pentru compatibilitate)
-    viewingPageId: string | null;
-    openPage: (pageId: string) => void;
-    closePage: () => void;
     // Funcții pentru editor (pentru compatibilitate)
     showHiddenInEditor: boolean;
     toggleShowHiddenInEditor: () => void;
@@ -68,7 +64,6 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { isEditMode, currentDomain } = useSiteMode();
 
     const [siteConfig, setSiteConfig] = useState<SiteConfig | null>(null);
-    const [viewingPageId, setViewingPageId] = useState<string | null>(null);
     const [showHiddenInEditor, setShowHiddenInEditor] = useState(true);
     const [isRebuildModalOpen, setIsRebuildModalOpen] = useState(false);
     const [editingElement, setEditingElement] = useState<{ sectionId: string; elementId: string; element: SiteElement } | null>(null);
@@ -240,15 +235,6 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         return id;
     }, [siteConfig, updateSiteConfig]);
-
-    // Funcții pentru pagini (pentru compatibilitate)
-    const openPage = useCallback((pageId: string) => {
-        setViewingPageId(pageId);
-    }, []);
-
-    const closePage = useCallback(() => {
-        setViewingPageId(null);
-    }, []);
 
     // Funcții pentru editor (pentru compatibilitate)
     const toggleShowHiddenInEditor = useCallback(() => {
@@ -423,9 +409,6 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         getArticleBySlug,
         getImageUrl,
         storeImage,
-        viewingPageId,
-        openPage,
-        closePage,
         showHiddenInEditor,
         toggleShowHiddenInEditor,
         isRebuildModalOpen,

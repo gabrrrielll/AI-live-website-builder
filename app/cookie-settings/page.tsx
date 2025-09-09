@@ -133,125 +133,125 @@ const CookieSettingsPage: React.FC = () => {
                                 </p>
                             </div>
 
-                    {/* Cookie Types */}
-                    <div className="space-y-6 mb-8">
-                        {cookieTypes.map((type) => {
-                            const IconComponent = type.icon;
-                            const isActive = preferences[type.key];
+                            {/* Cookie Types */}
+                            <div className="space-y-6 mb-8">
+                                {cookieTypes.map((type) => {
+                                    const IconComponent = type.icon;
+                                    const isActive = preferences[type.key];
 
-                            return (
-                                <div key={type.key} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex-1">
-                                            <div className="flex items-center mb-3">
-                                                <IconComponent className="w-6 h-6 text-blue-600 mr-3" />
-                                                <h3 className="text-xl font-semibold text-gray-900">
-                                                    {type.title}
-                                                </h3>
-                                            </div>
+                                    return (
+                                        <div key={type.key} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                                            <div className="flex items-start justify-between">
+                                                <div className="flex-1">
+                                                    <div className="flex items-center mb-3">
+                                                        <IconComponent className="w-6 h-6 text-blue-600 mr-3" />
+                                                        <h3 className="text-xl font-semibold text-gray-900">
+                                                            {type.title}
+                                                        </h3>
+                                                    </div>
 
-                                            <p className="text-gray-600 mb-4">
-                                                {type.description}
-                                            </p>
+                                                    <p className="text-gray-600 mb-4">
+                                                        {type.description}
+                                                    </p>
 
-                                            <div className="mb-4">
-                                                <h4 className="text-sm font-medium text-gray-700 mb-2">
-                                                    Exemple de cookie-uri:
-                                                </h4>
-                                                <ul className="text-sm text-gray-600 space-y-1">
-                                                    {type.examples.map((example, index) => (
-                                                        <li key={index} className="flex items-center">
-                                                            <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mr-2"></span>
-                                                            {example}
-                                                        </li>
-                                                    ))}
-                                                </ul>
+                                                    <div className="mb-4">
+                                                        <h4 className="text-sm font-medium text-gray-700 mb-2">
+                                                            Exemple de cookie-uri:
+                                                        </h4>
+                                                        <ul className="text-sm text-gray-600 space-y-1">
+                                                            {type.examples.map((example, index) => (
+                                                                <li key={index} className="flex items-center">
+                                                                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mr-2"></span>
+                                                                    {example}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+
+                                                <div className="ml-6">
+                                                    <label className="flex items-center">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={isActive}
+                                                            onChange={(e) => handlePreferenceChange(type.key, e.target.checked)}
+                                                            disabled={type.alwaysActive}
+                                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        />
+                                                        <span className="ml-2 text-sm font-medium text-gray-700">
+                                                            {type.alwaysActive ? 'Întotdeauna activ' : (isActive ? 'Activat' : 'Dezactivat')}
+                                                        </span>
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
+                                    );
+                                })}
+                            </div>
 
-                                        <div className="ml-6">
-                                            <label className="flex items-center">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={isActive}
-                                                    onChange={(e) => handlePreferenceChange(type.key, e.target.checked)}
-                                                    disabled={type.alwaysActive}
-                                                    className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                                                />
-                                                <span className="ml-2 text-sm font-medium text-gray-700">
-                                                    {type.alwaysActive ? 'Întotdeauna activ' : (isActive ? 'Activat' : 'Dezactivat')}
-                                                </span>
-                                            </label>
-                                        </div>
+                            {/* Actions */}
+                            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                                <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
+                                    <div className="text-sm text-gray-600">
+                                        <p>
+                                            Modificările vor fi aplicate imediat. Poți reveni la aceste setări oricând.
+                                        </p>
+                                    </div>
+
+                                    <div className="flex gap-3">
+                                        <button
+                                            onClick={() => {
+                                                const onlyNecessary: CookiePreferences = {
+                                                    necessary: true,
+                                                    analytics: false,
+                                                    marketing: false,
+                                                    functional: false
+                                                };
+                                                setPreferences(onlyNecessary);
+                                            }}
+                                            className="px-6 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                                        >
+                                            Respinge toate
+                                        </button>
+
+                                        <button
+                                            onClick={() => {
+                                                const allAccepted: CookiePreferences = {
+                                                    necessary: true,
+                                                    analytics: true,
+                                                    marketing: true,
+                                                    functional: true
+                                                };
+                                                setPreferences(allAccepted);
+                                            }}
+                                            className="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors"
+                                        >
+                                            Acceptă toate
+                                        </button>
+
+                                        <button
+                                            onClick={handleSavePreferences}
+                                            className="px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                                        >
+                                            Salvează preferințele
+                                        </button>
                                     </div>
                                 </div>
-                            );
-                        })}
-                    </div>
+                            </div>
 
-                    {/* Actions */}
-                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
-                            <div className="text-sm text-gray-600">
+                            {/* Additional Info */}
+                            <div className="mt-8 text-center text-sm text-gray-500">
                                 <p>
-                                    Modificările vor fi aplicate imediat. Poți reveni la aceste setări oricând.
+                                    Pentru mai multe informații, consultă{' '}
+                                    <Link href="/privacy-policy" className="text-blue-600 hover:underline">
+                                        Politica de Confidențialitate
+                                    </Link>
+                                    {' '}și{' '}
+                                    <Link href="/cookie-policy" className="text-blue-600 hover:underline">
+                                        Politica Cookie-urilor
+                                    </Link>
                                 </p>
                             </div>
-
-                            <div className="flex gap-3">
-                                <button
-                                    onClick={() => {
-                                        const onlyNecessary: CookiePreferences = {
-                                            necessary: true,
-                                            analytics: false,
-                                            marketing: false,
-                                            functional: false
-                                        };
-                                        setPreferences(onlyNecessary);
-                                    }}
-                                    className="px-6 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-                                >
-                                    Respinge toate
-                                </button>
-
-                                <button
-                                    onClick={() => {
-                                        const allAccepted: CookiePreferences = {
-                                            necessary: true,
-                                            analytics: true,
-                                            marketing: true,
-                                            functional: true
-                                        };
-                                        setPreferences(allAccepted);
-                                    }}
-                                    className="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors"
-                                >
-                                    Acceptă toate
-                                </button>
-
-                                <button
-                                    onClick={handleSavePreferences}
-                                    className="px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
-                                >
-                                    Salvează preferințele
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Additional Info */}
-                    <div className="mt-8 text-center text-sm text-gray-500">
-                        <p>
-                            Pentru mai multe informații, consultă{' '}
-                            <Link href="/privacy-policy" className="text-blue-600 hover:underline">
-                                Politica de Confidențialitate
-                            </Link>
-                            {' '}și{' '}
-                            <Link href="/cookie-policy" className="text-blue-600 hover:underline">
-                                Politica Cookie-urilor
-                            </Link>
-                        </p>
-                    </div>
                         </div>
                     </div>
                 </main>
