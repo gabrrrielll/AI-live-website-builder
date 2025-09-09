@@ -946,9 +946,6 @@ const CardLayoutModal: React.FC = () => {
                     </div>
                 )}
             </div>
-            <div className="flex justify-end p-4 border-t bg-gray-50 rounded-b-lg">
-                <button onClick={handleApply} className="px-6 py-2.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-semibold">{t.applyChanges}</button>
-            </div>
         </>
     );
 
@@ -967,8 +964,19 @@ const CardLayoutModal: React.FC = () => {
                     </div>
                 ) : null}
 
-                <div className="overflow-y-auto">
+                <div className="overflow-y-auto pb-20">
                     {view === 'main' ? renderMainEditor() : renderSlideEditor()}
+                </div>
+
+                <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 p-4">
+                    <div className="flex justify-end">
+                        <button
+                            onClick={handleApply}
+                            className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition-colors font-medium"
+                        >
+                            {t.applyChanges}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
