@@ -301,26 +301,6 @@ const CookiePolicyPage: React.FC = () => {
                             </div>
                         </section>
 
-                        {/* Contact */}
-                        <section>
-                            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                                Contact
-                            </h2>
-
-                            <p className="text-gray-600 mb-4">
-                                Pentru întrebări despre cookie-uri sau pentru a-ți exercita drepturile GDPR,
-                                ne poți contacta la:
-                            </p>
-
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                                <p className="text-gray-700">
-                                    <strong>Email:</strong> privacy@example.com<br />
-                                    <strong>Telefon:</strong> +40 XXX XXX XXX<br />
-                                    <strong>Adresă:</strong> Strada Exemplu, Nr. 1, București, România
-                                </p>
-                            </div>
-                        </section>
-
                         {/* Link-uri utile */}
                         <section>
                             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
