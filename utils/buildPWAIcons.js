@@ -11,14 +11,12 @@ async function generatePWAIconsDuringBuild() {
         const icon512Path = path.join(publicPath, 'icon-512.png');
 
         if (!fs.existsSync(icon192Path)) {
-            console.log('⚠️  Icon-192.png not found. Please add a 192x192 icon.');
+            // Icon-192.png not found
         }
 
         if (!fs.existsSync(icon512Path)) {
-            console.log('⚠️  Icon-512.png not found. Please add a 512x512 icon.');
+            // Icon-512.png not found
         }
-
-        console.log('✅ PWA icons check completed');
     } catch (error) {
         console.error('❌ Error checking PWA icons during build:', error);
     }

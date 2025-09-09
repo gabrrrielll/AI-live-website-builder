@@ -8,7 +8,6 @@ export async function updateSiteConfig(updatedConfig: SiteConfig): Promise<void>
     try {
         const configPath = path.join(process.cwd(), 'public', 'site-config.json');
         fs.writeFileSync(configPath, JSON.stringify(updatedConfig, null, 2));
-        console.log('Site configuration updated successfully');
     } catch (error) {
         console.error('Error updating site configuration:', error);
         throw new Error('Failed to update site configuration');
@@ -27,8 +26,6 @@ export async function addNewArticle(article: Article): Promise<void> {
 
         // Salvează configurația actualizată
         await updateSiteConfig(siteConfig);
-
-        console.log(`Article "${article.title.ro}" added successfully`);
     } catch (error) {
         console.error('Error adding new article:', error);
         throw new Error('Failed to add new article');
@@ -47,7 +44,6 @@ export async function updateArticle(slug: string, updatedArticle: Article): Prom
         if (articleIndex !== -1) {
             siteConfig.articles[articleIndex] = updatedArticle;
             await updateSiteConfig(siteConfig);
-            console.log(`Article "${updatedArticle.title.ro}" updated successfully`);
         } else {
             throw new Error('Article not found');
         }
@@ -68,7 +64,6 @@ export async function deleteArticle(slug: string): Promise<void> {
         siteConfig.articles = siteConfig.articles.filter(article => article.slug !== slug);
 
         await updateSiteConfig(siteConfig);
-        console.log(`Article with slug "${slug}" deleted successfully`);
     } catch (error) {
         console.error('Error deleting article:', error);
         throw new Error('Failed to delete article');
@@ -106,7 +101,6 @@ export async function generateSitemap(): Promise<void> {
 
         const sitemapPath = path.join(process.cwd(), 'public', 'sitemap.xml');
         fs.writeFileSync(sitemapPath, sitemap);
-        console.log('Sitemap generated successfully');
     } catch (error) {
         console.error('Error generating sitemap:', error);
         throw new Error('Failed to generate sitemap');

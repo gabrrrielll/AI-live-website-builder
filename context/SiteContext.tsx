@@ -84,34 +84,22 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Salvează configurația în localStorage când se trece în mod editare
     useEffect(() => {
-        console.log('🔍 SiteContext useEffect:', {
-            siteConfig: !!siteConfig,
-            isEditMode,
-            isLoading,
-            hasLocalConfig: localStorage.getItem('site-config') !== null
-        });
-
         // Așteptăm ca configurația să se încarce complet și să fim în mod editare
         if (siteConfig && isEditMode && !isLoading) {
             const hasLocalConfig = localStorage.getItem('site-config') !== null;
             if (!hasLocalConfig) {
-                console.log('💾 Salvez configurația în localStorage pentru mod editare...');
                 // Salvează configurația actuală în localStorage pentru a activa modul editare
                 const result = saveToLocalStorage(siteConfig);
-                console.log('✅ Configurația salvată:', result);
             }
         }
     }, [siteConfig, isEditMode, isLoading, saveToLocalStorage]);
 
     // Funcție pentru actualizarea configurației
     const updateSiteConfig = useCallback((newConfig: SiteConfig) => {
-        console.log('🔄 [updateSiteConfig] Updating config with images:', newConfig.images ? Object.keys(newConfig.images).length : 0);
         setSiteConfig(newConfig);
 
         // Salvează automat în localStorage ÎNTOTDEAUNA pentru persistență
         const result = saveToLocalStorage(newConfig);
-        console.log('💾 [updateSiteConfig] Save result:', result);
-        console.log('💾 Configurația salvată în localStorage');
     }, [saveToLocalStorage]);
 
     // Funcție pentru salvarea configurației pe server
@@ -246,9 +234,6 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Salvează imaginea ca base64 în configurație
         newConfig.images[id] = dataUrl;
 
-        console.log('🖼️ [storeImage] Saving image:', { id, dataUrlLength: dataUrl.length });
-        console.log('🖼️ [storeImage] New config images count:', Object.keys(newConfig.images).length);
-
         // Actualizează configurația (care se salvează automat în localStorage)
         updateSiteConfig(newConfig);
 
@@ -358,32 +343,25 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         // Actualizează ID-urile elementelor pentru a evita conflictele
         const newElements: { [key: string]: any } = {};
-        console.log('🔄 [duplicateSection] Cloning section:', sectionId, 'to:', newSectionId);
-        console.log('🔄 [duplicateSection] Original elements:', Object.keys(newSection.elements));
 
         Object.keys(newSection.elements).forEach(elementId => {
             // Pentru Hero, înlocuiește prefixul "hero-" cu noul ID al secțiunii
             let newElementId = elementId;
             if (sectionId === 'hero' && elementId.startsWith('hero-')) {
                 newElementId = elementId.replace('hero-', newSectionId + '-');
-                console.log('🔄 [duplicateSection] Hero element:', elementId, '->', newElementId);
             } else if (elementId.startsWith(sectionId + '-')) {
                 // Pentru alte secțiuni, înlocuiește prefixul exact al secțiunii
                 newElementId = elementId.replace(sectionId + '-', newSectionId + '-');
-                console.log('🔄 [duplicateSection] Other element:', elementId, '->', newElementId);
             }
             newElements[newElementId] = { ...newSection.elements[elementId] };
         });
 
-        console.log('🔄 [duplicateSection] New elements:', Object.keys(newElements));
         newSection.elements = newElements;
 
         // Pentru Hero, actualizează și ID-urile item-urilor pentru a se potrivi cu elementele
         if (sectionId === 'hero' && newSection.items) {
-            console.log('🔄 [duplicateSection] Updating Hero item IDs...');
             newSection.items = newSection.items.map((item: any) => {
                 const newItemId = `${newSectionId}-item-${item.id}`;
-                console.log('🔄 [duplicateSection] Hero item:', item.id, '->', newItemId);
                 return { ...item, id: newItemId };
             });
         }

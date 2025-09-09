@@ -148,5 +148,5 @@ const onUpdateComplete = (newSlug: string) => {
 - Implementează `useMemo` pentru configurația clonată
 
 ### 4. **Debugging Îmbunătățit**
-- Adaugă `console.log` pentru a urmări flow-ul
+- Adaugă logging pentru a urmări flow-ul
 - Implementează error boundaries pentru a captura erorile

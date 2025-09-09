@@ -29,13 +29,6 @@ export function SiteModeProvider({ children }: { children: React.ReactNode }) {
         const editMode = urlParams.get('edit') === 'true';
         const hasLocalConfig = localStorage.getItem('site-config') !== null;
 
-        console.log('🚀 SiteModeContext init:', {
-            domain,
-            editMode,
-            hasLocalConfig,
-            finalMode: editMode || hasLocalConfig ? 'edit' : 'view'
-        });
-
         if (editMode || hasLocalConfig) {
             setMode('edit');
         } else {
@@ -44,13 +37,11 @@ export function SiteModeProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     const switchToEditMode = () => {
-        console.log('🔄 Switching to edit mode...');
         setMode('edit');
         // Adaugă parametrul edit în URL
         const url = new URL(window.location.href);
         url.searchParams.set('edit', 'true');
         window.history.replaceState({}, '', url.toString());
-        console.log('✅ Edit mode activated, URL updated');
 
         // Dacă nu există configurație în localStorage, o vom avea disponibilă în următorul render
         // SiteContext va detecta că suntem în edit mode și va salva configurația automată
@@ -63,7 +54,6 @@ export function SiteModeProvider({ children }: { children: React.ReactNode }) {
         url.searchParams.delete('edit');
         window.history.replaceState({}, '', url.toString());
         // NU mai șterge configurația din localStorage - să rămână pentru performanță
-        console.log('🔄 Switched to view mode, keeping localStorage for performance');
     };
 
     const value: SiteModeContextType = {

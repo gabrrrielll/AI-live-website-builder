@@ -54,7 +54,6 @@ const SiteContent: React.FC = () => {
                 const elementId = editableElement.getAttribute('data-element-id');
 
                 if (sectionId && elementId) {
-                    console.log('🎯 Double-click detected:', { sectionId, elementId });
                     startEditing(sectionId, elementId);
                 }
             }

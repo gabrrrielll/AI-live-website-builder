@@ -100,18 +100,10 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
 
         if (articleToSave.slug !== initialArticle.slug) {
             setIsRedirecting(true);
-            console.log('🔄 Starting URL rename process:', {
-                oldSlug: initialArticle.slug,
-                newSlug: articleToSave.slug,
-                articleId: articleToSave.id
-            });
 
             const onUpdateComplete = (newSlug: string) => {
-                console.log('✅ updateArticle callback executed with slug:', newSlug);
-
                 // Navighează direct după un mic delay pentru a permite propagarea state-ului
                 setTimeout(() => {
-                    console.log('🚀 Proceeding with navigation to:', newSlug);
                     toast.success(t.articleSaved);
                     toast.info(t.urlChangedRedirect);
                     setIsRedirecting(false);
@@ -124,7 +116,6 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
             // Fallback timeout simplificat
             setTimeout(() => {
                 if (isRedirecting) {
-                    console.error('❌ Fallback timeout reached, showing error');
                     setIsRedirecting(false);
                     toast.error('Eroare la actualizarea URL-ului. Te rugăm să încerci din nou.');
                 }
@@ -269,13 +260,6 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
                 imageAlt: { ro: roData.imageKeywords?.toString() || '', en: enData.imageKeywords?.toString() || '' },
                 slug: slugify(roData.title)
             };
-
-            console.log('Generated article data:', {
-                roTitle: roData.title,
-                enTitle: enData.title,
-                roContent: roData.content?.substring(0, 100) + '...',
-                enContent: enData.content?.substring(0, 100) + '...'
-            });
 
             setArticle(updatedArticle);
             toast.success(t.completeArticleGenerated, { id: toastId });

@@ -78,9 +78,7 @@ const LogoEditor: React.FC<LogoEditorProps> = ({ element, onSave }) => {
 
   const handleCropSave = async (croppedImageUrl: string) => {
     try {
-      console.log('🖼️ [LogoEditor] Cropped image detected, storing...');
       const imageId = await storeImage(croppedImageUrl);
-      console.log('🖼️ [LogoEditor] Cropped image stored with ID:', imageId);
       setImageUrl(imageId);
       setImageToCrop(null);
       toast.success("Image cropped successfully!");
@@ -117,24 +115,12 @@ const LogoEditor: React.FC<LogoEditorProps> = ({ element, onSave }) => {
     const toastId = toast.loading("Generating logo with AI... This can take a moment.");
 
     try {
-      console.log('🖼️ [LogoEditor] Starting AI logo generation...');
-      console.log('🖼️ [LogoEditor] AI Prompt:', aiPrompt);
-
       const result = await generateImage(aiPrompt);
-
-      console.log('🖼️ [LogoEditor] Logo generation successful!');
-      console.log('🖼️ [LogoEditor] Result type:', typeof result);
-      console.log('🖼️ [LogoEditor] Result length:', result?.length || 0);
 
       setImageToCrop(result);
       setAlt({ ro: aiPrompt, en: aiPrompt });
       toast.success("AI logo generated! You can now crop it.", { id: toastId });
     } catch (error) {
-      console.error('❌ [LogoEditor] Logo generation failed:');
-      console.error('❌ [LogoEditor] Error:', error);
-      console.error('❌ [LogoEditor] Error type:', typeof error);
-      console.error('❌ [LogoEditor] Error message:', error instanceof Error ? error.message : 'Unknown error');
-
       const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
       toast.error("Failed to generate logo.", { id: toastId, description: errorMessage });
     } finally {

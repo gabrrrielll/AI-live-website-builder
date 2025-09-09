@@ -36,7 +36,6 @@ async function generateSitemapDuringBuild() {
 
         const sitemapPath = path.join(process.cwd(), 'public', 'sitemap.xml');
         fs.writeFileSync(sitemapPath, sitemap);
-        console.log('✅ Sitemap generated successfully during build');
     } catch (error) {
         console.error('❌ Error generating sitemap during build:', error);
     }

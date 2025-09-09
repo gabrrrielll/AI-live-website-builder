@@ -75,7 +75,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ element, onSave, onChan
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pb-20">
       <div className="flex justify-between items-center border-b mb-2">
         <div className="flex">
           <button onClick={() => setActiveLang('ro')} className={`px-4 py-2 text-sm font-medium ${activeLang === 'ro' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'}`}>{t.romanian}</button>
@@ -151,10 +151,15 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ element, onSave, onChan
       )}
 
       {!hideSaveButton && (
-        <div className="flex justify-end">
-          <button onClick={handleSave} className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-            {t.saveChanges}
-          </button>
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 p-4">
+          <div className="flex justify-end">
+            <button
+              onClick={handleSave}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              {t.saveChanges}
+            </button>
+          </div>
         </div>
       )}
     </div>

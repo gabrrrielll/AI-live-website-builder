@@ -17,14 +17,8 @@ export const generateTextWithRetry = async (
     maxRetries: number = 3,
     toastId?: string
 ): Promise<string> => {
-    console.log('📝 [AI Service] Starting text generation...');
-    console.log('📝 [AI Service] Prompt:', prompt.substring(0, 100) + '...');
-    console.log('📝 [AI Service] Domain type:', getDomainType());
-    console.log('📝 [AI Service] Can use service:', canUseService('ai_text_generation'));
-
     // Verifică dacă serviciul poate fi folosit
     if (!canUseService('ai_text_generation')) {
-        console.log('❌ [AI Service] Service usage limit reached');
         throw new Error('Service usage limit reached for text generation');
     }
 
@@ -67,7 +61,6 @@ export const generateTextWithRetry = async (
 
             // Incrementează contorul pentru serviciu
             useService('ai_text_generation');
-            console.log('✅ [AI Service] Text generation successful!');
 
             return responseText;
         } catch (error: any) {
@@ -76,7 +69,6 @@ export const generateTextWithRetry = async (
             // Dacă este o eroare de overload și nu am epuizat retry-urile, așteaptă și încearcă din nou
             if ((errorMessage.includes('overloaded') || errorMessage.includes('503') || errorMessage.includes('UNAVAILABLE')) && attempt < maxRetries) {
                 const waitTime = attempt * 2000; // 2s, 4s, 6s
-                console.log(`Gemini overloaded, retrying in ${waitTime}ms (attempt ${attempt}/${maxRetries})`);
 
                 await new Promise(resolve => setTimeout(resolve, waitTime));
                 continue;
@@ -92,43 +84,22 @@ export const generateTextWithRetry = async (
 
 // Generare imagine cu Craiyon (gratuit)
 export const generateImage = async (prompt: string): Promise<string> => {
-    console.log('🖼️ [AI Service] Starting image generation...');
-    console.log('🖼️ [AI Service] Prompt:', prompt);
-    console.log('🖼️ [AI Service] Domain type:', getDomainType());
-    console.log('🖼️ [AI Service] Can use service:', canUseService('ai_image_generation'));
-
     // Verifică dacă serviciul poate fi folosit
     if (!canUseService('ai_image_generation')) {
-        console.log('❌ [AI Service] Service usage limit reached');
         throw new Error('Service usage limit reached for image generation');
     }
 
     try {
-        console.log('🖼️ [AI Service] Importing image generation service...');
         const { generateImage: imageGenerateImage } = await import('./imageGenerationService');
-
-        console.log('🖼️ [AI Service] Calling image generation API...');
-        console.log('🖼️ [AI Service] This may take 30-60 seconds...');
 
         const result = await imageGenerateImage(prompt);
 
-        console.log('✅ [AI Service] Image generation successful!');
-        console.log('🖼️ [AI Service] Result type:', typeof result);
-        console.log('🖼️ [AI Service] Result length:', result?.length || 0);
-
         return result;
     } catch (error: any) {
-        console.error('❌ [AI Service] Image generation failed:');
-        console.error('❌ [AI Service] Error type:', typeof error);
-        console.error('❌ [AI Service] Error message:', error.message);
-        console.error('❌ [AI Service] Error toString:', error.toString());
-        console.error('❌ [AI Service] Full error object:', error);
-
         const errorMessage = error.message || "An unknown error occurred with the AI service.";
 
         // Verifică pentru mesaje specifice legate de siguranță
         if (error.toString().includes('SAFETY') || error.toString().includes('blocked')) {
-            console.log('❌ [AI Service] Safety error detected');
             throw new Error("The request was blocked due to safety settings. Please modify your prompt.");
         }
 

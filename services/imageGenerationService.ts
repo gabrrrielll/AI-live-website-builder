@@ -11,53 +11,32 @@ import {
 
 // Generare imagine cu Pollinations.ai (GRATUIT și client-side!)
 export const generateImage = async (prompt: string): Promise<string> => {
-    console.log('🖼️ [Pollinations] Starting image generation...');
-    console.log('🖼️ [Pollinations] Prompt:', prompt);
-    console.log('🖼️ [Pollinations] Domain type:', getDomainType());
-    console.log('🖼️ [Pollinations] Can use service:', canUseService('ai_image_generation'));
-
     // Verifică dacă serviciul poate fi folosit
     if (!canUseService('ai_image_generation')) {
-        console.log('❌ [Pollinations] Service usage limit reached');
         throw new Error('Service usage limit reached for image generation');
     }
 
     try {
-        console.log('🖼️ [Pollinations] Calling Pollinations.ai API...');
-
         // Pollinations.ai - serviciu gratuit, fără API key necesar!
         const encodedPrompt = encodeURIComponent(prompt);
         const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=576&seed=${Date.now()}`;
-
-        console.log('🖼️ [Pollinations] Image URL:', imageUrl);
-        console.log('🖼️ [Pollinations] Fetching image...');
 
         // Convertim URL-ul în base64
         const imageBase64 = await urlToBase64(imageUrl);
 
         // Incrementează contorul pentru serviciu
         useService('ai_image_generation');
-        console.log('✅ [Pollinations] Image generation successful!');
 
         return imageBase64;
 
     } catch (error: any) {
-        console.error('❌ [Pollinations] Image generation failed:');
-        console.error('❌ [Pollinations] Error type:', typeof error);
-        console.error('❌ [Pollinations] Error message:', error.message);
-        console.error('❌ [Pollinations] Error toString:', error.toString());
-        console.error('❌ [Pollinations] Full error object:', error);
-
         // Fallback la serviciu gratuit alternativ
-        console.log('🔄 [Pollinations] Falling back to free service...');
         return await generateWithFreeService(prompt);
     }
 };
 
 // Serviciu gratuit alternativ (Picsum Photos cu text overlay)
 async function generateWithFreeService(prompt: string): Promise<string> {
-    console.log('🖼️ [Free Service] Generating image with free service...');
-
     try {
         // Folosește Picsum Photos cu text overlay
         const canvas = document.createElement('canvas');
@@ -134,7 +113,6 @@ async function generateWithFreeService(prompt: string): Promise<string> {
 
                     // Incrementează contorul pentru serviciu
                     useService('ai_image_generation');
-                    console.log('✅ [Free Service] Image generation successful!');
 
                     resolve(canvas.toDataURL('image/jpeg', 0.9));
                 };
@@ -150,7 +128,6 @@ async function generateWithFreeService(prompt: string): Promise<string> {
         throw new Error('Canvas not supported');
 
     } catch (error: any) {
-        console.error('❌ [Free Service] Image generation failed:', error);
         throw new Error('Failed to generate image with free service');
     }
 }

@@ -107,24 +107,12 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
     const toastId = toast.loading("Generating image with AI... This can take a moment.");
 
     try {
-      console.log('🖼️ [ImageSelector] Starting AI image generation...');
-      console.log('🖼️ [ImageSelector] AI Prompt:', aiPrompt);
-
       const result = await generateImage(aiPrompt);
-
-      console.log('🖼️ [ImageSelector] Image generation successful!');
-      console.log('🖼️ [ImageSelector] Result type:', typeof result);
-      console.log('🖼️ [ImageSelector] Result length:', result?.length || 0);
 
       onImageReadyToCrop(result);
       onAltTextSuggestion(aiPrompt);
       toast.success("AI image generated!", { id: toastId });
     } catch (error) {
-      console.error('❌ [ImageSelector] Image generation failed:');
-      console.error('❌ [ImageSelector] Error:', error);
-      console.error('❌ [ImageSelector] Error type:', typeof error);
-      console.error('❌ [ImageSelector] Error message:', error instanceof Error ? error.message : 'Unknown error');
-
       const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
       toast.error("Failed to generate image.", { id: toastId, description: errorMessage });
     } finally {

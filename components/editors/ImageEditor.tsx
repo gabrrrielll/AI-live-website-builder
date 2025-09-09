@@ -26,15 +26,22 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ element, onSave, onChange, hi
   const t = useMemo(() => translations[language].editors, [language]);
 
   // Handle URL changes from ImageSelector
-  const handleUrlChange = useCallback((newUrl: string) => {
+  const handleUrlChange = useCallback(async (newUrl: string) => {
     // If it's a new base64 image, we need to store it
     if (newUrl.startsWith('data:image')) {
-      setContent(newUrl);
+      try {
+        const imageId = await storeImage(newUrl);
+        setContent(imageId);
+      } catch (error) {
+        console.error('🖼️ [ImageEditor] Failed to store image:', error);
+        toast.error('Failed to save image');
+        return;
+      }
     } else {
       // It's a regular URL or existing local ID
       setContent(newUrl);
     }
-  }, []);
+  }, [storeImage]);
 
   // Get the display URL (base64 for local images, original URL for others)
   const displayUrl = useMemo(() => {
@@ -75,12 +82,18 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ element, onSave, onChange, hi
     toast.success(t.imageUpdated);
   };
 
-  const handleCropSave = (croppedImageUrl: string) => {
-    setContent(croppedImageUrl);
-    setImageToCrop(null);
-    toast.success("Image cropped successfully!");
+  const handleCropSave = async (croppedImageUrl: string) => {
+    try {
+      const imageId = await storeImage(croppedImageUrl);
+      setContent(imageId);
+      setImageToCrop(null);
+      toast.success("Image cropped successfully!");
+    } catch (error) {
+      console.error('🖼️ [ImageEditor] Failed to store cropped image:', error);
+      toast.error('Failed to save cropped image');
+    }
   };
-  
+
   const handleAltSuggestion = (suggestedAlt: string) => {
     setAlt({ ro: suggestedAlt, en: suggestedAlt });
   };
@@ -88,26 +101,26 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ element, onSave, onChange, hi
   return (
     <>
       {imageToCrop && (
-        <ImageCropperModal 
+        <ImageCropperModal
           src={imageToCrop}
           onSave={handleCropSave}
           onClose={() => setImageToCrop(null)}
         />
       )}
-      <div className="space-y-6">
+      <div className="space-y-6 pb-20">
         <ImageSelector
           currentImageUrl={displayUrl}
           onImageUrlChange={handleUrlChange}
           onImageReadyToCrop={setImageToCrop}
           onAltTextSuggestion={handleAltSuggestion}
         />
-        
+
         <div className="border-t pt-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">{t.altText}</label>
-           <div className="flex border-b mb-2">
-                <button onClick={() => setActiveLang('ro')} className={`px-4 py-2 text-sm font-medium ${activeLang === 'ro' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'}`}>{t.romanian}</button>
-                <button onClick={() => setActiveLang('en')} className={`px-4 py-2 text-sm font-medium ${activeLang === 'en' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'}`}>{t.english}</button>
-            </div>
+          <div className="flex border-b mb-2">
+            <button onClick={() => setActiveLang('ro')} className={`px-4 py-2 text-sm font-medium ${activeLang === 'ro' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'}`}>{t.romanian}</button>
+            <button onClick={() => setActiveLang('en')} className={`px-4 py-2 text-sm font-medium ${activeLang === 'en' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'}`}>{t.english}</button>
+          </div>
           <input
             type="text"
             value={alt[activeLang]}
@@ -115,13 +128,18 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ element, onSave, onChange, hi
             className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
           />
         </div>
-        
+
         {!hideSaveButton && (
-            <div className="flex justify-end mt-4">
-            <button onClick={handleSave} className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 p-4">
+            <div className="flex justify-end">
+              <button
+                onClick={handleSave}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition-colors font-medium"
+              >
                 {t.saveChanges}
-            </button>
+              </button>
             </div>
+          </div>
         )}
       </div>
     </>

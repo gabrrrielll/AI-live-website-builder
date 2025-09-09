@@ -294,8 +294,6 @@ export const useSiteData = ({ setSiteConfig, updateHistory, t }: useSiteDataProp
     }, [setSiteConfig, updateHistory]);
 
     const updateArticle = useCallback((articleId: string, updatedArticle: Article, onComplete?: (newSlug: string) => void) => {
-        console.log('🔄 updateArticle called:', { articleId, slug: updatedArticle.slug });
-
         setSiteConfig(prevConfig => {
             if (!prevConfig || !prevConfig.articles) {
                 console.error('❌ No config or articles found');
@@ -309,18 +307,11 @@ export const useSiteData = ({ setSiteConfig, updateHistory, t }: useSiteDataProp
                 const finalArticle = { ...updatedArticle, updatedAt: new Date().toISOString() };
                 newConfig.articles[articleIndex] = finalArticle;
 
-                console.log('✅ Article updated in config:', {
-                    articleId,
-                    oldSlug: prevConfig.articles[articleIndex].slug,
-                    newSlug: finalArticle.slug
-                });
-
                 updateHistory(newConfig);
 
                 // Apelează callback-ul într-un setTimeout pentru a permite propagarea state-ului
                 if (onComplete) {
                     setTimeout(() => {
-                        console.log('📞 Calling onComplete callback with slug:', finalArticle.slug);
                         onComplete(finalArticle.slug);
                     }, 50);
                 }

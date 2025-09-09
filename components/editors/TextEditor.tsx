@@ -63,7 +63,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ element, onSave }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">{t.content}</label>
         <div className="flex border-b mb-2">
@@ -143,10 +143,15 @@ const TextEditor: React.FC<TextEditorProps> = ({ element, onSave }) => {
         </div>
       </div>
 
-      <div className="flex justify-end">
-        <button onClick={handleSave} className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-          {t.saveChanges}
-        </button>
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 p-4">
+        <div className="flex justify-end">
+          <button
+            onClick={handleSave}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition-colors font-medium"
+          >
+            {t.saveChanges}
+          </button>
+        </div>
       </div>
     </div>
   );

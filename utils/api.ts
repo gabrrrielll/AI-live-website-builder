@@ -6,12 +6,10 @@ import { EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, EMAILJS_PUBLIC_KEY } from '@/e
 
 // Mock API to simulate uploading the site configuration to a server.
 export const uploadConfig = (config: SiteConfig): Promise<{ success: boolean }> => {
-  console.log("Attempting to sync configuration:", config);
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       // Simulate a 70% success rate
       if (Math.random() > 0.3) {
-        console.log("Sync successful!");
         resolve({ success: true });
       } else {
         console.error("Sync failed!");

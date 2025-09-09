@@ -18,7 +18,6 @@ export function useSiteConfig() {
                 // 1. ÎNTOTDEAUNA verifică mai întâi localStorage
                 const localConfig = localStorage.getItem('site-config');
                 if (localConfig) {
-                    console.log('📁 Loading from localStorage (existing config)');
                     const parsed = JSON.parse(localConfig);
                     setSiteConfig(parsed);
                     setIsLoading(false);
@@ -26,7 +25,6 @@ export function useSiteConfig() {
                 }
 
                 // 2. DOAR dacă nu există în localStorage, încarcă din API o singură dată
-                console.log('🌐 No localStorage found, loading from API...');
                 const currentDomain = window.location.hostname;
                 const response = await fetch(`${SITE_CONFIG_API_URL}/${currentDomain}`, {
                     method: 'GET',
@@ -38,13 +36,11 @@ export function useSiteConfig() {
 
                 if (response.ok) {
                     const config = await response.json();
-                    console.log('✅ Loaded from API, saving to localStorage');
                     setSiteConfig(config);
                     // Salvează în localStorage pentru utilizările viitoare
                     localStorage.setItem('site-config', JSON.stringify(config));
                 } else {
                     // 3. Fallback la configurația default
-                    console.log('⚠️ API failed, loading default config');
                     const defaultResponse = await fetch('/site-config.json');
                     const defaultConfig = await defaultResponse.json();
                     setSiteConfig(defaultConfig);

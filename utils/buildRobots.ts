@@ -27,7 +27,6 @@ Allow: /assets/`;
 
         const robotsPath = path.join(process.cwd(), 'public', 'robots.txt');
         fs.writeFileSync(robotsPath, robotsTxt);
-        console.log('✅ Robots.txt generated successfully during build');
     } catch (error) {
         console.error('❌ Error generating robots.txt during build:', error);
     }
