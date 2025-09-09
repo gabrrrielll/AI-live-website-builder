@@ -7,6 +7,7 @@ import { isSiteEditable } from '@/services/plansService';
 import { ModeToggle } from '@/components/ModeToggle';
 import EditorModal from '@/components/EditorModal';
 import Toolbar from '@/components/Toolbar';
+import GDPRBanner from '@/components/GDPRBanner';
 import AppSkeleton from '@/components/skeletons/AppSkeleton';
 import SectionControls from '@/components/SectionControls';
 import SectionStyleEditorModal from '@/components/SectionStyleEditorModal';
@@ -191,6 +192,7 @@ const App: React.FC<AppProps> = ({ children }) => {
             {children || <SiteContent />}
             {isSiteEditable() && <ModeToggle />}
             {isSiteEditable() && <Toolbar />}
+            <GDPRBanner />
             {isEditMode && (
                 <>
                     <EditorModal />
