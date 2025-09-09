@@ -26,21 +26,21 @@ const SlideStyleEditorModal: React.FC = () => {
   if (!editingSlide || !siteConfig) return null;
 
   const section = siteConfig.sections[editingSlide.sectionId];
-  const slideItem = section?.items?.find((item: any) => item.id === editingSlide.itemId);
-  
+  const slideItem = section?.items?.find((item: any) => item.id === editingSlide.slideId);
+
   if (!slideItem) return null;
 
   const handleSave = (updatedStyles: React.CSSProperties) => {
-    updateSlideItemStyles(editingSlide.sectionId, editingSlide.itemId, updatedStyles);
+    updateSlideItemStyles(editingSlide.sectionId, editingSlide.slideId, updatedStyles);
     stopEditingSlideStyles();
   };
-  
-  const title = t.editSlideBackground.replace('{slideNumber}', editingSlide.itemId.toString());
+
+  const title = t.editSlideBackground.replace('{slideNumber}', editingSlide.slideId.toString());
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 pb-28" onClick={stopEditingSlideStyles}>
-      <div 
-        className="bg-white rounded-lg shadow-2xl w-full max-w-md sm:max-w-lg md:max-w-2xl transform transition-all flex flex-col max-h-full" 
+      <div
+        className="bg-white rounded-lg shadow-2xl w-full max-w-md sm:max-w-lg md:max-w-2xl transform transition-all flex flex-col max-h-full"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-4 border-b flex-shrink-0">

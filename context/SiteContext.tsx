@@ -105,10 +105,12 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Funcție pentru actualizarea configurației
     const updateSiteConfig = useCallback((newConfig: SiteConfig) => {
+        console.log('🔄 [updateSiteConfig] Updating config with images:', newConfig.images ? Object.keys(newConfig.images).length : 0);
         setSiteConfig(newConfig);
 
         // Salvează automat în localStorage ÎNTOTDEAUNA pentru persistență
-        saveToLocalStorage(newConfig);
+        const result = saveToLocalStorage(newConfig);
+        console.log('💾 [updateSiteConfig] Save result:', result);
         console.log('💾 Configurația salvată în localStorage');
     }, [saveToLocalStorage]);
 
@@ -232,21 +234,24 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const storeImage = useCallback(async (dataUrl: string): Promise<string> => {
         if (!siteConfig) throw new Error('Site config not loaded');
-        
+
         const id = `local-img-${Date.now()}`;
         const newConfig = { ...siteConfig };
-        
+
         // Inițializează obiectul images dacă nu există
         if (!newConfig.images) {
             newConfig.images = {};
         }
-        
+
         // Salvează imaginea ca base64 în configurație
         newConfig.images[id] = dataUrl;
-        
+
+        console.log('🖼️ [storeImage] Saving image:', { id, dataUrlLength: dataUrl.length });
+        console.log('🖼️ [storeImage] New config images count:', Object.keys(newConfig.images).length);
+
         // Actualizează configurația (care se salvează automat în localStorage)
         updateSiteConfig(newConfig);
-        
+
         return id;
     }, [siteConfig, updateSiteConfig]);
 
@@ -353,15 +358,35 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         // Actualizează ID-urile elementelor pentru a evita conflictele
         const newElements: { [key: string]: any } = {};
+        console.log('🔄 [duplicateSection] Cloning section:', sectionId, 'to:', newSectionId);
+        console.log('🔄 [duplicateSection] Original elements:', Object.keys(newSection.elements));
+
         Object.keys(newSection.elements).forEach(elementId => {
-            // Înlocuiește doar prefixul exact al secțiunii în ID-ul elementului
+            // Pentru Hero, înlocuiește prefixul "hero-" cu noul ID al secțiunii
             let newElementId = elementId;
-            if (elementId.startsWith(sectionId + '-')) {
+            if (sectionId === 'hero' && elementId.startsWith('hero-')) {
+                newElementId = elementId.replace('hero-', newSectionId + '-');
+                console.log('🔄 [duplicateSection] Hero element:', elementId, '->', newElementId);
+            } else if (elementId.startsWith(sectionId + '-')) {
+                // Pentru alte secțiuni, înlocuiește prefixul exact al secțiunii
                 newElementId = elementId.replace(sectionId + '-', newSectionId + '-');
+                console.log('🔄 [duplicateSection] Other element:', elementId, '->', newElementId);
             }
             newElements[newElementId] = { ...newSection.elements[elementId] };
         });
+
+        console.log('🔄 [duplicateSection] New elements:', Object.keys(newElements));
         newSection.elements = newElements;
+
+        // Pentru Hero, actualizează și ID-urile item-urilor pentru a se potrivi cu elementele
+        if (sectionId === 'hero' && newSection.items) {
+            console.log('🔄 [duplicateSection] Updating Hero item IDs...');
+            newSection.items = newSection.items.map((item: any) => {
+                const newItemId = `${newSectionId}-item-${item.id}`;
+                console.log('🔄 [duplicateSection] Hero item:', item.id, '->', newItemId);
+                return { ...item, id: newItemId };
+            });
+        }
 
         const newConfig = { ...siteConfig };
         newConfig.sections[newSectionId] = newSection;

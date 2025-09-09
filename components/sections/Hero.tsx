@@ -69,9 +69,9 @@ export const Hero: React.FC<HeroProps> = ({ sectionId }) => {
                         >
                             <div className="w-full h-full flex items-center justify-center">
                                 <div className="text-center text-white p-4 max-w-3xl">
-                                    <Editable sectionId={sectionId} elementId={`hero-title-${item.id}`} as="h1" className="text-5xl md:text-6xl font-extrabold leading-tight mb-4 text-shadow" />
-                                    <Editable sectionId={sectionId} elementId={`hero-subtitle-${item.id}`} as="div" className="text-lg md:text-xl text-gray-200 mb-8" />
-                                    <Editable sectionId={sectionId} as="button" elementId={`hero-cta-${item.id}`} className="bg-[#c29a47] hover:bg-[#b58b3c] text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105" />
+                                    <Editable sectionId={sectionId} elementId={`${sectionId}-title-${item.id.toString().split('-').pop()}`} as="h1" className="text-5xl md:text-6xl font-extrabold leading-tight mb-4 text-shadow" />
+                                    <Editable sectionId={sectionId} elementId={`${sectionId}-subtitle-${item.id.toString().split('-').pop()}`} as="div" className="text-lg md:text-xl text-gray-200 mb-8" />
+                                    <Editable sectionId={sectionId} as="button" elementId={`${sectionId}-cta-${item.id.toString().split('-').pop()}`} className="bg-[#c29a47] hover:bg-[#b58b3c] text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105" />
                                 </div>
                             </div>
                         </div>
