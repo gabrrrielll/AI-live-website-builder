@@ -190,6 +190,7 @@ const App: React.FC<AppProps> = ({ children }) => {
             {/* FIX: Render children if provided, otherwise render default SiteContent */}
             {children || <SiteContent />}
             <ModeToggle />
+            <Toolbar />
             {isEditMode && (
                 <>
                     <EditorModal />
@@ -198,7 +199,6 @@ const App: React.FC<AppProps> = ({ children }) => {
                     <SlideStyleEditorModal />
                     <PageModal />
                     <AIRebuildModal />
-                    <Toolbar />
                 </>
             )}
         </>

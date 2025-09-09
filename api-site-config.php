@@ -134,7 +134,7 @@ try {
                 exit();
             }
 
-            // Salvează configurația
+            // Salvează configurația cu imaginile ca base64 în JSON
             $configToSave = json_encode($inputData['config'], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
             if (file_put_contents($configFile, $configToSave) === false) {

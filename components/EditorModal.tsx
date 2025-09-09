@@ -38,10 +38,14 @@ const EditorModal: React.FC = () => {
     stopEditing();
   };
 
+  const handleChange = (updatedElement: any) => {
+    updateElement(sectionId, elementId, { ...element, ...updatedElement });
+  };
+
   const renderEditor = () => {
     switch (element.type) {
       case 'rich-text':
-        return <RichTextEditor element={element} onSave={handleSave} />;
+        return <RichTextEditor element={element} onSave={handleSave} onChange={handleChange} />;
       case 'image':
         return <ImageEditor element={element} onSave={handleSave} />;
       case 'map':
@@ -71,8 +75,8 @@ const EditorModal: React.FC = () => {
 
   return (
     <div id="editor-modal-backdrop" className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 pb-28" onClick={stopEditing}>
-      <div 
-        className="bg-white rounded-lg shadow-2xl w-full max-w-md sm:max-w-lg md:max-w-2xl transform transition-all flex flex-col max-h-full" 
+      <div
+        className="bg-white rounded-lg shadow-2xl w-full max-w-md sm:max-w-lg md:max-w-2xl transform transition-all flex flex-col max-h-full"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-4 border-b flex-shrink-0">

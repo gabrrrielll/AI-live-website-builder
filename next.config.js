@@ -5,6 +5,8 @@ const nextConfig = {
   images: {
     unoptimized: true
   },
+  // Dezactivează source maps pentru a elimina warning-ul SourceMapConsumer
+  productionBrowserSourceMaps: false,
   // Include environment variables în build pentru frontend
   env: {
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,

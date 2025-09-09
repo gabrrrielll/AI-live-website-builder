@@ -152,7 +152,14 @@ Now, analyze the user's prompt and the current JSON configuration, and generate 
                         if (element) (element as ImageElement).content = `https://picsum.photos/seed/${cmd.unsplash_query.replace(/\s+/g, '-')}/800/600`;
                     });
                 } else if (cmd.command === 'generate_image_element') {
+                    console.log('🖼️ [useAI] Starting AI image generation...');
+                    console.log('🖼️ [useAI] Generation prompt:', cmd.generation_prompt);
+                    console.log('🖼️ [useAI] Aspect ratio:', cmd.aspect_ratio);
+
                     promise = generateImage(cmd.generation_prompt, cmd.aspect_ratio).then(async base64Image => {
+                        console.log('🖼️ [useAI] Image generation successful!');
+                        console.log('🖼️ [useAI] Base64 length:', base64Image?.length || 0);
+
                         const { element } = findElement(newConfig, cmd.element_id);
                         if (element) {
                             const imageId = await storeImage(base64Image);
@@ -165,7 +172,11 @@ Now, analyze the user's prompt and the current JSON configuration, and generate 
                                 element.alt = { ro: cmd.alt_ro, en: cmd.alt_en };
                             }
                         }
-                    }).catch(err => console.error(`Image generation error for "${cmd.generation_prompt}":`, err));
+                    }).catch(err => {
+                        console.error('❌ [useAI] Image generation error:');
+                        console.error('❌ [useAI] Error:', err);
+                        console.error('❌ [useAI] Generation prompt:', cmd.generation_prompt);
+                    });
                 } else { // update_background_image
                     promise = searchUnsplashPhotos(cmd.unsplash_query).then(photos => {
                         if (photos.length > 0) {

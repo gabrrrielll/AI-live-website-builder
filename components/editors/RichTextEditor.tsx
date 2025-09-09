@@ -34,12 +34,14 @@ interface RichTextEditorProps {
 const modules = {
   toolbar: [
     [{ 'header': [1, 2, 3, false] }],
+    [{ 'font': ['Arial', 'Helvetica', 'Times New Roman', 'Georgia', 'Verdana', 'Courier New', 'serif', 'sans-serif', 'monospace'] }],
+    [{ 'size': ['8px', '10px', '12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px', '64px'] }],
     ['bold', 'italic', 'underline', 'strike', 'blockquote'],
     [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
     ['link', 'image'],
     [{ 'color': [] }, { 'background': [] }],
     ['clean']
-  ],
+  ]
 };
 
 const RichTextEditor: React.FC<RichTextEditorProps> = ({ element, onSave, onChange, hideSaveButton = false }) => {
@@ -86,12 +88,59 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ element, onSave, onChan
       </div>
 
       {editorView === 'visual' ? (
-        <ReactQuill
-          theme="snow"
-          value={content[activeLang]}
-          onChange={handleContentChange}
-          modules={modules}
-        />
+        <div className="rich-text-editor">
+          <style jsx global>{`
+              /* Stiluri pentru editor */
+              .rich-text-editor .ql-editor {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 14px;
+                line-height: 1.5;
+              }
+              
+              /* Stiluri pentru fonturi globale */
+              .ql-font-Arial { font-family: Arial, sans-serif !important; }
+              .ql-font-Helvetica { font-family: Helvetica, sans-serif !important; }
+              .ql-font-Times-New-Roman { font-family: "Times New Roman", serif !important; }
+              .ql-font-Georgia { font-family: Georgia, serif !important; }
+              .ql-font-Verdana { font-family: Verdana, sans-serif !important; }
+              .ql-font-Courier-New { font-family: "Courier New", monospace !important; }
+              .ql-font-serif { font-family: serif !important; }
+              .ql-font-sans-serif { font-family: sans-serif !important; }
+              .ql-font-monospace { font-family: monospace !important; }
+              
+              /* Stiluri pentru dimensiuni de font */
+              .ql-size-8px { font-size: 8px !important; }
+              .ql-size-10px { font-size: 10px !important; }
+              .ql-size-12px { font-size: 12px !important; }
+              .ql-size-14px { font-size: 14px !important; }
+              .ql-size-16px { font-size: 16px !important; }
+              .ql-size-18px { font-size: 18px !important; }
+              .ql-size-20px { font-size: 20px !important; }
+              .ql-size-24px { font-size: 24px !important; }
+              .ql-size-28px { font-size: 28px !important; }
+              .ql-size-32px { font-size: 32px !important; }
+              .ql-size-36px { font-size: 36px !important; }
+              .ql-size-48px { font-size: 48px !important; }
+              .ql-size-64px { font-size: 64px !important; }
+              
+              .rich-text-editor .ql-toolbar {
+                border-top: 1px solid #ccc;
+                border-left: 1px solid #ccc;
+                border-right: 1px solid #ccc;
+              }
+              .rich-text-editor .ql-container {
+                border-bottom: 1px solid #ccc;
+                border-left: 1px solid #ccc;
+                border-right: 1px solid #ccc;
+              }
+            `}</style>
+          <ReactQuill
+            theme="snow"
+            value={content[activeLang]}
+            onChange={handleContentChange}
+            modules={modules}
+          />
+        </div>
       ) : (
         <textarea
           value={content[activeLang]}

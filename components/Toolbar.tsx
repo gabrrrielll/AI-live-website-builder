@@ -1,21 +1,21 @@
 "use client";
 
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { useSite } from '@/context/SiteContext';
 import { useSiteMode } from '@/context/SiteModeContext';
-import { Eye, Edit, Undo2, Redo2, RefreshCw, HelpCircle, Download, Upload, Cloud, Loader, EyeOff, Bot } from 'lucide-react';
+import { Eye, Edit, Undo2, Redo2, RefreshCw, HelpCircle, Download, Upload, Cloud, Loader, Bot } from 'lucide-react';
 import HelpModal from './HelpModal';
 import { toast } from 'sonner';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import { useTestMode } from '@/context/TestModeContext';
+import { getAllImages } from '@/services/dbService';
 
 const Toolbar: React.FC = () => {
   const {
     siteConfig,
-    showHiddenInEditor,
-    toggleShowHiddenInEditor,
     openRebuildModal,
+    saveConfig,
   } = useSite();
   const { isEditMode, switchToEditMode, switchToViewMode } = useSiteMode();
   const { isTestMode, canUseRebuild, showLimitModal } = useTestMode();
@@ -52,9 +52,66 @@ const Toolbar: React.FC = () => {
   const redo = () => toast.info('Redo funcționalitate în dezvoltare');
   const canUndo = false;
   const canRedo = false;
-  const syncConfig = () => toast.info('Sync funcționalitate în dezvoltare');
+
+  // Funcție reală pentru salvare pe server
+  const syncConfig = async () => {
+    try {
+      await saveConfig();
+    } catch (error) {
+      console.error('Error saving to server:', error);
+    }
+  };
   const isSyncing = false;
-  const exportConfig = () => toast.info('Export funcționalitate în dezvoltare');
+
+  // Funcție reală pentru export configurație
+  const exportConfig = useCallback(async () => {
+    if (!siteConfig) {
+      toast.error("Nu există configurație disponibilă pentru export.");
+      return;
+    }
+    try {
+      const configToExport = JSON.parse(JSON.stringify(siteConfig));
+      const localImageIds = new Set<string>();
+
+      // Găsește toate ID-urile de imagini locale din configurație
+      const findIds = (obj: any) => {
+        for (const key in obj) {
+          if (typeof obj[key] === 'string' && obj[key].startsWith('local-img-')) {
+            localImageIds.add(obj[key]);
+          } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+            findIds(obj[key]);
+          }
+        }
+      };
+      findIds(configToExport);
+
+      if (localImageIds.size > 0) {
+        const allImages = await getAllImages();
+        const imagesForExport: { [id: string]: string } = {};
+        localImageIds.forEach(id => {
+          if (allImages.has(id)) {
+            imagesForExport[id] = allImages.get(id)!;
+          }
+        });
+        // Include imaginile ca proprietate temporară pentru export
+        (configToExport as any)._localImages = imagesForExport;
+      }
+
+      const jsonString = JSON.stringify(configToExport, null, 2);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'site-config.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success('Configurația a fost exportată cu succes!');
+    } catch (error) {
+      console.error("Failed to export config:", error);
+      toast.error("Export eșuat", { description: "Nu s-au putut procesa imaginile locale." });
+    }
+  }, [siteConfig]);
+
   const resetToDefaults = () => toast.info('Reset funcționalitate în dezvoltare');
 
   const isFreeUser = siteConfig?.metadata.userType === 'free';
@@ -64,14 +121,6 @@ const Toolbar: React.FC = () => {
       <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
         <div className="flex items-center space-x-2 bg-white/70 backdrop-blur-md p-2 rounded-full shadow-lg border border-gray-200">
           <button
-            onClick={canUseRebuild() ? openRebuildModal : showLimitModal}
-            className={`${buttonClass} ${enabledClass} bg-purple-100 text-purple-700 hover:bg-purple-200`}
-            title={t.toolbar.aiRebuild}
-          >
-            <Bot size={20} />
-          </button>
-
-          <button
             onClick={isEditMode ? switchToViewMode : switchToEditMode}
             className={`${buttonClass} ${isEditMode ? activeClass : enabledClass}`}
             title={isEditMode ? t.toolbar.previewMode : t.toolbar.editMode}
@@ -79,15 +128,13 @@ const Toolbar: React.FC = () => {
             {isEditMode ? <Eye size={20} /> : <Edit size={20} />}
           </button>
 
-          {isEditMode && (
-            <button
-              onClick={toggleShowHiddenInEditor}
-              className={`${buttonClass} ${enabledClass}`}
-              title={showHiddenInEditor ? t.toolbar.hideHiddenSections : t.toolbar.showHiddenSections}
-            >
-              {showHiddenInEditor ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          )}
+          <button
+            onClick={canUseRebuild() ? openRebuildModal : showLimitModal}
+            className={`${buttonClass} ${enabledClass} bg-purple-100 text-purple-700 hover:bg-purple-200`}
+            title={t.toolbar.aiRebuild}
+          >
+            <Bot size={20} />
+          </button>
 
           <div className="w-px h-6 bg-gray-300 mx-2"></div>
 
@@ -102,9 +149,9 @@ const Toolbar: React.FC = () => {
 
           <button
             onClick={syncConfig}
-            disabled={isSyncing || isFreeUser}
+            disabled={isSyncing}
             className={`${buttonClass} ${enabledClass}`}
-            title={isFreeUser ? t.toolbar.upgradeToSync : t.toolbar.syncToCloud}
+            title={t.toolbar.syncToCloud}
           >
             {isSyncing ? <Loader size={20} className="animate-spin" /> : <Cloud size={20} />}
           </button>
