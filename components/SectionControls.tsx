@@ -28,8 +28,8 @@ const SectionControls: React.FC<SectionControlsProps> = ({ sectionId }) => {
   const isHeaderFooter = ['Header', 'Footer'].includes(section.component);
   const hasLayouts = SECTIONS_WITH_LAYOUTS.includes(section.component);
   const hidePalette = section.component === 'Hero';
-  const canBeDuplicated = section.component === 'About';
-  const isDeletable = section.component === 'About' && section.id.startsWith('about-clone-');
+  const canBeDuplicated = section.component === 'About' || section.component === 'Hero';
+  const isDeletable = (section.component === 'About' && section.id.startsWith('about-clone-')) || (section.component === 'Hero' && section.id.startsWith('hero-clone-'));
   const isBlogSection = section.component === 'Blog';
   const isHeroSection = section.component === 'Hero';
 
