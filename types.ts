@@ -119,6 +119,9 @@ export interface SiteConfig {
     [id: string]: Page;
   };
   articles?: Article[];
+  images?: {
+    [id: string]: string; // image ID -> base64 data URL
+  };
 }
 
 // Literal types for template names for AI prompt generation

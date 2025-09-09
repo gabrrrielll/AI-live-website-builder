@@ -67,7 +67,6 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { isEditMode, currentDomain } = useSiteMode();
 
     const [siteConfig, setSiteConfig] = useState<SiteConfig | null>(null);
-    const [imageCache, setImageCache] = useState<Map<string, string>>(new Map());
     const [viewingPageId, setViewingPageId] = useState<string | null>(null);
     const [showHiddenInEditor, setShowHiddenInEditor] = useState(true);
     const [isRebuildModalOpen, setIsRebuildModalOpen] = useState(false);
@@ -227,14 +226,29 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Funcții pentru gestionarea imaginilor
     const getImageUrl = useCallback((id: string) => {
-        return imageCache.get(id);
-    }, [imageCache]);
+        if (!siteConfig) return undefined;
+        return siteConfig.images?.[id];
+    }, [siteConfig]);
 
     const storeImage = useCallback(async (dataUrl: string): Promise<string> => {
+        if (!siteConfig) throw new Error('Site config not loaded');
+        
         const id = `local-img-${Date.now()}`;
-        setImageCache(prev => new Map(prev).set(id, dataUrl));
+        const newConfig = { ...siteConfig };
+        
+        // Inițializează obiectul images dacă nu există
+        if (!newConfig.images) {
+            newConfig.images = {};
+        }
+        
+        // Salvează imaginea ca base64 în configurație
+        newConfig.images[id] = dataUrl;
+        
+        // Actualizează configurația (care se salvează automat în localStorage)
+        updateSiteConfig(newConfig);
+        
         return id;
-    }, []);
+    }, [siteConfig, updateSiteConfig]);
 
     // Funcții pentru pagini (pentru compatibilitate)
     const openPage = useCallback((pageId: string) => {

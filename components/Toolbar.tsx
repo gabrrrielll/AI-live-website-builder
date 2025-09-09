@@ -9,7 +9,6 @@ import { toast } from 'sonner';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import { useTestMode } from '@/context/TestModeContext';
-import { getAllImages } from '@/services/dbService';
 
 const Toolbar: React.FC = () => {
   const {
@@ -70,34 +69,8 @@ const Toolbar: React.FC = () => {
       return;
     }
     try {
-      const configToExport = JSON.parse(JSON.stringify(siteConfig));
-      const localImageIds = new Set<string>();
-
-      // Găsește toate ID-urile de imagini locale din configurație
-      const findIds = (obj: any) => {
-        for (const key in obj) {
-          if (typeof obj[key] === 'string' && obj[key].startsWith('local-img-')) {
-            localImageIds.add(obj[key]);
-          } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-            findIds(obj[key]);
-          }
-        }
-      };
-      findIds(configToExport);
-
-      if (localImageIds.size > 0) {
-        const allImages = await getAllImages();
-        const imagesForExport: { [id: string]: string } = {};
-        localImageIds.forEach(id => {
-          if (allImages.has(id)) {
-            imagesForExport[id] = allImages.get(id)!;
-          }
-        });
-        // Include imaginile ca proprietate temporară pentru export
-        (configToExport as any)._localImages = imagesForExport;
-      }
-
-      const jsonString = JSON.stringify(configToExport, null, 2);
+      // Configurația conține deja imaginile ca base64 în siteConfig.images
+      const jsonString = JSON.stringify(siteConfig, null, 2);
       const blob = new Blob([jsonString], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -108,7 +81,7 @@ const Toolbar: React.FC = () => {
       toast.success('Configurația a fost exportată cu succes!');
     } catch (error) {
       console.error("Failed to export config:", error);
-      toast.error("Export eșuat", { description: "Nu s-au putut procesa imaginile locale." });
+      toast.error("Export eșuat", { description: "Nu s-a putut genera fișierul." });
     }
   }, [siteConfig]);
 
