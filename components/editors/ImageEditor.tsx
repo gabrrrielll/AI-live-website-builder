@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import type { ImageElement, Language, LocalizedString } from '@/types';
 import { toast } from 'sonner';
 import ImageCropperModal from './ImageCropperModal';
@@ -17,13 +17,32 @@ interface ImageEditorProps {
 }
 
 const ImageEditor: React.FC<ImageEditorProps> = ({ element, onSave, onChange, hideSaveButton = false }) => {
-  const { storeImage } = useSite();
+  const { storeImage, getImageUrl } = useSite();
   const [content, setContent] = useState(element.content);
   const [alt, setAlt] = useState<LocalizedString>(element.alt);
   const [activeLang, setActiveLang] = useState<Language>('ro');
   const [imageToCrop, setImageToCrop] = useState<string | null>(null);
   const { language } = useLanguage();
   const t = useMemo(() => translations[language].editors, [language]);
+
+  // Handle URL changes from ImageSelector
+  const handleUrlChange = useCallback((newUrl: string) => {
+    // If it's a new base64 image, we need to store it
+    if (newUrl.startsWith('data:image')) {
+      setContent(newUrl);
+    } else {
+      // It's a regular URL or existing local ID
+      setContent(newUrl);
+    }
+  }, []);
+
+  // Get the display URL (base64 for local images, original URL for others)
+  const displayUrl = useMemo(() => {
+    if (content.startsWith('local-img-')) {
+      return getImageUrl(content) || content;
+    }
+    return content;
+  }, [content, getImageUrl]);
 
   // Sync state if the element prop changes from outside
   useEffect(() => {
@@ -77,8 +96,8 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ element, onSave, onChange, hi
       )}
       <div className="space-y-6">
         <ImageSelector
-          currentImageUrl={content}
-          onImageUrlChange={setContent}
+          currentImageUrl={displayUrl}
+          onImageUrlChange={handleUrlChange}
           onImageReadyToCrop={setImageToCrop}
           onAltTextSuggestion={handleAltSuggestion}
         />
