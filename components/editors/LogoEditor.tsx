@@ -9,7 +9,8 @@ import ColorPicker from './ColorPicker';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import { useSite } from '@/context/SiteContext';
-import { generateImage, canUseImageGen, useImageGen } from '@/services/aiService';
+import { useTestMode } from '@/context/TestModeContext';
+import { generateImage, canUseImageGen } from '@/services/aiService';
 
 interface LogoEditorProps {
   element: LogoElement;
@@ -75,10 +76,18 @@ const LogoEditor: React.FC<LogoEditorProps> = ({ element, onSave }) => {
     }
   };
 
-  const handleCropSave = (croppedImageUrl: string) => {
-    setImageUrl(croppedImageUrl);
-    setImageToCrop(null);
-    toast.success("Image cropped successfully!");
+  const handleCropSave = async (croppedImageUrl: string) => {
+    try {
+      console.log('🖼️ [LogoEditor] Cropped image detected, storing...');
+      const imageId = await storeImage(croppedImageUrl);
+      console.log('🖼️ [LogoEditor] Cropped image stored with ID:', imageId);
+      setImageUrl(imageId);
+      setImageToCrop(null);
+      toast.success("Image cropped successfully!");
+    } catch (error) {
+      console.error('🖼️ [LogoEditor] Failed to store cropped image:', error);
+      toast.error('Failed to save cropped image');
+    }
   };
 
   const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); }, []);
@@ -141,7 +150,7 @@ const LogoEditor: React.FC<LogoEditorProps> = ({ element, onSave }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20">
       <div className="flex justify-center space-x-2 border border-gray-200 rounded-lg p-1 bg-gray-100">
         {(['text', 'image'] as const).map(type => (
           <button
@@ -244,10 +253,15 @@ const LogoEditor: React.FC<LogoEditorProps> = ({ element, onSave }) => {
         </div>
       )}
 
-      <div className="flex justify-end mt-4">
-        <button onClick={handleSave} className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-          {t.saveChanges}
-        </button>
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 p-4">
+        <div className="flex justify-end">
+          <button
+            onClick={handleSave}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition-colors font-medium"
+          >
+            {t.saveChanges}
+          </button>
+        </div>
       </div>
       {imageToCrop && (
         <ImageCropperModal
