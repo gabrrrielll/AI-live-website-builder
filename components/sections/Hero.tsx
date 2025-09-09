@@ -117,7 +117,7 @@ export const Hero: React.FC<HeroProps> = ({ sectionId }) => {
 
 // Gradient Waves Hero Component - NEW APPROACH
 const GradientWavesHero: React.FC<{ sectionId: string }> = ({ sectionId }) => {
-    const { siteConfig } = useSite();
+    const { siteConfig, isEditMode } = useSite();
     const section = siteConfig?.sections[sectionId];
 
     const gradientColors = section?.layout?.gradientColors || {
