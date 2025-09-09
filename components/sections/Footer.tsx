@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Link from 'next/link';
 import Editable from '@/components/Editable';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 
@@ -41,7 +42,22 @@ export const Footer: React.FC<FooterProps> = ({ sectionId }) => (
                 </div>
             </div>
             <div className="border-t border-gray-700 pt-8 mt-8 flex flex-col sm:flex-row justify-between items-center text-center">
-                <Editable sectionId={sectionId} elementId="footer-copyright" as="p" className="text-gray-400 text-sm" />
+                <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6">
+                    <Editable sectionId={sectionId} elementId="footer-copyright" as="p" className="text-gray-400 text-sm" />
+                    <div className="flex flex-wrap justify-center sm:justify-start space-x-4 text-xs text-gray-500">
+                        <Link href="/privacy-policy" className="hover:text-white transition-colors">
+                            Politica de Confidențialitate
+                        </Link>
+                        <span className="text-gray-600">•</span>
+                        <Link href="/cookie-policy" className="hover:text-white transition-colors">
+                            Politica Cookie-urilor
+                        </Link>
+                        <span className="text-gray-600">•</span>
+                        <Link href="/cookie-settings" className="hover:text-white transition-colors">
+                            Setări Cookie-uri
+                        </Link>
+                    </div>
+                </div>
                 <div className="mt-4 sm:mt-0">
                     <LanguageSwitcher />
                 </div>
