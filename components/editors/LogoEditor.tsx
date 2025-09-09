@@ -12,6 +12,8 @@ import { useSite } from '@/context/SiteContext';
 import { useTestMode } from '@/context/TestModeContext';
 import { generateImage, canUseImageGen } from '@/services/aiService';
 
+type AspectRatio = '16:9' | '4:3' | '1:1' | '3:2' | '2:3';
+
 interface LogoEditorProps {
   element: LogoElement;
   onSave: (updatedElement: Partial<LogoElement>) => void;

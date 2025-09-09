@@ -37,7 +37,7 @@ export const generateTextWithRetry = async (
                 contents: finalPrompt,
             });
 
-            let responseText = response.text.trim();
+            let responseText = response.text?.trim() || '';
 
             // Clean up the response if it contains markdown formatting
             if (format === 'json') {
@@ -54,8 +54,9 @@ export const generateTextWithRetry = async (
                 // Try to parse to validate JSON
                 try {
                     JSON.parse(responseText);
-                } catch (parseError) {
-                    throw new Error(`Invalid JSON: ${parseError.message}`);
+                } catch (parseError: unknown) {
+                    const errorMessage = parseError instanceof Error ? parseError.message : 'Unknown parsing error';
+                    throw new Error(`Invalid JSON: ${errorMessage}`);
                 }
             }
 

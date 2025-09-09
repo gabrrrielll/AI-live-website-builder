@@ -124,7 +124,12 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         const newConfig = { ...siteConfig };
         if (!newConfig.sections[sectionId]) {
-            newConfig.sections[sectionId] = { elements: {} };
+            newConfig.sections[sectionId] = { 
+                id: sectionId,
+                component: 'Unknown',
+                visible: true,
+                elements: {} 
+            };
         }
         newConfig.sections[sectionId].elements[elementId] = newElement;
 
@@ -136,7 +141,13 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         const newConfig = { ...siteConfig };
         if (!newConfig.sections[sectionId]) {
-            newConfig.sections[sectionId] = { styles: {} };
+            newConfig.sections[sectionId] = { 
+                id: sectionId,
+                component: 'Unknown',
+                visible: true,
+                elements: {},
+                styles: {} 
+            };
         }
         newConfig.sections[sectionId].styles = newStyles;
 
@@ -148,7 +159,14 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         const newConfig = { ...siteConfig };
         if (!newConfig.sections[sectionId]) {
-            newConfig.sections[sectionId] = { layout: {}, cardStyles: {} };
+            newConfig.sections[sectionId] = { 
+                id: sectionId,
+                component: 'Unknown',
+                visible: true,
+                elements: {},
+                layout: {}, 
+                cardStyles: {} 
+            };
         }
         newConfig.sections[sectionId].layout = { ...newConfig.sections[sectionId].layout, ...layoutChanges };
         newConfig.sections[sectionId].cardStyles = cardStyles;
@@ -175,6 +193,9 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         };
 
         const newConfig = { ...siteConfig };
+        if (!newConfig.articles) {
+            newConfig.articles = [];
+        }
         newConfig.articles.push(newArticle);
         updateSiteConfig(newConfig);
 
@@ -185,6 +206,9 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (!siteConfig) return;
 
         const newConfig = { ...siteConfig };
+        if (!newConfig.articles) {
+            newConfig.articles = [];
+        }
         const articleIndex = newConfig.articles.findIndex(article => article.id === articleId);
         if (articleIndex !== -1) {
             newConfig.articles[articleIndex] = { ...updatedArticle, updatedAt: new Date().toISOString() };
@@ -201,12 +225,15 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (!siteConfig) return;
 
         const newConfig = { ...siteConfig };
+        if (!newConfig.articles) {
+            newConfig.articles = [];
+        }
         newConfig.articles = newConfig.articles.filter(article => article.id !== articleId);
         updateSiteConfig(newConfig);
     }, [siteConfig, updateSiteConfig]);
 
     const getArticleBySlug = useCallback((slug: string) => {
-        if (!siteConfig) return undefined;
+        if (!siteConfig || !siteConfig.articles) return undefined;
         return siteConfig.articles.find(article => article.slug === slug);
     }, [siteConfig]);
 

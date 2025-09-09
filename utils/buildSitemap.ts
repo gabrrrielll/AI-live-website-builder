@@ -26,13 +26,13 @@ export async function generateSitemapDuringBuild(): Promise<void> {
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
-    ${siteConfig.articles.map(article => `
+    ${siteConfig.articles?.map(article => `
     <url>
         <loc>${baseUrl}/blog/${article.slug}</loc>
         <lastmod>${article.updatedAt}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
-    </url>`).join('')}
+    </url>`).join('') || ''}
 </urlset>`;
 
         const sitemapPath = path.join(process.cwd(), 'public', 'sitemap.xml');
