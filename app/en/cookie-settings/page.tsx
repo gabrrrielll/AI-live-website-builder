@@ -3,6 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Cookie, Shield, BarChart3, Target, Settings } from 'lucide-react';
 import Link from 'next/link';
+import { useSite } from '@/context/SiteContext';
+import { Header } from '@/components/sections/Header';
+import { Footer } from '@/components/sections/Footer';
+import App from '@/App';
+import { resolveBackgroundImage } from '@/utils/styleUtils';
+import { ChevronRight, Home } from 'lucide-react';
 
 interface CookiePreferences {
     necessary: boolean;
@@ -12,6 +18,7 @@ interface CookiePreferences {
 }
 
 const CookieSettingsPage: React.FC = () => {
+    const { siteConfig, getImageUrl } = useSite();
     const [preferences, setPreferences] = useState<CookiePreferences>({
         necessary: true,
         analytics: false,
@@ -26,6 +33,27 @@ const CookieSettingsPage: React.FC = () => {
             setPreferences(savedPreferences);
         }
     }, []);
+
+    if (!siteConfig) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#c29a47]"></div>
+                    <p className="mt-4 text-gray-600">Loading page...</p>
+                </div>
+            </div>
+        );
+    }
+
+    const headerSection = siteConfig.sectionOrder
+        .map(id => siteConfig.sections[id])
+        .find(section => section?.component === 'Header');
+
+    const footerSection = siteConfig.sectionOrder
+        .map(id => siteConfig.sections[id])
+        .find(section => section?.component === 'Footer');
+
+    const footerStyles = resolveBackgroundImage(footerSection?.styles, getImageUrl);
 
     const handlePreferenceChange = (key: keyof CookiePreferences, value: boolean) => {
         if (key === 'necessary') return; // Necessary cookies cannot be disabled
@@ -71,30 +99,39 @@ const CookieSettingsPage: React.FC = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <div className="container mx-auto px-4 py-8">
-                <div className="max-w-4xl mx-auto">
-                    {/* Header */}
-                    <div className="mb-8">
-                        <Link
-                            href="/"
-                            className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4"
-                        >
-                            <ArrowLeft className="w-4 h-4 mr-2" />
-                            Back to site
-                        </Link>
-
-                        <div className="flex items-center mb-4">
-                            <Cookie className="w-8 h-8 text-blue-600 mr-3" />
-                            <h1 className="text-3xl font-bold text-gray-900">
+        <App>
+            <>
+                {headerSection && <Header sectionId={headerSection.id} />}
+                <main>
+                    {/* Breadcrumb */}
+                    <div className="container mx-auto px-6 py-4">
+                        <nav className="flex items-center space-x-2 text-sm text-gray-600">
+                            <Link href="/" className="flex items-center hover:text-[#c29a47] transition-colors">
+                                <Home size={16} className="mr-1" />
+                                Home
+                            </Link>
+                            <ChevronRight size={16} />
+                            <span className="text-gray-800 font-medium">
                                 Cookie Settings
-                            </h1>
-                        </div>
-
-                        <p className="text-gray-600 text-lg">
-                            Manage your cookie preferences. You can enable or disable different types of cookies.
-                        </p>
+                            </span>
+                        </nav>
                     </div>
+
+                    <div className="container mx-auto px-4 py-8">
+                        <div className="max-w-4xl mx-auto">
+                            {/* Header */}
+                            <div className="mb-8">
+                                <div className="flex items-center mb-4">
+                                    <Cookie className="w-8 h-8 text-blue-600 mr-3" />
+                                    <h1 className="text-3xl font-bold text-gray-900">
+                                        Cookie Settings
+                                    </h1>
+                                </div>
+
+                                <p className="text-gray-600 text-lg">
+                                    Manage your cookie preferences. You can enable or disable different types of cookies.
+                                </p>
+                            </div>
 
                     {/* Cookie Types */}
                     <div className="space-y-6 mb-8">
@@ -215,9 +252,16 @@ const CookieSettingsPage: React.FC = () => {
                             </Link>
                         </p>
                     </div>
-                </div>
-            </div>
-        </div>
+                        </div>
+                    </div>
+                </main>
+                {footerSection && (
+                    <div id={footerSection.id} style={footerStyles}>
+                        <Footer sectionId={footerSection.id} />
+                    </div>
+                )}
+            </>
+        </App>
     );
 };
 

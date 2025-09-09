@@ -1,3 +1,6 @@
 {
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/cookie-settings/page": "app/cookie-settings/page.js",
+  "/cookie-policy/page": "app/cookie-policy/page.js",
+  "/blog/[slug]/page": "app/blog/[slug]/page.js"
 }

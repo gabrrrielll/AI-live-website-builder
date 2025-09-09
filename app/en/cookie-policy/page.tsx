@@ -3,8 +3,36 @@
 import React from 'react';
 import { ArrowLeft, Cookie, Clock, Shield, BarChart3, Target, Settings } from 'lucide-react';
 import Link from 'next/link';
+import { useSite } from '@/context/SiteContext';
+import { Header } from '@/components/sections/Header';
+import { Footer } from '@/components/sections/Footer';
+import App from '@/App';
+import { resolveBackgroundImage } from '@/utils/styleUtils';
+import { ChevronRight, Home } from 'lucide-react';
 
 const CookiePolicyPage: React.FC = () => {
+    const { siteConfig, getImageUrl } = useSite();
+
+    if (!siteConfig) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#c29a47]"></div>
+                    <p className="mt-4 text-gray-600">Loading page...</p>
+                </div>
+            </div>
+        );
+    }
+
+    const headerSection = siteConfig.sectionOrder
+        .map(id => siteConfig.sections[id])
+        .find(section => section?.component === 'Header');
+
+    const footerSection = siteConfig.sectionOrder
+        .map(id => siteConfig.sections[id])
+        .find(section => section?.component === 'Footer');
+
+    const footerStyles = resolveBackgroundImage(footerSection?.styles, getImageUrl);
     const cookieTypes = [
         {
             type: 'Necessary',
@@ -67,33 +95,42 @@ const CookiePolicyPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <div className="container mx-auto px-4 py-8">
-                <div className="max-w-4xl mx-auto">
-                    {/* Header */}
-                    <div className="mb-8">
-                        <Link
-                            href="/"
-                            className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4"
-                        >
-                            <ArrowLeft className="w-4 h-4 mr-2" />
-                            Back to site
-                        </Link>
-
-                        <div className="flex items-center mb-4">
-                            <Cookie className="w-8 h-8 text-blue-600 mr-3" />
-                            <h1 className="text-3xl font-bold text-gray-900">
+        <App>
+            <>
+                {headerSection && <Header sectionId={headerSection.id} />}
+                <main>
+                    {/* Breadcrumb */}
+                    <div className="container mx-auto px-6 py-4">
+                        <nav className="flex items-center space-x-2 text-sm text-gray-600">
+                            <Link href="/" className="flex items-center hover:text-[#c29a47] transition-colors">
+                                <Home size={16} className="mr-1" />
+                                Home
+                            </Link>
+                            <ChevronRight size={16} />
+                            <span className="text-gray-800 font-medium">
                                 Cookie Policy
-                            </h1>
-                        </div>
-
-                        <p className="text-gray-600 text-lg">
-                            Last updated: {new Date().toLocaleDateString('en-US')}
-                        </p>
+                            </span>
+                        </nav>
                     </div>
 
-                    {/* Content */}
-                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 space-y-8">
+                    <div className="container mx-auto px-4 py-8">
+                        <div className="max-w-4xl mx-auto">
+                            {/* Header */}
+                            <div className="mb-8">
+                                <div className="flex items-center mb-4">
+                                    <Cookie className="w-8 h-8 text-blue-600 mr-3" />
+                                    <h1 className="text-3xl font-bold text-gray-900">
+                                        Cookie Policy
+                                    </h1>
+                                </div>
+
+                                <p className="text-gray-600 text-lg">
+                                    Last updated: {new Date().toLocaleDateString('en-US')}
+                                </p>
+                            </div>
+
+                            {/* Content */}
+                            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 space-y-8">
 
                         {/* Introduction */}
                         <section>
@@ -329,10 +366,17 @@ const CookiePolicyPage: React.FC = () => {
                                 </Link>
                             </div>
                         </section>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
+                </main>
+                {footerSection && (
+                    <div id={footerSection.id} style={footerStyles}>
+                        <Footer sectionId={footerSection.id} />
+                    </div>
+                )}
+            </>
+        </App>
     );
 };
 
