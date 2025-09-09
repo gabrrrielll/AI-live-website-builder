@@ -1,4 +1,5 @@
 {
+    "isEditable": true,
     "services": {
         "ai_image_generation": {
             "name": "AI Image Generation",

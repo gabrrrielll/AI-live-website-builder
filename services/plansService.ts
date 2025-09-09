@@ -22,6 +22,7 @@ export interface ServiceConfig {
 }
 
 export interface PlansConfig {
+    isEditable: boolean;
     services: Record<string, ServiceConfig>;
     domain_types: Record<string, { pattern: string; description: string }>;
     billing: Record<string, any>;
@@ -181,4 +182,9 @@ export const getUsageStats = (): Record<string, { used: number; left: number; li
     });
 
     return stats;
+};
+
+// Verifică dacă site-ul poate fi editat
+export const isSiteEditable = (): boolean => {
+    return plansConfig.isEditable;
 };

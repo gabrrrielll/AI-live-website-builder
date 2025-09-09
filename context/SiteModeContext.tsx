@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { isSiteEditable } from '@/services/plansService';
 
 type SiteMode = 'edit' | 'view';
 
@@ -24,6 +25,15 @@ export function SiteModeProvider({ children }: { children: React.ReactNode }) {
         const domain = window.location.hostname;
         setCurrentDomain(domain);
 
+        // Verifică dacă site-ul poate fi editat
+        const editable = isSiteEditable();
+        
+        if (!editable) {
+            // Dacă site-ul nu este editabil, forțează modul view
+            setMode('view');
+            return;
+        }
+
         // Detectează modul bazat pe URL sau localStorage
         const urlParams = new URLSearchParams(window.location.search);
         const editMode = urlParams.get('edit') === 'true';
@@ -37,6 +47,11 @@ export function SiteModeProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     const switchToEditMode = () => {
+        // Verifică dacă site-ul poate fi editat
+        if (!isSiteEditable()) {
+            return; // Nu permite trecerea în modul edit dacă site-ul nu este editabil
+        }
+        
         setMode('edit');
         // Adaugă parametrul edit în URL
         const url = new URL(window.location.href);

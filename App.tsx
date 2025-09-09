@@ -3,6 +3,7 @@
 import React, { useEffect, ReactNode } from 'react';
 import { useSite } from '@/context/SiteContext';
 import { useSiteMode } from '@/context/SiteModeContext';
+import { isSiteEditable } from '@/services/plansService';
 import { ModeToggle } from '@/components/ModeToggle';
 import EditorModal from '@/components/EditorModal';
 import Toolbar from '@/components/Toolbar';
@@ -188,8 +189,8 @@ const App: React.FC<AppProps> = ({ children }) => {
         <>
             {/* FIX: Render children if provided, otherwise render default SiteContent */}
             {children || <SiteContent />}
-            <ModeToggle />
-            <Toolbar />
+            {isSiteEditable() && <ModeToggle />}
+            {isSiteEditable() && <Toolbar />}
             {isEditMode && (
                 <>
                     <EditorModal />
