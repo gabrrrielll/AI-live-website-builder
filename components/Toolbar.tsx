@@ -15,6 +15,10 @@ const Toolbar: React.FC = () => {
     siteConfig,
     openRebuildModal,
     saveConfig,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
   } = useSite();
   const { isEditMode, switchToEditMode, switchToViewMode } = useSiteMode();
   const { isTestMode, canUseRebuild, showLimitModal } = useTestMode();
@@ -46,11 +50,6 @@ const Toolbar: React.FC = () => {
     }
   };
 
-  // Funcții stub pentru compatibilitate
-  const undo = () => toast.info('Undo funcționalitate în dezvoltare');
-  const redo = () => toast.info('Redo funcționalitate în dezvoltare');
-  const canUndo = false;
-  const canRedo = false;
 
   // Funcție reală pentru salvare pe server
   const syncConfig = async () => {

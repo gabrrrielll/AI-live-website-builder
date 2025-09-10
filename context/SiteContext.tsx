@@ -7,6 +7,7 @@ import type { SiteConfig, SiteElement, Section, Article } from '@/types';
 import { useSiteConfig, useSiteConfigSaver } from '@/hooks/useSiteConfig';
 import { useSiteMode } from './SiteModeContext';
 import { toast } from 'sonner';
+import { useHistory } from '@/hooks/useHistory';
 
 interface SiteContextType {
     siteConfig: SiteConfig | null;
@@ -54,6 +55,11 @@ interface SiteContextType {
     startEditingSlideStyles: (sectionId: string, slideId: number) => void;
     stopEditingSlideStyles: () => void;
     updateSlideItemStyles: (sectionId: string, slideId: number, newStyles: React.CSSProperties) => void;
+    // Funcții pentru istoric
+    undo: () => void;
+    redo: () => void;
+    canUndo: boolean;
+    canRedo: boolean;
 }
 
 const SiteContext = createContext<SiteContextType | undefined>(undefined);
@@ -62,6 +68,9 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { siteConfig: initialConfig, isLoading, error } = useSiteConfig();
     const { saveToLocalStorage, saveToServer } = useSiteConfigSaver();
     const { isEditMode, currentDomain } = useSiteMode();
+    
+    // Hook pentru gestionarea istoricului
+    const { undo: historyUndo, redo: historyRedo, canUndo, canRedo, initializeHistory, updateHistory } = useHistory();
 
     const [siteConfig, setSiteConfig] = useState<SiteConfig | null>(null);
     const [showHiddenInEditor, setShowHiddenInEditor] = useState(true);
@@ -75,8 +84,10 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     useEffect(() => {
         if (initialConfig) {
             setSiteConfig(initialConfig);
+            // Inițializează istoricul cu configurația inițială
+            initializeHistory(initialConfig);
         }
-    }, [initialConfig]);
+    }, [initialConfig, initializeHistory]);
 
     // Salvează configurația în localStorage când se trece în mod editare
     useEffect(() => {
@@ -91,12 +102,17 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [siteConfig, isEditMode, isLoading, saveToLocalStorage]);
 
     // Funcție pentru actualizarea configurației
-    const updateSiteConfig = useCallback((newConfig: SiteConfig) => {
+    const updateSiteConfig = useCallback((newConfig: SiteConfig, skipHistory = false) => {
         setSiteConfig(newConfig);
+
+        // Actualizează istoricul doar dacă nu este o operație de undo/redo
+        if (!skipHistory) {
+            updateHistory(newConfig);
+        }
 
         // Salvează automat în localStorage ÎNTOTDEAUNA pentru persistență
         const result = saveToLocalStorage(newConfig);
-    }, [saveToLocalStorage]);
+    }, [saveToLocalStorage, updateHistory]);
 
     // Funcție pentru salvarea configurației pe server
     const saveConfig = useCallback(async () => {
@@ -124,11 +140,11 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         const newConfig = { ...siteConfig };
         if (!newConfig.sections[sectionId]) {
-            newConfig.sections[sectionId] = { 
+            newConfig.sections[sectionId] = {
                 id: sectionId,
                 component: 'Unknown',
                 visible: true,
-                elements: {} 
+                elements: {}
             };
         }
         newConfig.sections[sectionId].elements[elementId] = newElement;
@@ -141,12 +157,12 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         const newConfig = { ...siteConfig };
         if (!newConfig.sections[sectionId]) {
-            newConfig.sections[sectionId] = { 
+            newConfig.sections[sectionId] = {
                 id: sectionId,
                 component: 'Unknown',
                 visible: true,
                 elements: {},
-                styles: {} 
+                styles: {}
             };
         }
         newConfig.sections[sectionId].styles = newStyles;
@@ -159,13 +175,13 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         const newConfig = { ...siteConfig };
         if (!newConfig.sections[sectionId]) {
-            newConfig.sections[sectionId] = { 
+            newConfig.sections[sectionId] = {
                 id: sectionId,
                 component: 'Unknown',
                 visible: true,
                 elements: {},
-                layout: {}, 
-                cardStyles: {} 
+                layout: {},
+                cardStyles: {}
             };
         }
         newConfig.sections[sectionId].layout = { ...newConfig.sections[sectionId].layout, ...layoutChanges };
@@ -419,6 +435,35 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, [siteConfig, updateSiteConfig]);
 
+    // Funcții pentru istoric
+    const undo = useCallback(() => {
+        const historyEntry = historyUndo();
+        if (historyEntry && siteConfig) {
+            const newConfig = {
+                ...siteConfig,
+                sections: historyEntry.sections,
+                sectionOrder: historyEntry.sectionOrder,
+                pages: historyEntry.pages,
+            };
+            updateSiteConfig(newConfig, true); // skipHistory = true pentru a evita loop-ul
+            toast.success('Modificare anulată');
+        }
+    }, [historyUndo, siteConfig, updateSiteConfig]);
+
+    const redo = useCallback(() => {
+        const historyEntry = historyRedo();
+        if (historyEntry && siteConfig) {
+            const newConfig = {
+                ...siteConfig,
+                sections: historyEntry.sections,
+                sectionOrder: historyEntry.sectionOrder,
+                pages: historyEntry.pages,
+            };
+            updateSiteConfig(newConfig, true); // skipHistory = true pentru a evita loop-ul
+            toast.success('Modificare refăcută');
+        }
+    }, [historyRedo, siteConfig, updateSiteConfig]);
+
     const value: SiteContextType = {
         siteConfig,
         isLoading,
@@ -459,7 +504,11 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         editingSlide,
         startEditingSlideStyles,
         stopEditingSlideStyles,
-        updateSlideItemStyles
+        updateSlideItemStyles,
+        undo,
+        redo,
+        canUndo,
+        canRedo
     };
 
     return (
