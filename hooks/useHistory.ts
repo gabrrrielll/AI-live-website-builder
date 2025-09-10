@@ -38,8 +38,8 @@ export const useHistory = () => {
         console.log('useHistory undo called, historyIndex:', historyIndex, 'history length:', history.length);
         if (historyIndex > 0) {
             const newIndex = historyIndex - 1;
-            setHistoryIndex(newIndex);
             console.log('useHistory undo: returning history entry at index', newIndex, ':', history[newIndex]);
+            setHistoryIndex(newIndex);
             return history[newIndex];
         }
         console.log('useHistory undo: no history available');
@@ -50,8 +50,8 @@ export const useHistory = () => {
         console.log('useHistory redo called, historyIndex:', historyIndex, 'history length:', history.length);
         if (historyIndex < history.length - 1) {
             const newIndex = historyIndex + 1;
-            setHistoryIndex(newIndex);
             console.log('useHistory redo: returning history entry at index', newIndex, ':', history[newIndex]);
+            setHistoryIndex(newIndex);
             return history[newIndex];
         }
         console.log('useHistory redo: no history available');
@@ -59,9 +59,12 @@ export const useHistory = () => {
     }, [history, historyIndex]);
     
     const initializeHistory = useCallback((config: SiteConfig) => {
+        console.log('initializeHistory called with config:', config);
         const entry = createHistoryEntry(config);
+        console.log('initializeHistory: created entry:', entry);
         setHistory([entry]);
         setHistoryIndex(0);
+        console.log('initializeHistory: initialized with index 0');
     }, []);
 
     const canUndo = historyIndex > 0;
