@@ -443,11 +443,12 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (historyEntry && siteConfig) {
             const newConfig = {
                 ...siteConfig,
-                sections: historyEntry.sections,
-                sectionOrder: historyEntry.sectionOrder,
-                pages: historyEntry.pages,
+                sections: { ...historyEntry.sections },
+                sectionOrder: [...historyEntry.sectionOrder],
+                pages: historyEntry.pages ? { ...historyEntry.pages } : undefined,
             };
             console.log('Undo: updating config with:', newConfig);
+            console.log('Undo: sections changed?', JSON.stringify(siteConfig.sections) !== JSON.stringify(newConfig.sections));
             updateSiteConfig(newConfig, true); // skipHistory = true pentru a evita loop-ul
             toast.success('Modificare anulată');
         }
@@ -459,11 +460,12 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (historyEntry && siteConfig) {
             const newConfig = {
                 ...siteConfig,
-                sections: historyEntry.sections,
-                sectionOrder: historyEntry.sectionOrder,
-                pages: historyEntry.pages,
+                sections: { ...historyEntry.sections },
+                sectionOrder: [...historyEntry.sectionOrder],
+                pages: historyEntry.pages ? { ...historyEntry.pages } : undefined,
             };
             console.log('Redo: updating config with:', newConfig);
+            console.log('Redo: sections changed?', JSON.stringify(siteConfig.sections) !== JSON.stringify(newConfig.sections));
             updateSiteConfig(newConfig, true); // skipHistory = true pentru a evita loop-ul
             toast.success('Modificare refăcută');
         }
