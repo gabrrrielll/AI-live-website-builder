@@ -7,6 +7,10 @@ import { Footer } from '@/components/sections/Footer';
 import { BlogListing } from '@/components/sections/BlogListing';
 import App from '@/App';
 import { resolveBackgroundImage } from '@/utils/styleUtils';
+import { useLanguage } from '@/context/LanguageContext';
+import { translations } from '@/utils/translations';
+import { ChevronRight, Home } from 'lucide-react';
+import Link from 'next/link';
 import type { SiteConfig } from '@/types';
 
 interface BlogListingClientProps {
@@ -15,6 +19,8 @@ interface BlogListingClientProps {
 
 export default function BlogListingClient({ siteConfig }: BlogListingClientProps) {
     const { getImageUrl } = useSite();
+    const { language } = useLanguage();
+    const t = translations[language].blogPage;
 
     const headerSection = siteConfig.sectionOrder
         .map(id => siteConfig.sections[id])
@@ -31,6 +37,21 @@ export default function BlogListingClient({ siteConfig }: BlogListingClientProps
             <>
                 {headerSection && <Header sectionId={headerSection.id} />}
                 <main>
+                    {/* Breadcrumb */}
+                    <div className="container mx-auto px-6 py-4">
+                        <nav className="flex items-center space-x-2 text-sm text-gray-600">
+                            <Link href="/" passHref legacyBehavior>
+                                <a className="flex items-center hover:text-[#c29a47] transition-colors">
+                                    <Home size={16} className="mr-1" />
+                                    {t.breadcrumbHome}
+                                </a>
+                            </Link>
+                            <ChevronRight size={16} />
+                            <span className="text-gray-800 font-medium">
+                                {t.breadcrumbBlog}
+                            </span>
+                        </nav>
+                    </div>
                     <BlogListing />
                 </main>
                 {footerSection && (
