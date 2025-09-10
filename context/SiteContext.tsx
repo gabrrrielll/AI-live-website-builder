@@ -68,7 +68,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { siteConfig: initialConfig, isLoading, error } = useSiteConfig();
     const { saveToLocalStorage, saveToServer } = useSiteConfigSaver();
     const { isEditMode, currentDomain } = useSiteMode();
-    
+
     // Hook pentru gestionarea istoricului
     const { undo: historyUndo, redo: historyRedo, canUndo, canRedo, initializeHistory, updateHistory } = useHistory();
 
@@ -103,6 +103,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Funcție pentru actualizarea configurației
     const updateSiteConfig = useCallback((newConfig: SiteConfig, skipHistory = false) => {
+        console.log('updateSiteConfig called with:', newConfig, 'skipHistory:', skipHistory);
         setSiteConfig(newConfig);
 
         // Actualizează istoricul doar dacă nu este o operație de undo/redo
@@ -438,6 +439,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Funcții pentru istoric
     const undo = useCallback(() => {
         const historyEntry = historyUndo();
+        console.log('Undo called, historyEntry:', historyEntry);
         if (historyEntry && siteConfig) {
             const newConfig = {
                 ...siteConfig,
@@ -445,6 +447,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 sectionOrder: historyEntry.sectionOrder,
                 pages: historyEntry.pages,
             };
+            console.log('Undo: updating config with:', newConfig);
             updateSiteConfig(newConfig, true); // skipHistory = true pentru a evita loop-ul
             toast.success('Modificare anulată');
         }
@@ -452,6 +455,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const redo = useCallback(() => {
         const historyEntry = historyRedo();
+        console.log('Redo called, historyEntry:', historyEntry);
         if (historyEntry && siteConfig) {
             const newConfig = {
                 ...siteConfig,
@@ -459,6 +463,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 sectionOrder: historyEntry.sectionOrder,
                 pages: historyEntry.pages,
             };
+            console.log('Redo: updating config with:', newConfig);
             updateSiteConfig(newConfig, true); // skipHistory = true pentru a evita loop-ul
             toast.success('Modificare refăcută');
         }
