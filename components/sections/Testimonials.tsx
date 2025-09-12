@@ -24,7 +24,7 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ sectionId }) => {
         3: 'md:grid-cols-3',
         4: 'md:grid-cols-2 lg:grid-cols-4',
     };
-    const gridCols = gridColsOptions[layout.itemCount] || 'md:grid-cols-3';
+    const gridCols = gridColsOptions[layout.itemCount || 3] || 'md:grid-cols-3';
 
 
     return (

@@ -7,6 +7,7 @@ import type { SiteConfig } from '@/types';
 import type { Translations } from '@/utils/translations';
 import { siteConfigSchema } from '@/utils/validation';
 import { sanitizeHTML } from '@/utils/sanitize';
+import { saveImage } from '@/services/dbService';
 
 interface useConfigManagerProps {
     siteConfig: SiteConfig | null;
@@ -69,7 +70,7 @@ export const useConfigManager = ({ siteConfig, initialConfig, setSiteConfig, ini
                 if ((newConfig as any)._localImages) {
                     const localImages = (newConfig as any)._localImages;
                     const imagePromises = Object.entries(localImages).map(([id, dataUrl]) => {
-                         return db.saveImage(id, dataUrl as string);
+                        return saveImage(id, dataUrl as string);
                     });
                     await Promise.all(imagePromises);
                     delete (newConfig as any)._localImages; // Clean up temp property
@@ -96,7 +97,7 @@ export const useConfigManager = ({ siteConfig, initialConfig, setSiteConfig, ini
                         }
                     }
                 }
-                
+
                 setSiteConfig(newConfig);
                 initializeHistory(newConfig);
                 toast.success(t.toolbar.configImported, {

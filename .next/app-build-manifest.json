@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/page": [
+    "/blog/[slug]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/chunks/app/blog/[slug]/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,30 +11,10 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/cookie-policy/page": [
+    "/blog/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/cookie-policy/page.js"
-    ],
-    "/cookie-settings/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/cookie-settings/page.js"
-    ],
-    "/privacy-policy/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/privacy-policy/page.js"
-    ],
-    "/en/cookie-policy/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/en/cookie-policy/page.js"
-    ],
-    "/en/privacy-policy/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/en/privacy-policy/page.js"
+      "static/chunks/app/blog/page.js"
     ]
   }
 }

@@ -5,6 +5,7 @@ import { useSite } from '@/context/SiteContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import Editable from '@/components/Editable';
+import { toast } from 'sonner';
 
 interface FAQItemProps {
     sectionId: string;
@@ -13,13 +14,13 @@ interface FAQItemProps {
 
 const FAQItem: React.FC<FAQItemProps> = ({ sectionId, itemId }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const { isEditMode, removeFaqItem } = useSite();
+    const { isEditMode } = useSite();
     const { language } = useLanguage();
     const t = useMemo(() => translations[language].sectionControls, [language]);
 
     const handleRemove = (e: React.MouseEvent) => {
-        e.stopPropagation(); 
-        removeFaqItem(sectionId, itemId);
+        e.stopPropagation();
+        toast.info('Funcționalitate în dezvoltare');
     };
 
     return (
@@ -32,12 +33,12 @@ const FAQItem: React.FC<FAQItemProps> = ({ sectionId, itemId }) => {
                 <Editable as="span" sectionId={sectionId} elementId="faq-chevron-icon" className={`transition-transform transform ${isOpen ? 'rotate-180' : ''}`} />
             </button>
             {isEditMode && (
-                <button 
+                <button
                     onClick={handleRemove}
                     className="absolute top-1/2 -translate-y-1/2 right-10 bg-red-100 text-red-600 px-2 py-1 text-xs rounded-md opacity-0 group-hover/item:opacity-100 transition-opacity"
                     title={t.removeItem}
                 >
-                   - {t.removeItem}
+                    - {t.removeItem}
                 </button>
             )}
             {isOpen && (
@@ -54,7 +55,7 @@ interface FAQProps {
 }
 
 export const FAQ: React.FC<FAQProps> = ({ sectionId }) => {
-    const { siteConfig, isEditMode, addFaqItem } = useSite();
+    const { siteConfig, isEditMode } = useSite();
     const faqSection = siteConfig?.sections[sectionId];
     const faqItems = faqSection?.items || [];
 
@@ -70,7 +71,7 @@ export const FAQ: React.FC<FAQProps> = ({ sectionId }) => {
                 {isEditMode && (
                     <div className="mt-8 text-center">
                         <button
-                            onClick={() => addFaqItem(sectionId)}
+                            onClick={() => toast.info('Funcționalitate în dezvoltare')}
                             className="bg-[#c29a47] hover:bg-[#b58b3c] text-white font-semibold py-2 px-6 rounded-md transition-colors"
                         >
                             Adaugă +

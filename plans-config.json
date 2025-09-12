@@ -1,5 +1,6 @@
 {
     "isEditable": true,
+    "show_import_export_config": false,
     "services": {
         "ai_image_generation": {
             "name": "AI Image Generation",

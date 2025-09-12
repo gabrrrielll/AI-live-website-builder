@@ -9,9 +9,12 @@ export function useSiteConfig() {
     const [siteConfig, setSiteConfig] = useState<SiteConfig | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [retryCount, setRetryCount] = useState(0);
 
     useEffect(() => {
         const loadSiteConfig = async () => {
+            let lastError: Error | null = null;
+
             try {
                 setIsLoading(true);
 
@@ -24,22 +27,50 @@ export function useSiteConfig() {
                     return;
                 }
 
-                // 2. DOAR dacă nu există în localStorage, încarcă din API o singură dată
+                // 2. DOAR dacă nu există în localStorage, încarcă din API cu retry
                 const currentDomain = window.location.hostname;
-                const response = await fetch(`${SITE_CONFIG_API_URL}/${currentDomain}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Origin': window.location.origin
-                    }
-                });
+                let config = null;
 
-                if (response.ok) {
-                    const config = await response.json();
+                // Retry logic cu maxim 4 încercări
+                for (let attempt = 1; attempt <= 4; attempt++) {
+                    try {
+                        console.log(`Încercare ${attempt}/4 de încărcare configurație din API...`);
+
+                        const response = await fetch(`${SITE_CONFIG_API_URL}/${currentDomain}`, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Origin': window.location.origin
+                            }
+                        });
+
+                        if (response.ok) {
+                            config = await response.json();
+                            console.log(`Configurația încărcată cu succes din API (încercarea ${attempt})`);
+                            break;
+                        } else {
+                            lastError = new Error(`HTTP ${response.status}: ${response.statusText}`);
+                            console.warn(`Încercarea ${attempt} eșuată:`, lastError.message);
+                        }
+                    } catch (error) {
+                        lastError = error instanceof Error ? error : new Error(String(error));
+                        console.warn(`Încercarea ${attempt} eșuată:`, error);
+                    }
+
+                    // Așteaptă înainte de următoarea încercare (exponential backoff)
+                    if (attempt < 4) {
+                        const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000); // 1s, 2s, 4s, max 5s
+                        console.log(`Așteptare ${delay}ms înainte de următoarea încercare...`);
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    }
+                }
+
+                if (config) {
                     setSiteConfig(config);
                     // Salvează în localStorage pentru utilizările viitoare
                     localStorage.setItem('site-config', JSON.stringify(config));
                 } else {
+                    console.warn('Toate încercările de încărcare din API au eșuat, folosind configurația default');
                     // 3. Fallback la configurația default
                     const defaultResponse = await fetch('/site-config.json');
                     const defaultConfig = await defaultResponse.json();
@@ -49,7 +80,13 @@ export function useSiteConfig() {
                 }
             } catch (err) {
                 console.error('Error loading site config:', err);
-                setError('Failed to load site configuration');
+
+                // Afișează eroarea doar dacă nu s-a încercat retry-ul
+                if (!lastError) {
+                    setError('Failed to load site configuration');
+                } else {
+                    setError(`Failed to load site configuration after 4 attempts. Last error: ${lastError.message}`);
+                }
 
                 // Fallback la configurația default
                 try {
@@ -67,9 +104,15 @@ export function useSiteConfig() {
         };
 
         loadSiteConfig();
-    }, []); // Se execută o singură dată la încărcarea aplicației
+    }, [retryCount]); // Se execută când se schimbă retryCount
 
-    return { siteConfig, isLoading, error };
+    // Funcție pentru retry manual
+    const retryLoad = () => {
+        setRetryCount(prev => prev + 1);
+        setError(null);
+    };
+
+    return { siteConfig, isLoading, error, retryLoad };
 }
 
 // Hook pentru salvarea configurației

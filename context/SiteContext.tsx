@@ -23,7 +23,7 @@ interface SiteContextType {
     addArticle: () => Article | null;
     updateArticle: (articleId: string, updatedArticle: Article, onComplete?: (newSlug: string) => void) => void;
     deleteArticle: (articleId: string) => void;
-    getArticleBySlug: (slug: string) => Article | undefined;
+    getArticleById: (id: string) => Article | undefined;
     getImageUrl: (id: string) => string | undefined;
     storeImage: (dataUrl: string) => Promise<string>;
     // Funcții pentru editor (pentru compatibilitate)
@@ -60,12 +60,14 @@ interface SiteContextType {
     redo: () => void;
     canUndo: boolean;
     canRedo: boolean;
+    // Funcție pentru retry încărcare configurație
+    retryLoad: () => void;
 }
 
 const SiteContext = createContext<SiteContextType | undefined>(undefined);
 
 export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { siteConfig: initialConfig, isLoading, error } = useSiteConfig();
+    const { siteConfig: initialConfig, isLoading, error, retryLoad } = useSiteConfig();
     const { saveToLocalStorage, saveToServer } = useSiteConfigSaver();
     const { isEditMode, currentDomain } = useSiteMode();
 
@@ -103,6 +105,9 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Funcție pentru actualizarea configurației
     const updateSiteConfig = useCallback((newConfig: SiteConfig, skipHistory = false) => {
+        console.log('updateSiteConfig called, skipHistory:', skipHistory);
+        console.log('updateSiteConfig: old sections:', siteConfig?.sections);
+        console.log('updateSiteConfig: new sections:', newConfig.sections);
         setSiteConfig(newConfig);
 
         // Actualizează istoricul doar dacă nu este o operație de undo/redo
@@ -248,9 +253,9 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updateSiteConfig(newConfig);
     }, [siteConfig, updateSiteConfig]);
 
-    const getArticleBySlug = useCallback((slug: string) => {
+    const getArticleById = useCallback((id: string) => {
         if (!siteConfig || !siteConfig.articles) return undefined;
-        return siteConfig.articles.find(article => article.slug === slug);
+        return siteConfig.articles.find(article => article.id === id);
     }, [siteConfig]);
 
     // Funcții pentru gestionarea imaginilor
@@ -452,6 +457,8 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const redo = useCallback(() => {
         const historyEntry = historyRedo();
+        console.log('Redo called, historyEntry:', historyEntry);
+        console.log('Current siteConfig sections:', siteConfig?.sections);
         if (historyEntry && siteConfig) {
             const newConfig = {
                 ...siteConfig,
@@ -459,6 +466,8 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 sectionOrder: [...historyEntry.sectionOrder],
                 pages: historyEntry.pages ? { ...historyEntry.pages } : undefined,
             };
+            console.log('Redo: newConfig sections:', newConfig.sections);
+            console.log('Redo: sections are different?', JSON.stringify(siteConfig.sections) !== JSON.stringify(newConfig.sections));
             updateSiteConfig(newConfig, true); // skipHistory = true pentru a evita loop-ul
             toast.success('Modificare refăcută');
         }
@@ -478,7 +487,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         addArticle,
         updateArticle,
         deleteArticle,
-        getArticleBySlug,
+        getArticleById,
         getImageUrl,
         storeImage,
         showHiddenInEditor,
@@ -508,7 +517,8 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         undo,
         redo,
         canUndo,
-        canRedo
+        canRedo,
+        retryLoad
     };
 
     return (

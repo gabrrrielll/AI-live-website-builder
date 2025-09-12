@@ -36,7 +36,7 @@ const componentMap: { [key: string]: React.FC<any> } = {
 };
 
 const SiteContent: React.FC = () => {
-    const { siteConfig, isLoading, error, getImageUrl, startEditing } = useSite();
+    const { siteConfig, isLoading, error, getImageUrl, startEditing, retryLoad } = useSite();
     const { isEditMode } = useSiteMode();
 
     // Event listener pentru dublu-click pe elementele editabile
@@ -73,7 +73,13 @@ const SiteContent: React.FC = () => {
             <div className="flex items-center justify-center min-h-screen">
                 <div className="text-center">
                     <h1 className="text-2xl font-bold text-red-600 mb-4">Eroare la încărcarea site-ului</h1>
-                    <p className="text-gray-600">{error}</p>
+                    <p className="text-gray-600 mb-6">{error}</p>
+                    <button
+                        onClick={retryLoad}
+                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                        Încearcă din nou
+                    </button>
                 </div>
             </div>
         );

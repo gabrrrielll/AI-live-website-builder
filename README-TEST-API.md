@@ -73,7 +73,20 @@ tail -f api-requests.log
 
 ### Testează CORS
 ```bash
+# Pentru localhost cu port
 curl -H "Origin: http://localhost:3000" \
+     -H "Access-Control-Request-Method: GET" \
+     -X OPTIONS \
+     https://bibic.ro/api/api-site-config.php
+
+# Pentru localhost fără port
+curl -H "Origin: http://localhost" \
+     -H "Access-Control-Request-Method: GET" \
+     -X OPTIONS \
+     https://bibic.ro/api/api-site-config.php
+
+# Pentru domeniul live
+curl -H "Origin: https://casare-rable.ro" \
      -H "Access-Control-Request-Method: GET" \
      -X OPTIONS \
      https://bibic.ro/api/api-site-config.php
@@ -87,10 +100,15 @@ curl https://bibic.ro/api/api-site-config.php | jq .
 
 ## 🛠️ Personalizare
 
-### Schimbă domeniul permis (CORS)
-În `api-site-config.php`, linia 11:
+### Schimbă domeniile permise (CORS)
+În `api-site-config.php`, liniile 16-21:
 ```php
-header('Access-Control-Allow-Origin: http://localhost:3000'); // ← Schimbă aici
+$allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost',           // ← Pentru localhost fără port
+    'https://casare-rable.ro',
+    'https://bibic.ro'           // ← Adaugă domeniile tale aici
+];
 ```
 
 ### Adaugă autentificare

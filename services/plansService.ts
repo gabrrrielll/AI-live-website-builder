@@ -23,6 +23,7 @@ export interface ServiceConfig {
 
 export interface PlansConfig {
     isEditable: boolean;
+    show_import_export_config: boolean;
     services: Record<string, ServiceConfig>;
     domain_types: Record<string, { pattern: string; description: string }>;
     billing: Record<string, any>;
@@ -69,7 +70,7 @@ export const getDomainType = (): 'localhost' | 'test_domain' | 'public_domain' =
 
 // Verifică dacă un serviciu poate fi folosit
 export const canUseService = (serviceName: string): boolean => {
-    const service = plansConfig.services[serviceName];
+    const service = (plansConfig.services as any)[serviceName];
     if (!service || !service.enabled) {
         return false;
     }
@@ -89,7 +90,7 @@ export const canUseService = (serviceName: string): boolean => {
 
 // Incrementează contorul pentru un serviciu
 export const useService = (serviceName: string): void => {
-    const service = plansConfig.services[serviceName];
+    const service = (plansConfig.services as any)[serviceName];
     if (!service) return;
 
     const domainType = getDomainType();
@@ -104,7 +105,7 @@ export const useService = (serviceName: string): void => {
 
 // Obține numărul de utilizări rămase pentru un serviciu
 export const getServiceUsageLeft = (serviceName: string): number => {
-    const service = plansConfig.services[serviceName];
+    const service = (plansConfig.services as any)[serviceName];
     if (!service) return 0;
 
     const domainType = getDomainType();
@@ -122,29 +123,29 @@ export const getServiceUsageLeft = (serviceName: string): number => {
 
 // Obține informații despre un serviciu
 export const getServiceInfo = (serviceName: string): ServiceConfig | null => {
-    return plansConfig.services[serviceName] || null;
+    return (plansConfig.services as any)[serviceName] || null;
 };
 
 // Obține toate serviciile disponibile
 export const getAllServices = (): Record<string, ServiceConfig> => {
-    return plansConfig.services;
+    return plansConfig.services as any;
 };
 
 // Verifică dacă un serviciu este activat
 export const isServiceEnabled = (serviceName: string): boolean => {
-    const service = plansConfig.services[serviceName];
+    const service = (plansConfig.services as any)[serviceName];
     return service ? service.enabled : false;
 };
 
 // Obține provider-ul pentru un serviciu
 export const getServiceProvider = (serviceName: string): string | null => {
-    const service = plansConfig.services[serviceName];
+    const service = (plansConfig.services as any)[serviceName];
     return service ? service.provider : null;
 };
 
 // Obține fallback provider-ul pentru un serviciu
 export const getServiceFallbackProvider = (serviceName: string): string | null => {
-    const service = plansConfig.services[serviceName];
+    const service = (plansConfig.services as any)[serviceName];
     return service ? service.fallback_provider || null : null;
 };
 
@@ -167,7 +168,7 @@ export const getUsageStats = (): Record<string, { used: number; left: number; li
     const stats: Record<string, { used: number; left: number; limit: ServiceLimit }> = {};
 
     Object.keys(plansConfig.services).forEach(serviceName => {
-        const service = plansConfig.services[serviceName];
+        const service = (plansConfig.services as any)[serviceName];
         const domainType = getDomainType();
         const limit = service.limits[domainType];
         const usageKey = `service_${serviceName}_usage`;
@@ -187,4 +188,9 @@ export const getUsageStats = (): Record<string, { used: number; left: number; li
 // Verifică dacă site-ul poate fi editat
 export const isSiteEditable = (): boolean => {
     return plansConfig.isEditable;
+};
+
+// Verifică dacă butoanele de import/export configurație trebuie afișate
+export const showImportExportConfig = (): boolean => {
+    return plansConfig.show_import_export_config;
 };

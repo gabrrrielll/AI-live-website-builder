@@ -216,7 +216,7 @@ export const BlogListing: React.FC = () => {
 
                 {/* Article count info */}
                 <div className="text-center mt-8 text-gray-600">
-                    {t?.showingArticles?.replace('{start}', startIndex + 1).replace('{end}', endIndex).replace('{total}', allArticles.length) ||
+                    {t?.showingArticles?.replace('{start}', (startIndex + 1).toString()).replace('{end}', endIndex.toString()).replace('{total}', allArticles.length.toString()) ||
                         `Articole ${startIndex + 1}-${endIndex} din ${allArticles.length}`}
                 </div>
             </div>

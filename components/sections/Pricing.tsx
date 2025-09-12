@@ -14,7 +14,7 @@ export const Pricing: React.FC<PricingProps> = ({ sectionId }) => {
     const { siteConfig } = useSite();
     const section = siteConfig?.sections[sectionId];
     if (!section) return null;
-    
+
     const { items = [], layout = { template: 'default', itemCount: 3 }, cardStyles } = section;
     const CardComponent = pricingTemplateMap[layout.template as keyof typeof pricingTemplateMap] || PricingCardDefault;
 
@@ -25,7 +25,7 @@ export const Pricing: React.FC<PricingProps> = ({ sectionId }) => {
         4: 'lg:grid-cols-4',
         5: 'lg:grid-cols-5',
     };
-    const gridCols = gridColsOptions[layout.itemCount] || 'md:grid-cols-3';
+    const gridCols = gridColsOptions[layout.itemCount || 3] || 'md:grid-cols-3';
 
     return (
         <section className="py-20">

@@ -230,7 +230,7 @@ export const translations = {
       waveIntensity: "Intensitatea Valurilor",
       preview: "Previzualizare",
       previewText: "Previzualizare Gradient",
-      cancel: "Anulează",
+      cancelGradient: "Anulează",
       save: "Salvează",
     },
     aiRebuild: {
@@ -542,7 +542,7 @@ export const translations = {
       waveIntensity: "Wave Intensity",
       preview: "Preview",
       previewText: "Gradient Preview",
-      cancel: "Cancel",
+      cancelGradient: "Cancel",
       save: "Save",
     },
     aiRebuild: {

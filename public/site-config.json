@@ -84,7 +84,7 @@
       "createdAt": "2024-07-31T12:00:00Z",
       "updatedAt": "2024-07-31T12:00:00Z"
     },
-     {
+    {
       "id": "article-1722340800000",
       "slug": "ui-vs-ux-care-este-diferenta-si-de-ce-conteaza",
       "title": {
@@ -475,22 +475,22 @@
       }
     },
     "stats": {
-        "id": "stats",
-        "component": "Stats",
-        "navLinkVisible": true,
-        "visible": true,
+      "id": "stats",
+      "component": "Stats",
+      "navLinkVisible": true,
+      "visible": true,
       "styles": {
         "backgroundColor": "#f3f7fa"
       },
-        "layout": {
-            "template": "default",
-            "itemCount": 3
-        },
-        "cardStyles": {
-          "backgroundColor": "transparent",
-          "boxShadow": "none"
-        },
-        "items": [
+      "layout": {
+        "template": "default",
+        "itemCount": 3
+      },
+      "cardStyles": {
+        "backgroundColor": "transparent",
+        "boxShadow": "none"
+      },
+      "items": [
         {
           "id": 1
         },
@@ -500,8 +500,8 @@
         {
           "id": 3
         }
-        ],
-        "elements": {
+      ],
+      "elements": {
         "stats-nav-title": {
           "type": "rich-text",
           "content": {
@@ -609,25 +609,25 @@
             "fontWeight": "600"
           }
         }
-        }
+      }
     },
-     "portfolio": {
-        "id": "portfolio",
-        "component": "Portfolio",
-        "navLinkVisible": true,
-        "visible": true,
+    "portfolio": {
+      "id": "portfolio",
+      "component": "Portfolio",
+      "navLinkVisible": true,
+      "visible": true,
       "styles": {
         "backgroundColor": "#ffffff"
       },
-        "layout": {
-            "template": "default",
-            "itemCount": 6
-        },
-        "cardStyles": {
-          "backgroundColor": "transparent",
-          "boxShadow": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)"
-        },
-        "items": [
+      "layout": {
+        "template": "default",
+        "itemCount": 6
+      },
+      "cardStyles": {
+        "backgroundColor": "transparent",
+        "boxShadow": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)"
+      },
+      "items": [
         {
           "id": 1
         },
@@ -646,8 +646,8 @@
         {
           "id": 6
         }
-        ],
-        "elements": {
+      ],
+      "elements": {
         "portfolio-nav-title": {
           "type": "rich-text",
           "content": {
@@ -891,25 +891,25 @@
             "en": "View Project"
           }
         }
-        }
+      }
     },
     "team": {
-        "id": "team",
-        "component": "Team",
-        "navLinkVisible": true,
-        "visible": true,
+      "id": "team",
+      "component": "Team",
+      "navLinkVisible": true,
+      "visible": true,
       "styles": {
         "backgroundColor": "#f3f7fa"
       },
-        "layout": {
-            "template": "default",
-            "itemCount": 3
-        },
-        "cardStyles": {
-          "backgroundColor": "#ffffff",
-          "boxShadow": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
-        },
-        "items": [
+      "layout": {
+        "template": "default",
+        "itemCount": 3
+      },
+      "cardStyles": {
+        "backgroundColor": "#ffffff",
+        "boxShadow": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
+      },
+      "items": [
         {
           "id": 1
         },
@@ -919,8 +919,8 @@
         {
           "id": 3
         }
-        ],
-        "elements": {
+      ],
+      "elements": {
         "team-nav-title": {
           "type": "rich-text",
           "content": {
@@ -1056,25 +1056,25 @@
             "en": "<a href=\"#\">FB</a> <a href=\"#\">LI</a>"
           }
         }
-        }
+      }
     },
     "clients": {
-        "id": "clients",
-        "component": "Clients",
-        "navLinkVisible": true,
-        "visible": true,
+      "id": "clients",
+      "component": "Clients",
+      "navLinkVisible": true,
+      "visible": true,
       "styles": {
         "backgroundColor": "#ffffff"
       },
-        "layout": {
-            "template": "default",
-            "itemCount": 6
-        },
-        "cardStyles": {
-            "backgroundColor": "transparent",
-            "boxShadow": "none"
-        },
-        "items": [
+      "layout": {
+        "template": "default",
+        "itemCount": 6
+      },
+      "cardStyles": {
+        "backgroundColor": "transparent",
+        "boxShadow": "none"
+      },
+      "items": [
         {
           "id": 1
         },
@@ -1093,8 +1093,8 @@
         {
           "id": 6
         }
-        ],
-        "elements": {
+      ],
+      "elements": {
         "clients-nav-title": {
           "type": "rich-text",
           "content": {
@@ -1163,25 +1163,25 @@
             "en": "Salesforce Logo"
           }
         }
-        }
+      }
     },
     "pricing": {
-        "id": "pricing",
-        "component": "Pricing",
-        "navLinkVisible": true,
-        "visible": true,
+      "id": "pricing",
+      "component": "Pricing",
+      "navLinkVisible": true,
+      "visible": true,
       "styles": {
         "backgroundColor": "#f3f7fa"
       },
-        "layout": {
-            "template": "default",
-            "itemCount": 3
-        },
-        "cardStyles": {
-          "backgroundColor": "#ffffff",
-          "boxShadow": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
-        },
-        "items": [
+      "layout": {
+        "template": "default",
+        "itemCount": 3
+      },
+      "cardStyles": {
+        "backgroundColor": "#ffffff",
+        "boxShadow": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
+      },
+      "items": [
         {
           "id": 1
         },
@@ -1192,8 +1192,8 @@
         {
           "id": 3
         }
-        ],
-        "elements": {
+      ],
+      "elements": {
         "pricing-nav-title": {
           "type": "rich-text",
           "content": {
@@ -1326,25 +1326,25 @@
             "en": "Contact Us"
           }
         }
-        }
+      }
     },
     "testimonials": {
-        "id": "testimonials",
-        "component": "Testimonials",
-        "navLinkVisible": true,
-        "visible": true,
+      "id": "testimonials",
+      "component": "Testimonials",
+      "navLinkVisible": true,
+      "visible": true,
       "styles": {
         "backgroundColor": "#0a284e"
       },
-        "layout": {
-            "template": "default",
-            "itemCount": 4
-        },
-        "cardStyles": {
-          "backgroundColor": "#13345f",
-          "boxShadow": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
-        },
-        "items": [
+      "layout": {
+        "template": "default",
+        "itemCount": 4
+      },
+      "cardStyles": {
+        "backgroundColor": "#13345f",
+        "boxShadow": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
+      },
+      "items": [
         {
           "id": 1
         },
@@ -1357,8 +1357,8 @@
         {
           "id": 4
         }
-        ],
-        "elements": {
+      ],
+      "elements": {
         "testimonials-nav-title": {
           "type": "rich-text",
           "content": {
@@ -1498,25 +1498,25 @@
             "fontWeight": "600"
           }
         }
-        }
+      }
     },
     "blog": {
-        "id": "blog",
-        "component": "Blog",
-        "navLinkVisible": true,
-        "visible": true,
+      "id": "blog",
+      "component": "Blog",
+      "navLinkVisible": true,
+      "visible": true,
       "styles": {
         "backgroundColor": "#f3f7fa"
       },
-        "layout": {
+      "layout": {
         "template": "default",
         "itemCount": 6
       },
       "cardStyles": {
         "backgroundColor": "#ffffff",
         "boxShadow": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
-        },
-        "elements": {
+      },
+      "elements": {
         "blog-nav-title": {
           "type": "rich-text",
           "content": {
@@ -1547,17 +1547,17 @@
             "color": "#6B7280"
           }
         }
-        }
+      }
     },
     "faq": {
-        "id": "faq",
-        "component": "FAQ",
-        "navLinkVisible": true,
-        "visible": true,
+      "id": "faq",
+      "component": "FAQ",
+      "navLinkVisible": true,
+      "visible": true,
       "styles": {
         "backgroundColor": "#ffffff"
       },
-        "items": [
+      "items": [
         {
           "id": 1
         },
@@ -1567,8 +1567,8 @@
         {
           "id": 3
         }
-        ],
-        "elements": {
+      ],
+      "elements": {
         "faq-nav-title": {
           "type": "rich-text",
           "content": {
@@ -1637,25 +1637,25 @@
             "en": "<p>Yes, we offer maintenance and technical support packages to ensure everything runs optimally after the project is completed. We are here to help you in the long run.</p>"
           }
         }
-        }
+      }
     },
     "how-it-works": {
-        "id": "how-it-works",
-        "component": "HowItWorks",
-        "navLinkVisible": true,
-        "visible": true,
+      "id": "how-it-works",
+      "component": "HowItWorks",
+      "navLinkVisible": true,
+      "visible": true,
       "styles": {
         "backgroundColor": "#f3f7fa"
       },
-        "layout": {
-            "template": "default",
-            "itemCount": 3
-        },
-        "cardStyles": {
-          "backgroundColor": "#ffffff",
-          "boxShadow": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
-        },
-        "items": [
+      "layout": {
+        "template": "default",
+        "itemCount": 3
+      },
+      "cardStyles": {
+        "backgroundColor": "#ffffff",
+        "boxShadow": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
+      },
+      "items": [
         {
           "id": 1
         },
@@ -1665,8 +1665,8 @@
         {
           "id": 3
         }
-        ],
-        "elements": {
+      ],
+      "elements": {
         "how-it-works-nav-title": {
           "type": "rich-text",
           "content": {
@@ -1736,7 +1736,7 @@
             "en": "After finishing your changes, choose the plan that suits you. Once paid, all your settings will be permanently saved on our servers, and your site will be public."
           }
         }
-        }
+      }
     },
     "contact": {
       "id": "contact",

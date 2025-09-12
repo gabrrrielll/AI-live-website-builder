@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import { useTestMode } from '@/context/TestModeContext';
+import { showImportExportConfig } from '@/services/plansService';
 
 const Toolbar: React.FC = () => {
   const {
@@ -127,7 +128,7 @@ const Toolbar: React.FC = () => {
           >
             {isSyncing ? <Loader size={20} className="animate-spin" /> : <Cloud size={20} />}
           </button>
-          {!isTestMode && (
+          {!isTestMode && showImportExportConfig() && (
             <>
               <button onClick={exportConfig} className={`${buttonClass} ${enabledClass}`} title={t.toolbar.exportConfig}>
                 <Download size={20} />

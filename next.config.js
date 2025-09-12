@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // output: 'export', // ELIMINAT pentru a permite slug-uri complet dinamice
+  // output: 'export', // Dezactivat temporar pentru development - va fi reactivat pentru build static
   trailingSlash: true,
   images: {
     unoptimized: true

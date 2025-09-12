@@ -22,6 +22,9 @@ export async function addNewArticle(article: Article): Promise<void> {
         const siteConfig: SiteConfig = JSON.parse(configData);
 
         // Adaugă articolul nou
+        if (!siteConfig.articles) {
+            siteConfig.articles = [];
+        }
         siteConfig.articles.push(article);
 
         // Salvează configurația actualizată
@@ -33,14 +36,17 @@ export async function addNewArticle(article: Article): Promise<void> {
 }
 
 // Funcție pentru actualizarea unui articol existent
-export async function updateArticle(slug: string, updatedArticle: Article): Promise<void> {
+export async function updateArticleById(articleId: string, updatedArticle: Article): Promise<void> {
     try {
         const configPath = path.join(process.cwd(), 'public', 'site-config.json');
         const configData = fs.readFileSync(configPath, 'utf8');
         const siteConfig: SiteConfig = JSON.parse(configData);
 
         // Găsește și actualizează articolul
-        const articleIndex = siteConfig.articles.findIndex(article => article.slug === slug);
+        if (!siteConfig.articles) {
+            siteConfig.articles = [];
+        }
+        const articleIndex = siteConfig.articles.findIndex(article => article.id === articleId);
         if (articleIndex !== -1) {
             siteConfig.articles[articleIndex] = updatedArticle;
             await updateSiteConfig(siteConfig);
@@ -61,6 +67,9 @@ export async function deleteArticle(slug: string): Promise<void> {
         const siteConfig: SiteConfig = JSON.parse(configData);
 
         // Șterge articolul
+        if (!siteConfig.articles) {
+            siteConfig.articles = [];
+        }
         siteConfig.articles = siteConfig.articles.filter(article => article.slug !== slug);
 
         await updateSiteConfig(siteConfig);
@@ -90,7 +99,7 @@ export async function generateSitemap(): Promise<void> {
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
-    ${siteConfig.articles.map(article => `
+    ${(siteConfig.articles || []).map(article => `
     <url>
         <loc>${baseUrl}/blog/${article.slug}</loc>
         <lastmod>${article.updatedAt}</lastmod>

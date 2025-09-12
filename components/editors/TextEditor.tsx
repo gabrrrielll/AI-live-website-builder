@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import type { RichTextElement, Language, LocalizedString } from '@/types';
-import { generateTextWithRetryWithRetry } from '@/services/aiService';
+import { generateTextWithRetry } from '@/services/aiService';
 import { toast } from 'sonner';
 import { Sparkles, Loader } from 'lucide-react';
 import ColorPicker from './ColorPicker';

@@ -17,7 +17,7 @@ export const Stats: React.FC<StatsProps> = ({ sectionId }) => {
 
     const { items = [], layout = { template: 'default', itemCount: 3 }, cardStyles } = section;
     const CardComponent = statsTemplateMap[layout.template as keyof typeof statsTemplateMap] || StatCardDefault;
-    
+
     const gridColsOptions: { [key: number]: string } = {
         1: 'grid-cols-1 max-w-xs mx-auto',
         2: 'sm:grid-cols-2',
@@ -25,7 +25,7 @@ export const Stats: React.FC<StatsProps> = ({ sectionId }) => {
         4: 'md:grid-cols-4',
         5: 'lg:grid-cols-5',
     };
-    const gridCols = gridColsOptions[layout.itemCount] || 'md:grid-cols-3';
+    const gridCols = gridColsOptions[layout.itemCount || 3] || 'md:grid-cols-3';
 
     return (
         <section className="py-20">

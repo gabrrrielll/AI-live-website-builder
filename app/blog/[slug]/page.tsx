@@ -3,117 +3,59 @@ import type { Metadata } from 'next';
 import type { Article, SiteConfig } from '@/types';
 import { APP_CONFIG, SITE_CONFIG_API_URL } from '@/constants.js';
 
-// Funcție simplificată pentru generarea parametrilor statici (opțională fără output: export)
-export async function generateStaticParams() {
-    // Fără output: 'export', această funcție este opțională
-    // Next.js va folosi SSR pentru slug-uri necunoscute
-    return [];
+// Pentru Client-Side Rendering - nu generăm parametri statici
+// Articolele se încarcă dinamic din localStorage folosind ID-uri
+export const dynamicParams = true; // Permite parametri dinamici
+export const revalidate = 0; // Revalidează la fiecare request
+
+// CSR complet - nu pre-generează pagini statice
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+    return []; // Array gol pentru CSR complet
 }
 
-// Funcție pentru generarea meta tags SEO pentru articolele dinamice
+// Generăm metadata pentru fiecare articol folosind ID-ul
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
     const { slug } = params;
 
-    try {
-        // Încarcă configurația din API pentru a găsi articolul
-        const response = await fetch(SITE_CONFIG_API_URL, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            // Cache pentru 5 minute pentru performanță
-            next: { revalidate: 300 }
-        });
+    if (typeof window !== 'undefined') {
+        try {
+            const localConfig = localStorage.getItem('site-config');
+            if (localConfig) {
+                const config = JSON.parse(localConfig);
+                const article = config.articles?.find((a: Article) => a.slug === slug);
+                const articleId = article?.id;
 
-        if (response.ok) {
-            const config: SiteConfig = await response.json();
-            const article = config.articles?.find((a: Article) => a.slug === slug);
-
-            if (article) {
-                return {
-                    title: article.metaTitle.ro || article.title.ro,
-                    description: article.metaDescription.ro || article.excerpt.ro,
-                    keywords: [
-                        article.title.ro,
-                        article.excerpt.ro,
-                        'blog',
-                        'articol',
-                        'tehnologie',
-                        'web design',
-                        'AI'
-                    ].join(', '),
-                    authors: [{ name: 'AI Live Website Editor' }],
-                    openGraph: {
-                        title: article.metaTitle.ro || article.title.ro,
-                        description: article.metaDescription.ro || article.excerpt.ro,
-                        images: [
-                            {
-                                url: article.imageUrl,
-                                width: 800,
-                                height: 450,
-                                alt: article.imageAlt.ro || article.title.ro,
-                            }
-                        ],
-                        type: 'article',
-                        publishedTime: article.createdAt,
-                        modifiedTime: article.updatedAt,
-                        authors: ['AI Live Website Editor'],
-                        section: 'Blog',
-                        tags: [article.title.ro, 'tehnologie', 'web design', 'AI'],
-                    },
-                    twitter: {
-                        card: 'summary_large_image',
-                        title: article.metaTitle.ro || article.title.ro,
-                        description: article.metaDescription.ro || article.excerpt.ro,
-                        images: [article.imageUrl],
-                        creator: '@ailiveeditor',
-                    },
-                    alternates: {
-                        canonical: `${APP_CONFIG.BASE_SITE_URL}/blog/${slug}`,
-                        languages: {
-                            'ro': `/blog/${slug}`,
-                            'en': `/blog/${slug}`,
-                        },
-                    },
-                    robots: {
-                        index: true,
-                        follow: true,
-                        googleBot: {
-                            index: true,
-                            follow: true,
-                            'max-video-preview': -1,
-                            'max-image-preview': 'large',
-                            'max-snippet': -1,
-                        },
-                    },
-                    other: {
-                        'article:author': 'AI Live Website Editor',
-                        'article:section': 'Blog',
-                        'article:tag': article.title.ro,
-                    },
-                };
+                if (articleId) {
+                    const foundArticle = config.articles?.find((a: Article) => a.id === articleId);
+                    if (foundArticle) {
+                        return {
+                            title: `${foundArticle.title} | AI Live Website Editor`,
+                            description: foundArticle.excerpt || 'Articol din blog-ul nostru despre tehnologie și web design.',
+                            robots: {
+                                index: true,
+                                follow: true,
+                            },
+                        };
+                    }
+                }
             }
+        } catch (error) {
+            console.warn('Eroare la generarea metadata:', error);
         }
-    } catch (error) {
-        console.error('Error loading article metadata:', error);
     }
 
-    // Fallback pentru articolele care nu se găsesc
     return {
-        title: 'Articol Negăsit | AI Live Website Editor',
-        description: 'Articolul pe care îl cauți nu există sau a fost mutat.',
+        title: `Articol Blog | AI Live Website Editor`,
+        description: 'Articol din blog-ul nostru despre tehnologie și web design.',
         robots: {
-            index: false,
-            follow: false,
+            index: true,
+            follow: true,
         },
     };
 }
 
-// Server-side component pentru încărcarea inițială
-export default async function ArticlePage({ params }: { params: { slug: string } }) {
+// Componenta principală - articolele se încarcă dinamic prin ArticlePageClient
+export default function ArticlePage({ params }: { params: { slug: string } }) {
     const { slug } = params;
-
-    // Fără output: 'export', toate slug-urile sunt gestionate dinamic
-    // Folosim client-side loading pentru toate articolele
     return <ArticlePageClient article={null} siteConfig={null} slug={slug} />;
 }

@@ -67,7 +67,7 @@ export const Blog: React.FC<BlogProps> = ({ sectionId }) => {
             displayedArticles.push(newArticle);
 
             // Add to siteConfig permanently so routing works
-            if (siteConfig && !siteConfig.articles.find(a => a.id === newArticle.id)) {
+            if (siteConfig && siteConfig.articles && !siteConfig.articles.find(a => a.id === newArticle.id)) {
                 siteConfig.articles.push(newArticle);
                 // Save to localStorage to persist the changes
                 localStorage.setItem('site-config', JSON.stringify(siteConfig));

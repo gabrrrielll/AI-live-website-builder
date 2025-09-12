@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 import { toast } from 'sonner';
-import { generateTextWithRetryWithRetry, generateImage } from '@/services/aiService';
+import { generateTextWithRetry, generateImage } from '@/services/aiService';
 import { sanitizeHTML } from '@/utils/sanitize';
 import type { SiteConfig, RichTextElement, ImageElement, LogoElement } from '@/types';
 import type { Translations } from '@/utils/translations';
@@ -122,7 +122,7 @@ Now, analyze the user's prompt and the current JSON configuration, and generate 
             const lastCommand = allCommands[allCommands.length - 1];
             if (lastCommand && lastCommand.command === 'explanation') {
                 const rawText = allCommands.pop().text || '';
-                explanation = rawText.trim().split(/\n\s*\n/).map(p => `<p>${p.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br />')}</p>`).join('');
+                explanation = rawText.trim().split(/\n\s*\n/).map((p: string) => `<p>${p.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br />')}</p>`).join('');
             }
 
             let newConfig = JSON.parse(JSON.stringify(siteConfig));
@@ -152,7 +152,7 @@ Now, analyze the user's prompt and the current JSON configuration, and generate 
                         if (element) (element as ImageElement).content = `https://picsum.photos/seed/${cmd.unsplash_query.replace(/\s+/g, '-')}/800/600`;
                     });
                 } else if (cmd.command === 'generate_image_element') {
-                    promise = generateImage(cmd.generation_prompt, cmd.aspect_ratio).then(async base64Image => {
+                    promise = generateImage(cmd.generation_prompt).then(async base64Image => {
                         const { element } = findElement(newConfig, cmd.element_id);
                         if (element) {
                             const imageId = await storeImage(base64Image);
@@ -207,7 +207,7 @@ Now, analyze the user's prompt and the current JSON configuration, and generate 
                         const { element } = findElement(newConfig, cmd.element_id);
                         if (element && (element.type === 'rich-text' || element.type === 'logo')) {
                             if (cmd.lang === 'both') Object.assign(element.content, cmd.content);
-                            else element.content[cmd.lang] = cmd.content;
+                            else (element.content as any)[cmd.lang] = cmd.content;
                         }
                         break;
                     }

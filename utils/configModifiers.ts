@@ -30,7 +30,7 @@ export const modifyLayout = (
     const newLayout = { ...oldLayout, ...layoutChanges };
 
     // Handle item count changes if itemCount is part of the update
-    if (layoutChanges.itemCount !== undefined && layoutChanges.itemCount !== (oldLayout.itemCount || 0)) {
+    if (layoutChanges && layoutChanges.itemCount !== undefined && layoutChanges.itemCount !== (oldLayout.itemCount || 0)) {
         // For Blog section, just update the itemCount without creating/deleting items
         if (section.component === 'Blog') {
             // Blog uses global articles, so we only update the itemCount

@@ -214,8 +214,8 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
 
             // Generate content for both languages with retry logic
             const [romanianResult, englishResult] = await Promise.all([
-                generateTextWithRetry(romanianPrompt, 'json', 3, toastId),
-                generateTextWithRetry(englishPrompt, 'json', 3, toastId)
+                generateTextWithRetry(romanianPrompt, 'json', 3, toastId?.toString()),
+                generateTextWithRetry(englishPrompt, 'json', 3, toastId?.toString())
             ]);
 
             // Parse the results with better error handling
@@ -223,11 +223,12 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
             try {
                 roData = JSON.parse(romanianResult);
                 enData = JSON.parse(englishResult);
-            } catch (parseError) {
+            } catch (parseError: unknown) {
                 console.error('JSON Parse Error:', parseError);
                 console.error('Romanian result:', romanianResult);
                 console.error('English result:', englishResult);
-                throw new Error(`Eroare la parsarea răspunsului AI: ${parseError.message}`);
+                const errorMessage = parseError instanceof Error ? parseError.message : 'Unknown parsing error';
+                throw new Error(`Eroare la parsarea răspunsului AI: ${errorMessage}`);
             }
 
             // Search for a relevant image on Unsplash
