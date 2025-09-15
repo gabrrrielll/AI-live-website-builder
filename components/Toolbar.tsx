@@ -9,7 +9,8 @@ import { toast } from 'sonner';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import { useTestMode } from '@/context/TestModeContext';
-import { showImportExportConfig } from '@/services/plansService';
+import { showImportExportConfig, showSaveButton } from '@/services/plansService';
+import { useSync } from '@/hooks/useSync';
 
 const Toolbar: React.FC = () => {
   const {
@@ -24,9 +25,13 @@ const Toolbar: React.FC = () => {
   const { isEditMode, switchToEditMode, switchToViewMode } = useSiteMode();
   const { isTestMode, canUseRebuild, showLimitModal } = useTestMode();
   const [showHelp, setShowHelp] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const importInputRef = useRef<HTMLInputElement>(null);
   const { language } = useLanguage();
   const t = useMemo(() => translations[language], [language]);
+  
+  // Hook pentru sincronizare
+  const { syncConfig } = useSync({ siteConfig, setIsSyncing, t });
 
   const buttonClass = "flex items-center justify-center p-3 rounded-full text-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
   const enabledClass = "bg-white hover:bg-gray-100";
@@ -52,15 +57,6 @@ const Toolbar: React.FC = () => {
   };
 
 
-  // Funcție reală pentru salvare pe server
-  const syncConfig = async () => {
-    try {
-      await saveConfig();
-    } catch (error) {
-      console.error('Error saving to server:', error);
-    }
-  };
-  const isSyncing = false;
 
   // Funcție reală pentru export configurație
   const exportConfig = useCallback(async () => {
@@ -120,14 +116,16 @@ const Toolbar: React.FC = () => {
 
           <div className="w-px h-6 bg-gray-300 mx-2"></div>
 
-          <button
-            onClick={syncConfig}
-            disabled={isSyncing}
-            className={`${buttonClass} ${enabledClass}`}
-            title={t.toolbar.syncToCloud}
-          >
-            {isSyncing ? <Loader size={20} className="animate-spin" /> : <Cloud size={20} />}
-          </button>
+          {showSaveButton() && (
+            <button
+              onClick={syncConfig}
+              disabled={isSyncing}
+              className={`${buttonClass} ${enabledClass}`}
+              title={t.toolbar.syncToCloud}
+            >
+              {isSyncing ? <Loader size={20} className="animate-spin" /> : <Cloud size={20} />}
+            </button>
+          )}
           {!isTestMode && showImportExportConfig() && (
             <>
               <button onClick={exportConfig} className={`${buttonClass} ${enabledClass}`} title={t.toolbar.exportConfig}>

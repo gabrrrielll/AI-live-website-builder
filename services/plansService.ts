@@ -194,3 +194,8 @@ export const isSiteEditable = (): boolean => {
 export const showImportExportConfig = (): boolean => {
     return plansConfig.show_import_export_config;
 };
+
+// Verifică dacă butonul de salvare (sync) trebuie afișat
+export const showSaveButton = (): boolean => {
+    return (plansConfig as any).show_save_button || false;
+};
