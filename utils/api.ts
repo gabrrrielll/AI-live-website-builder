@@ -18,7 +18,7 @@ export const uploadConfig = async (config: SiteConfig): Promise<{ success: boole
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(config),
+      body: JSON.stringify({ config }),
     });
 
     if (response.ok) {
