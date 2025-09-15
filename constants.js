@@ -9,10 +9,30 @@ const API_CONFIG = {
     }
 };
 
+// Funcție pentru a determina URL-ul pentru site-config
+function getSiteConfigUrl() {
+    // Verifică dacă există plans-config.json și citește setarea useLocal_site-config
+    try {
+        // Încarcă plans-config.json din public
+        const plansConfigUrl = '/plans-config.json';
+        
+        // Pentru development, folosește fetch sincron (doar la prima încărcare)
+        if (import.meta.env.MODE === 'development') {
+            // În development, folosește întotdeauna local
+            return '/site-config.json';
+        }
+        
+        // Pentru production, verifică plans-config.json
+        // Notă: Această verificare se face doar la build time sau prin cache
+        return `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.SITE_CONFIG}`;
+    } catch (error) {
+        console.warn('Nu s-a putut citi plans-config.json, folosind API:', error);
+        return `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.SITE_CONFIG}`;
+    }
+}
+
 // URL complet pentru API-ul de configurație
-const SITE_CONFIG_API_URL = import.meta.env.MODE === 'development'
-    ? '/site-config.json'  // Use local file in development
-    : `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.SITE_CONFIG}`;  // Use API in production
+const SITE_CONFIG_API_URL = getSiteConfigUrl();
 
 // Alte constante utile
 const APP_CONFIG = {

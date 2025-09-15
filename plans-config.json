@@ -1,6 +1,7 @@
 {
     "isEditable": true,
     "show_import_export_config": false,
+    "useLocal_site-config": true,
     "services": {
         "ai_image_generation": {
             "name": "AI Image Generation",

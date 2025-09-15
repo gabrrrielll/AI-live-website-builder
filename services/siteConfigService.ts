@@ -8,6 +8,50 @@ export interface SiteConfigService {
 
 class SiteConfigServiceImpl implements SiteConfigService {
     private cachedConfig: SiteConfig | null = null;
+    private plansConfig: any = null;
+
+    // Încarcă plans-config.json pentru a determina sursa site-config
+    private async loadPlansConfig(): Promise<any> {
+        if (this.plansConfig) {
+            return this.plansConfig;
+        }
+
+        try {
+            const response = await fetch('/plans-config.json', {
+                cache: 'no-store'
+            });
+            
+            if (response.ok) {
+                this.plansConfig = await response.json();
+                console.log('Plans config încărcat:', this.plansConfig);
+                return this.plansConfig;
+            }
+        } catch (error) {
+            console.warn('Nu s-a putut încărca plans-config.json:', error);
+        }
+
+        return null;
+    }
+
+    // Determină URL-ul pentru site-config bazat pe plans-config
+    private async getSiteConfigUrl(): Promise<string> {
+        const plansConfig = await this.loadPlansConfig();
+        
+        // Verifică setarea useLocal_site-config
+        if (plansConfig && plansConfig['useLocal_site-config'] === true) {
+            console.log('Folosind site-config.json local (useLocal_site-config = true)');
+            return '/site-config.json';
+        } else if (plansConfig && plansConfig['useLocal_site-config'] === false) {
+            console.log('Folosind API pentru site-config (useLocal_site-config = false)');
+            return SITE_CONFIG_API_URL;
+        } else {
+            // Fallback la comportamentul default
+            console.log('Folosind comportamentul default pentru site-config');
+            return import.meta.env.MODE === 'development' 
+                ? '/site-config.json' 
+                : SITE_CONFIG_API_URL;
+        }
+    }
 
     async loadSiteConfig(): Promise<SiteConfig | null> {
         try {
@@ -21,8 +65,9 @@ class SiteConfigServiceImpl implements SiteConfigService {
                 }
             }
 
-            // 2. Prima încărcare sau localStorage gol - doar apel API cu retry
-            return await this.loadFromAPIWithRetry();
+            // 2. Prima încărcare sau localStorage gol - determină sursa și încarcă
+            const configUrl = await this.getSiteConfigUrl();
+            return await this.loadFromUrlWithRetry(configUrl);
         } catch (error) {
             console.warn('Eroare la încărcarea site-config:', error);
         }
@@ -30,15 +75,16 @@ class SiteConfigServiceImpl implements SiteConfigService {
         return null;
     }
 
-    private async loadFromAPIWithRetry(): Promise<SiteConfig | null> {
+    private async loadFromUrlWithRetry(configUrl: string): Promise<SiteConfig | null> {
         const maxRetries = 5;
         let lastError: Error | null = null;
 
         for (let attempt = 1; attempt <= maxRetries; attempt++) {
             try {
-                console.log(`Încercare ${attempt}/${maxRetries} de încărcare din API...`);
+                const source = configUrl === '/site-config.json' ? 'local file' : 'API';
+                console.log(`Încercare ${attempt}/${maxRetries} de încărcare din ${source} (${configUrl})...`);
 
-                const response = await fetch(SITE_CONFIG_API_URL, {
+                const response = await fetch(configUrl, {
                     cache: 'no-store'
                 });
 
@@ -55,7 +101,7 @@ class SiteConfigServiceImpl implements SiteConfigService {
                         }
                     }
 
-                    console.log(`Site-config încărcat cu succes din API (încercarea ${attempt})`);
+                    console.log(`Site-config încărcat cu succes din ${source} (încercarea ${attempt})`);
                     return config;
                 } else {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -73,7 +119,7 @@ class SiteConfigServiceImpl implements SiteConfigService {
             }
         }
 
-        console.error(`Eșec la încărcarea site-config după ${maxRetries} încercări:`, lastError);
+        console.error(`Eșec la încărcarea site-config din ${configUrl} după ${maxRetries} încercări:`, lastError);
         return null;
     }
 
