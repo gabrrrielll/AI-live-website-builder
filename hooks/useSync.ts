@@ -3,6 +3,7 @@
 import { useCallback } from 'react';
 import { toast } from 'sonner';
 import { uploadConfig } from '@/utils/api';
+import { showSaveButton } from '@/services/plansService';
 import type { SiteConfig } from '@/types';
 import type { Translations } from '@/utils/translations';
 
@@ -18,7 +19,8 @@ export const useSync = ({ siteConfig, setIsSyncing, t }: useSyncProps) => {
             toast.error(t.toolbar.noConfigToSync);
             return;
         }
-        if (siteConfig.metadata.userType !== 'premium') {
+        // Verifică dacă sincronizarea este activată în plans-config
+        if (!showSaveButton()) {
             toast.error(t.toolbar.syncIsPremium);
             return;
         }
