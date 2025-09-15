@@ -7,7 +7,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSite } from '@/context/SiteContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { slugify } from '@/utils/slugify';
 import type { Article, Language, LocalizedString } from '@/types';
@@ -27,7 +27,7 @@ interface ArticleEditorProps {
 const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, onBlogPageSave, onBlogPageClose }) => {
     const { isEditMode, updateArticle, deleteArticle, getImageUrl, storeImage } = useSite();
     const { language } = useLanguage();
-    const router = useRouter();
+    const navigate = useNavigate();
     const t = useMemo(() => translations[language].articleEditor, [language]);
     const editorsT = useMemo(() => translations[language].editors, [language]);
 
@@ -107,7 +107,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
                     toast.success(t.articleSaved);
                     toast.info(t.urlChangedRedirect);
                     setIsRedirecting(false);
-                    router.push(`/blog/${newSlug}`);
+                    navigate(`/blog/${newSlug}`);
                 }, 200);
             };
 
@@ -134,7 +134,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
 
         if (window.confirm(t.deleteArticleConfirm)) {
             deleteArticle(article.id);
-            router.push('/');
+            navigate('/');
         }
     };
 
@@ -334,7 +334,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
             <div className="sticky top-0 z-50 bg-white border-b shadow-sm">
                 <div className="container mx-auto px-4 max-w-5xl">
                     <div className="flex justify-between items-center py-4">
-                        <button onClick={() => router.push('/')} className="flex items-center text-sm text-gray-600 hover:text-gray-900">
+                        <button onClick={() => navigate('/')} className="flex items-center text-sm text-gray-600 hover:text-gray-900">
                             <ArrowLeft size={18} className="mr-2" /> {t.backToHome}
                         </button>
                         <div className="flex items-center space-x-2">

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import * as icons from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import type { SiteElement, LogoElement, RichTextElement, IconElement } from '@/types';
 import { useSite } from '@/context/SiteContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -14,9 +15,120 @@ interface EditableProps {
   [x: string]: any; // for other props like href
 }
 
+// Function to transform HTML links to React Router links
+const transformHtmlLinks = (htmlContent: string): string => {
+  let transformedContent = htmlContent;
+
+  // Transform page: links (e.g., page:terms-page -> /terms-and-conditions)
+  transformedContent = transformedContent.replace(
+    /<a\s+href="page:([^"]*)"([^>]*)>([^<]*)<\/a>/gi,
+    (match, pageType, attributes, text) => {
+      let route = '';
+      switch (pageType) {
+        case 'terms-page':
+          route = '/terms-and-conditions';
+          break;
+        case 'privacy-page':
+          route = '/privacy-policy';
+          break;
+        case 'cookie-page':
+          route = '/cookie-policy';
+          break;
+        default:
+          route = `/${pageType}`;
+      }
+
+      const cleanAttributes = attributes.replace(/href="[^"]*"/g, '').trim();
+      return `<a data-react-router-link="${route}"${cleanAttributes ? ' ' + cleanAttributes : ''}>${text}</a>`;
+    }
+  );
+
+  // Transform anchor links to scroll to sections on home page
+  transformedContent = transformedContent.replace(
+    /<a\s+href="#([^"]*)"([^>]*)>([^<]*)<\/a>/gi,
+    (match, anchor, attributes, text) => {
+      const cleanAttributes = attributes.replace(/href="[^"]*"/g, '').trim();
+      return `<a data-scroll-to="#${anchor}"${cleanAttributes ? ' ' + cleanAttributes : ''}>${text}</a>`;
+    }
+  );
+
+  // Transform internal links to use React Router
+  transformedContent = transformedContent.replace(
+    /<a\s+href="\/([^"]*)"([^>]*)>([^<]*)<\/a>/gi,
+    (match, path, attributes, text) => {
+      // Skip external links or special protocols
+      if (path.startsWith('http') || path.startsWith('mailto:') || path.startsWith('tel:')) {
+        return match;
+      }
+
+      // Transform internal links to use React Router Link component
+      const cleanAttributes = attributes.replace(/href="[^"]*"/g, '').trim();
+      return `<a data-react-router-link="/${path}"${cleanAttributes ? ' ' + cleanAttributes : ''}>${text}</a>`;
+    }
+  );
+
+  return transformedContent;
+};
+
+// Function to render transformed content with React Router links
+const renderWithRouterLinks = (htmlContent: string, navigate: (path: string) => void) => {
+  const transformedContent = transformHtmlLinks(htmlContent);
+
+  // Parse and render the content, replacing data-react-router-link and data-scroll-to with actual components
+  const parts = transformedContent.split(/(<a[^>]*(?:data-react-router-link|data-scroll-to)="[^"]*"[^>]*>.*?<\/a>)/gi);
+
+  return parts.map((part, index) => {
+    const routerLinkMatch = part.match(/<a[^>]*data-react-router-link="([^"]*)"([^>]*)>([^<]*)<\/a>/i);
+    const scrollLinkMatch = part.match(/<a[^>]*data-scroll-to="#([^"]*)"([^>]*)>([^<]*)<\/a>/i);
+
+    if (routerLinkMatch) {
+      const [, path, attributes, text] = routerLinkMatch;
+      const classNameMatch = attributes.match(/class="([^"]*)"/);
+      const className = classNameMatch ? classNameMatch[1] : '';
+
+      return (
+        <Link key={index} to={path} className={className}>
+          {text}
+        </Link>
+      );
+    }
+
+    if (scrollLinkMatch) {
+      const [, anchor, attributes, text] = scrollLinkMatch;
+      const classNameMatch = attributes.match(/class="([^"]*)"/);
+      const className = classNameMatch ? classNameMatch[1] : '';
+
+      const handleScrollClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        const element = document.getElementById(anchor);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          // If not on home page, navigate to home and then scroll using React Router
+          navigate(`/#${anchor}`);
+        }
+      };
+
+      return (
+        <a
+          key={index}
+          href={`#${anchor}`}
+          onClick={handleScrollClick}
+          className={className}
+        >
+          {text}
+        </a>
+      );
+    }
+
+    return <span key={index} dangerouslySetInnerHTML={{ __html: part }} />;
+  });
+};
+
 const Editable: React.FC<EditableProps> = ({ sectionId, elementId, as: Component = 'div', className, ...props }) => {
   const { getElement, isEditMode, getImageUrl } = useSite();
   const { language } = useLanguage();
+  const navigate = useNavigate();
 
   const element = getElement(sectionId, elementId);
 
@@ -45,9 +157,10 @@ const Editable: React.FC<EditableProps> = ({ sectionId, elementId, as: Component
           data-element-id={elementId}
           className={`${combinedClassName} prose-content`.trim()}
           style={elementStyles}
-          dangerouslySetInnerHTML={{ __html: content }}
           {...props}
-        />
+        >
+          {renderWithRouterLinks(content, navigate)}
+        </Component>
       );
 
     case 'image':

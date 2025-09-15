@@ -5,7 +5,7 @@ import { APP_CONFIG } from '@/constants.js';
 // Funcție pentru generarea robots.txt în timpul build-ului
 export async function generateRobotsTxtDuringBuild(): Promise<void> {
     try {
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || APP_CONFIG.BASE_SITE_URL;
+        const baseUrl = process.env.VITE_BASE_SITE_URL || APP_CONFIG.BASE_SITE_URL;
 
         const robotsTxt = `User-agent: *
 Allow: /
@@ -27,6 +27,7 @@ Allow: /assets/`;
 
         const robotsPath = path.join(process.cwd(), 'public', 'robots.txt');
         fs.writeFileSync(robotsPath, robotsTxt);
+        console.log('✅ Robots.txt generated successfully');
     } catch (error) {
         console.error('❌ Error generating robots.txt during build:', error);
     }

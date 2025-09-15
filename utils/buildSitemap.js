@@ -1,15 +1,23 @@
-const fs = require('fs');
-const path = require('path');
-const { APP_CONFIG } = require('../constants.js');
+import fs from 'fs';
+import path from 'path';
+import { APP_CONFIG, SITE_CONFIG_API_URL } from '../constants.js';
 
 // Funcție pentru generarea sitemap-ului în timpul build-ului
 async function generateSitemapDuringBuild() {
     try {
-        const configPath = path.join(process.cwd(), 'public', 'site-config.json');
-        const configData = fs.readFileSync(configPath, 'utf8');
-        const siteConfig = JSON.parse(configData);
+        // Încarcă configurația din API
+        const response = await fetch(SITE_CONFIG_API_URL, {
+            cache: 'no-store'
+        });
 
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || APP_CONFIG.BASE_SITE_URL;
+        if (!response.ok) {
+            console.warn('Failed to load site config from API, skipping sitemap generation');
+            return;
+        }
+
+        const siteConfig = await response.json();
+
+        const baseUrl = process.env.VITE_BASE_SITE_URL || APP_CONFIG.BASE_SITE_URL;
 
         const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -25,13 +33,13 @@ async function generateSitemapDuringBuild() {
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
-    ${siteConfig.articles.map(article => `
+    ${siteConfig.articles?.map(article => `
     <url>
         <loc>${baseUrl}/blog/${article.slug}</loc>
         <lastmod>${article.updatedAt}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
-    </url>`).join('')}
+    </url>`).join('') || ''}
 </urlset>`;
 
         const sitemapPath = path.join(process.cwd(), 'public', 'sitemap.xml');
@@ -41,4 +49,4 @@ async function generateSitemapDuringBuild() {
     }
 }
 
-module.exports = { generateSitemapDuringBuild };
+export { generateSitemapDuringBuild };

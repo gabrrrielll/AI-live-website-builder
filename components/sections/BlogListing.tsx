@@ -7,7 +7,7 @@ import { translations } from '@/utils/translations';
 import { blogTemplateMap } from '@/components/cards/templateMaps';
 import { BlogCardDefault } from '@/components/cards/blog';
 import type { Article } from '@/types';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, PlusCircle, LayoutGrid, Palette, Edit3 } from 'lucide-react';
 import Editable from '@/components/Editable';
 import ArticleEditor from '@/components/ArticleEditor';
@@ -167,10 +167,8 @@ export const BlogListing: React.FC = () => {
                 <div className="flex flex-wrap justify-center -m-4 mb-12">
                     {currentArticles.map((article, index) => (
                         <div key={article.id} className={`w-full sm:w-1/2 p-4 ${widthClass}`}>
-                            <Link href={`/blog/${article.slug}`} passHref legacyBehavior>
-                                <a className="block h-full">
-                                    <CardComponent article={article} style={cardStyles} />
-                                </a>
+                            <Link to={`/blog/${article.slug}`} className="block h-full">
+                                <CardComponent article={article} style={cardStyles} />
                             </Link>
                         </div>
                     ))}

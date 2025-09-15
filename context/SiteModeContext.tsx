@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { isSiteEditable } from '@/services/plansService';
 
 type SiteMode = 'edit' | 'view';
@@ -19,6 +20,8 @@ const SiteModeContext = createContext<SiteModeContextType | undefined>(undefined
 export function SiteModeProvider({ children }: { children: React.ReactNode }) {
     const [mode, setMode] = useState<SiteMode>('view');
     const [currentDomain, setCurrentDomain] = useState<string>('');
+    const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Detectează domeniul curent
@@ -35,7 +38,7 @@ export function SiteModeProvider({ children }: { children: React.ReactNode }) {
         }
 
         // Detectează modul bazat pe URL sau localStorage
-        const urlParams = new URLSearchParams(window.location.search);
+        const urlParams = new URLSearchParams(location.search);
         const editMode = urlParams.get('edit') === 'true';
         const hasLocalConfig = localStorage.getItem('site-config') !== null;
 
@@ -44,7 +47,7 @@ export function SiteModeProvider({ children }: { children: React.ReactNode }) {
         } else {
             setMode('view');
         }
-    }, []);
+    }, []); // Doar o dată la mount, nu la fiecare schimbare de ruta
 
     const switchToEditMode = () => {
         // Verifică dacă site-ul poate fi editat
@@ -53,10 +56,10 @@ export function SiteModeProvider({ children }: { children: React.ReactNode }) {
         }
 
         setMode('edit');
-        // Adaugă parametrul edit în URL
-        const url = new URL(window.location.href);
-        url.searchParams.set('edit', 'true');
-        window.history.replaceState({}, '', url.toString());
+        // Adaugă parametrul edit în URL folosind React Router
+        const urlParams = new URLSearchParams(location.search);
+        urlParams.set('edit', 'true');
+        navigate(`${location.pathname}?${urlParams.toString()}`, { replace: true });
 
         // Dacă nu există configurație în localStorage, o vom avea disponibilă în următorul render
         // SiteContext va detecta că suntem în edit mode și va salva configurația automată
@@ -64,10 +67,12 @@ export function SiteModeProvider({ children }: { children: React.ReactNode }) {
 
     const switchToViewMode = () => {
         setMode('view');
-        // Elimină parametrul edit din URL
-        const url = new URL(window.location.href);
-        url.searchParams.delete('edit');
-        window.history.replaceState({}, '', url.toString());
+        // Elimină parametrul edit din URL folosind React Router
+        const urlParams = new URLSearchParams(location.search);
+        urlParams.delete('edit');
+        const newSearch = urlParams.toString();
+        const newUrl = newSearch ? `${location.pathname}?${newSearch}` : location.pathname;
+        navigate(newUrl, { replace: true });
         // NU mai șterge configurația din localStorage - să rămână pentru performanță
     };
 

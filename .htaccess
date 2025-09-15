@@ -7,11 +7,8 @@ RewriteEngine On
 # Suportă atât /site-config cât și /site-config/domain.com
 RewriteRule ^site-config/?(.*)$ api-site-config.php [QSA,L]
 
-# Headers pentru CORS (backup dacă PHP headers nu funcționează)
-Header always set Access-Control-Allow-Origin "http://localhost:3000"
-Header always set Access-Control-Allow-Origin "http://localhost"
-Header always set Access-Control-Allow-Origin "https://casare-rable.ro"
-Header always set Access-Control-Allow-Origin "https://bibic.ro"
+# Headers pentru CORS (backup dacă PHP headers nu funcționează) - PERMITE TOATE ORIGIN-URILE PENTRU TESTARE
+Header always set Access-Control-Allow-Origin "*"
 Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS"
 Header always set Access-Control-Allow-Headers "Content-Type, Authorization, Origin"
 Header always set Access-Control-Allow-Credentials "true"

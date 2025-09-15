@@ -266,7 +266,7 @@ const GradientWavesHero: React.FC<{ sectionId: string }> = ({ sectionId }) => {
             </div>
 
             {/* CSS Animations */}
-            <style jsx key={`animations-${gradientColors.color1}-${gradientColors.color2}-${gradientColors.color3}-${gradientColors.color4}-${waveAnimation.speed}-${waveAnimation.intensity}-${waveAnimation.spacing || 0.1}-${waveAnimation.diffusion || 50}`}>{`
+            <style key={`animations-${gradientColors.color1}-${gradientColors.color2}-${gradientColors.color3}-${gradientColors.color4}-${waveAnimation.speed}-${waveAnimation.intensity}-${waveAnimation.spacing || 0.1}-${waveAnimation.diffusion || 50}`}>{`
                 @keyframes gradientShift {
                     0% { background-position: 0% 50%; }
                     25% { background-position: 100% 0%; }

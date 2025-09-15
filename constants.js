@@ -10,12 +10,14 @@ const API_CONFIG = {
 };
 
 // URL complet pentru API-ul de configurație
-const SITE_CONFIG_API_URL = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.SITE_CONFIG}`;
+const SITE_CONFIG_API_URL = import.meta.env.MODE === 'development'
+    ? '/site-config.json'  // Use local file in development
+    : `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.SITE_CONFIG}`;  // Use API in production
 
 // Alte constante utile
 const APP_CONFIG = {
     // URL-ul de bază pentru site (pentru sitemap, robots.txt, etc.)
-    BASE_SITE_URL: 'https://yourdomain.com',
+    BASE_SITE_URL: import.meta?.env?.VITE_BASE_SITE_URL || 'https://yourdomain.com',
 
     // Setări pentru rate limiting
     TEST_MODE: {

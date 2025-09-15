@@ -2,8 +2,8 @@ const CACHE_NAME = 'ai-website-editor-v1';
 // This list should be expanded with actual bundled assets in a real build process.
 const urlsToCache = [
   '/',
-  '/index.html',
-  '/site-config.json'
+  '/index.html'
+  // Removed '/site-config.json' - no longer cached as static file
 ];
 
 self.addEventListener('install', event => {

@@ -5,12 +5,11 @@ import { useSite } from '@/context/SiteContext';
 import { Header } from '@/components/sections/Header';
 import { Footer } from '@/components/sections/Footer';
 import { BlogListing } from '@/components/sections/BlogListing';
-import App from '@/App';
 import { resolveBackgroundImage } from '@/utils/styleUtils';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import { ChevronRight, Home } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import type { SiteConfig } from '@/types';
 
 interface BlogListingClientProps {
@@ -33,34 +32,30 @@ export default function BlogListingClient({ siteConfig }: BlogListingClientProps
     const footerStyles = resolveBackgroundImage(footerSection?.styles, getImageUrl);
 
     return (
-        <App>
-            <>
-                {headerSection && <Header sectionId={headerSection.id} />}
-                <main>
-                    {/* Breadcrumb */}
-                    <div className="container mx-auto px-6 py-4">
-                        <nav className="flex items-center space-x-2 text-sm text-gray-600">
-                            <Link href="/" passHref legacyBehavior>
-                                <a className="flex items-center hover:text-[#c29a47] transition-colors">
-                                    <Home size={16} className="mr-1" />
-                                    {t.breadcrumbHome}
-                                </a>
-                            </Link>
-                            <ChevronRight size={16} />
-                            <span className="text-gray-800 font-medium">
-                                {t.breadcrumbBlog}
-                            </span>
-                        </nav>
-                    </div>
-                    <BlogListing />
-                </main>
-                {footerSection && (
-                    <div id={footerSection.id} style={footerStyles}>
-                        <Footer sectionId={footerSection.id} />
-                    </div>
-                )}
-            </>
-        </App>
+        <>
+            {headerSection && <Header sectionId={headerSection.id} />}
+            <main>
+                {/* Breadcrumb */}
+                <div className="container mx-auto px-6 py-4">
+                    <nav className="flex items-center space-x-2 text-sm text-gray-600">
+                        <Link to="/" className="flex items-center hover:text-[#c29a47] transition-colors">
+                            <Home size={16} className="mr-1" />
+                            {t.breadcrumbHome}
+                        </Link>
+                        <ChevronRight size={16} />
+                        <span className="text-gray-800 font-medium">
+                            {t.breadcrumbBlog}
+                        </span>
+                    </nav>
+                </div>
+                <BlogListing />
+            </main>
+            {footerSection && (
+                <div id={footerSection.id} style={footerStyles}>
+                    <Footer sectionId={footerSection.id} />
+                </div>
+            )}
+        </>
     );
 }
 

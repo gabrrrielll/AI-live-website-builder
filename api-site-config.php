@@ -12,33 +12,16 @@ ini_set('display_errors', 1);
 // Headers pentru CORS și JSON
 header('Content-Type: application/json; charset=utf-8');
 
-// CORS headers pentru multiple domenii
-$allowedOrigins = [
-    'http://localhost:3000',
-    'http://localhost',
-    'https://casare-rable.ro',
-    'https://bibic.ro'
-];
-
+// CORS headers - PERMITE TOATE ORIGIN-URILE PENTRU TESTARE
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 $host = $_SERVER['HTTP_HOST'] ?? '';
 
 // Log pentru debugging CORS
 error_log("CORS Debug - Origin: " . $origin . ", Host: " . $host);
 
-// Verifică dacă origin-ul este în lista de domenii permise
-if (in_array($origin, $allowedOrigins)) {
-    header('Access-Control-Allow-Origin: ' . $origin);
-    error_log("CORS - Origin permis: " . $origin);
-} else {
-    // Fallback pentru localhost fără port
-    if (strpos($origin, 'http://localhost') === 0) {
-        header('Access-Control-Allow-Origin: ' . $origin);
-        error_log("CORS - Localhost fallback permis: " . $origin);
-    } else {
-        error_log("CORS - Origin blocat: " . $origin);
-    }
-}
+// Permite toate origin-urile pentru testare
+header('Access-Control-Allow-Origin: *');
+error_log("CORS - Permis pentru toate origin-urile (testare): " . $origin);
 
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, Origin');

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
-import dynamic from 'next/dynamic';
+import { lazy, Suspense } from 'react';
 import type { RichTextElement, Language, LocalizedString } from '@/types';
 import { toast } from 'sonner';
 import { sanitizeHTML } from '@/utils/sanitize';
@@ -13,16 +13,7 @@ import { translations } from '@/utils/translations';
 // to incorrectly infer the component's props as an empty object. By explicitly typing
 // the props using `import('react-quill').ReactQuillProps`, we allow TypeScript to correctly
 // validate props like `theme`, `value`, etc., resolving the overload error.
-const ReactQuill = dynamic(
-  async () => {
-    const { default: RQ } = await import('react-quill');
-    // eslint-disable-next-line react/display-name
-    return (props: import('react-quill').ReactQuillProps) => <RQ {...props} />;
-  },
-  {
-    ssr: false,
-  }
-);
+const ReactQuill = lazy(() => import('react-quill'));
 
 interface RichTextEditorProps {
   element?: RichTextElement;
@@ -134,12 +125,14 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ element, onSave, onChan
                 border-right: 1px solid #ccc;
               }
             `}</style>
-          <ReactQuill
-            theme="snow"
-            value={content[activeLang]}
-            onChange={handleContentChange}
-            modules={modules}
-          />
+          <Suspense fallback={<div>Loading editor...</div>}>
+            <ReactQuill
+              theme="snow"
+              value={content[activeLang]}
+              onChange={handleContentChange}
+              modules={modules}
+            />
+          </Suspense>
         </div>
       ) : (
         <textarea

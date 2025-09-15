@@ -5,7 +5,7 @@ import { useSite } from '@/context/SiteContext';
 import { Eye, EyeOff, Trash2, Palette, ArrowUp, ArrowDown, LayoutGrid, Copy, PlusCircle } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 
 interface SectionControlsProps {
   sectionId: string;
@@ -17,7 +17,7 @@ const SectionControls: React.FC<SectionControlsProps> = ({ sectionId }) => {
   const { siteConfig, isEditMode, toggleSectionVisibility, deleteSection, startEditingSectionStyles, moveSection, startEditingSectionLayout, duplicateSection, addArticle } = useSite();
   const { language } = useLanguage();
   const t = useMemo(() => translations[language].sectionControls, [language]);
-  const router = useRouter();
+  const navigate = useNavigate();
 
   if (!isEditMode || !siteConfig) return null;
 
@@ -41,7 +41,7 @@ const SectionControls: React.FC<SectionControlsProps> = ({ sectionId }) => {
   const handleAddArticle = () => {
     const newArticle = addArticle();
     if (newArticle) {
-      router.push(`/blog/${newArticle.slug}`);
+      navigate(`/blog/${newArticle.slug}`);
     }
   };
 

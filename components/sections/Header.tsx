@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useMemo, useRef, useLayoutEffect, useCallback } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useSite } from '@/context/SiteContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { Menu, X, Eye, EyeOff } from 'lucide-react';
@@ -18,8 +18,9 @@ export const Header: React.FC<HeaderProps> = ({ sectionId }) => {
     const { siteConfig, isEditMode, toggleNavLinkVisibility } = useSite();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showHamburger, setShowHamburger] = useState(false);
-    const pathname = usePathname();
-    const router = useRouter();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const pathname = location.pathname;
     const isArticlePage = pathname.startsWith('/blog/');
 
     const headerSection = siteConfig?.sections[sectionId];
@@ -31,58 +32,58 @@ export const Header: React.FC<HeaderProps> = ({ sectionId }) => {
 
     const navItems = useMemo(() => {
         return siteConfig?.sectionOrder
-          .map(id => siteConfig.sections[id])
-          .filter(section => section && section.elements[`${section.id}-nav-title`] && (section.visible || isEditMode)) || [];
+            .map(id => siteConfig.sections[id])
+            .filter(section => section && section.elements[`${section.id}-nav-title`] && (section.visible || isEditMode)) || [];
     }, [siteConfig, isEditMode]);
 
     const NavLinks: React.FC<{ inPanel?: boolean; forMeasurement?: boolean }> = ({ inPanel = false, forMeasurement = false }) => (
-      <>
-        {navItems.map(item => {
-            const isLinkVisible = item.navLinkVisible !== false;
-            const href = isArticlePage ? `/#${item.id}` : `#${item.id}`;
+        <>
+            {navItems.map(item => {
+                const isLinkVisible = item.navLinkVisible !== false;
+                const href = isArticlePage ? `/#${item.id}` : `#${item.id}`;
 
-            const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-                if (inPanel) setIsMenuOpen(false);
-                if (isArticlePage) {
-                    e.preventDefault();
-                    router.push(href);
+                const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+                    if (inPanel) setIsMenuOpen(false);
+                    if (isArticlePage) {
+                        e.preventDefault();
+                        navigate(href);
+                    }
+                };
+
+                // For measurement, only include links that are meant to be visible in the main nav.
+                if (forMeasurement && !isLinkVisible) {
+                    return null;
                 }
-            };
 
-            // For measurement, only include links that are meant to be visible in the main nav.
-            if (forMeasurement && !isLinkVisible) {
-                return null;
-            }
+                // In preview mode, completely hide links that are not visible.
+                if (!isLinkVisible && !isEditMode) {
+                    return null;
+                }
 
-            // In preview mode, completely hide links that are not visible.
-            if (!isLinkVisible && !isEditMode) {
-                return null;
-            }
-            
-            return (
-              <div key={item.id} className="relative group/nav-item">
-                <a
-                  href={href}
-                  onClick={handleClick}
-                  className={`whitespace-nowrap text-gray-600 hover:text-[#c29a47] transition-colors
+                return (
+                    <div key={item.id} className="relative group/nav-item">
+                        <a
+                            href={href}
+                            onClick={handleClick}
+                            className={`whitespace-nowrap text-gray-600 hover:text-[#c29a47] transition-colors
                       ${!item.visible && isEditMode ? 'opacity-50 italic' : ''}
                       ${!isLinkVisible && isEditMode ? 'line-through text-red-500/70' : ''}`}
-                >
-                  <Editable sectionId={item.id} elementId={`${item.id}-nav-title`} as="div" className="px-1 py-2"/>
-                </a>
-                {isEditMode && (
-                    <button
-                        onClick={() => toggleNavLinkVisibility(item.id)}
-                        className="absolute top-1/2 -translate-y-1/2 -right-7 p-1 text-gray-500 hover:bg-gray-200 rounded-full opacity-0 group-hover/nav-item:opacity-100"
-                        title={isLinkVisible ? "Hide Nav Link" : "Show Nav Link"}
-                    >
-                        {isLinkVisible ? <Eye size={16} /> : <EyeOff size={16} />}
-                    </button>
-                )}
-              </div>
-            );
-        })}
-      </>
+                        >
+                            <Editable sectionId={item.id} elementId={`${item.id}-nav-title`} as="div" className="px-1 py-2" />
+                        </a>
+                        {isEditMode && (
+                            <button
+                                onClick={() => toggleNavLinkVisibility(item.id)}
+                                className="absolute top-1/2 -translate-y-1/2 -right-7 p-1 text-gray-500 hover:bg-gray-200 rounded-full opacity-0 group-hover/nav-item:opacity-100"
+                                title={isLinkVisible ? "Hide Nav Link" : "Show Nav Link"}
+                            >
+                                {isLinkVisible ? <Eye size={16} /> : <EyeOff size={16} />}
+                            </button>
+                        )}
+                    </div>
+                );
+            })}
+        </>
     );
 
     const checkWidth = useCallback(() => {
@@ -122,7 +123,7 @@ export const Header: React.FC<HeaderProps> = ({ sectionId }) => {
         const timeoutId = setTimeout(checkWidth, 100);
         return () => { clearTimeout(timeoutId); observer.disconnect(); };
     }, [checkWidth, siteConfig]);
-    
+
     return (
         <header className={`bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-40 relative group ${headerSection && !headerSection.visible && isEditMode ? 'opacity-50' : ''}`}>
             {isEditMode && <SectionControls sectionId={sectionId} />}
@@ -139,10 +140,10 @@ export const Header: React.FC<HeaderProps> = ({ sectionId }) => {
             <nav ref={navContainerRef} className="container mx-auto px-6 py-4 flex justify-between items-center">
                 <div ref={logoRef}>
                     <Link href="/" aria-label="Back to Homepage">
-                      <Editable sectionId={sectionId} elementId="header-logo" />
+                        <Editable sectionId={sectionId} elementId="header-logo" />
                     </Link>
                 </div>
-                
+
                 {!showHamburger ? (
                     <div className="flex items-center ml-auto">
                         <div className="flex items-center space-x-4">

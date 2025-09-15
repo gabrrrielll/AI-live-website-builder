@@ -1,13 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 import type { SiteConfig, Article } from '@/types';
-import { getSiteConfig } from './siteConfigLoader';
+import { siteConfigService } from '@/services/siteConfigService';
 
 // Funcție pentru actualizarea automată a configurației site-ului
 export async function updateSiteConfig(updatedConfig: SiteConfig): Promise<void> {
     try {
-        const configPath = path.join(process.cwd(), 'public', 'site-config.json');
-        fs.writeFileSync(configPath, JSON.stringify(updatedConfig, null, 2));
+        // Pentru build time - salvează în cache
+        const cachePath = path.join(process.cwd(), '.next', 'site-config-cache.json');
+        fs.writeFileSync(cachePath, JSON.stringify(updatedConfig, null, 2));
+        console.log('Site config updated in cache');
     } catch (error) {
         console.error('Error updating site configuration:', error);
         throw new Error('Failed to update site configuration');
@@ -17,9 +19,10 @@ export async function updateSiteConfig(updatedConfig: SiteConfig): Promise<void>
 // Funcție pentru adăugarea unui articol nou
 export async function addNewArticle(article: Article): Promise<void> {
     try {
-        const configPath = path.join(process.cwd(), 'public', 'site-config.json');
-        const configData = fs.readFileSync(configPath, 'utf8');
-        const siteConfig: SiteConfig = JSON.parse(configData);
+        const siteConfig = await siteConfigService.loadSiteConfig();
+        if (!siteConfig) {
+            throw new Error('Site config not found');
+        }
 
         // Adaugă articolul nou
         if (!siteConfig.articles) {
@@ -38,9 +41,10 @@ export async function addNewArticle(article: Article): Promise<void> {
 // Funcție pentru actualizarea unui articol existent
 export async function updateArticleById(articleId: string, updatedArticle: Article): Promise<void> {
     try {
-        const configPath = path.join(process.cwd(), 'public', 'site-config.json');
-        const configData = fs.readFileSync(configPath, 'utf8');
-        const siteConfig: SiteConfig = JSON.parse(configData);
+        const siteConfig = await siteConfigService.loadSiteConfig();
+        if (!siteConfig) {
+            throw new Error('Site config not found');
+        }
 
         // Găsește și actualizează articolul
         if (!siteConfig.articles) {
@@ -62,9 +66,10 @@ export async function updateArticleById(articleId: string, updatedArticle: Artic
 // Funcție pentru ștergerea unui articol
 export async function deleteArticle(slug: string): Promise<void> {
     try {
-        const configPath = path.join(process.cwd(), 'public', 'site-config.json');
-        const configData = fs.readFileSync(configPath, 'utf8');
-        const siteConfig: SiteConfig = JSON.parse(configData);
+        const siteConfig = await siteConfigService.loadSiteConfig();
+        if (!siteConfig) {
+            throw new Error('Site config not found');
+        }
 
         // Șterge articolul
         if (!siteConfig.articles) {
@@ -82,8 +87,12 @@ export async function deleteArticle(slug: string): Promise<void> {
 // Funcție pentru generarea sitemap-ului
 export async function generateSitemap(): Promise<void> {
     try {
-        const siteConfig = await getSiteConfig();
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://yourdomain.com';
+        const siteConfig = await siteConfigService.loadSiteConfig();
+        if (!siteConfig) {
+            throw new Error('Site config not found');
+        }
+
+        const baseUrl = process.env.VITE_BASE_SITE_URL || 'https://yourdomain.com';
 
         const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

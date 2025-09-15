@@ -1,11 +1,11 @@
-const fs = require('fs');
-const path = require('path');
-const { APP_CONFIG } = require('../constants.js');
+import fs from 'fs';
+import path from 'path';
+import { APP_CONFIG } from '../constants.js';
 
 // Funcție pentru generarea robots.txt în timpul build-ului
 async function generateRobotsTxtDuringBuild() {
     try {
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || APP_CONFIG.BASE_SITE_URL;
+        const baseUrl = process.env.VITE_BASE_SITE_URL || APP_CONFIG.BASE_SITE_URL;
 
         const robotsTxt = `User-agent: *
 Allow: /
@@ -32,4 +32,4 @@ Allow: /assets/`;
     }
 }
 
-module.exports = { generateRobotsTxtDuringBuild };
+export { generateRobotsTxtDuringBuild };

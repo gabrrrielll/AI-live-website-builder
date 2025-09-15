@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import type { SiteConfig } from '@/types';
+import { siteConfigService } from '@/services/siteConfigService';
 import { SITE_CONFIG_API_URL } from '@/constants.js';
 
 // Hook pentru încărcarea configurației site-ului
@@ -13,100 +14,30 @@ export function useSiteConfig() {
 
     useEffect(() => {
         const loadSiteConfig = async () => {
-            let lastError: Error | null = null;
-
             try {
                 setIsLoading(true);
+                setError(null);
 
-                // 1. ÎNTOTDEAUNA verifică mai întâi localStorage
-                const localConfig = localStorage.getItem('site-config');
-                if (localConfig) {
-                    const parsed = JSON.parse(localConfig);
-                    setSiteConfig(parsed);
-                    setIsLoading(false);
-                    return;
-                }
-
-                // 2. DOAR dacă nu există în localStorage, încarcă din API cu retry
-                const currentDomain = window.location.hostname;
-                let config = null;
-
-                // Retry logic cu maxim 4 încercări
-                for (let attempt = 1; attempt <= 4; attempt++) {
-                    try {
-                        console.log(`Încercare ${attempt}/4 de încărcare configurație din API...`);
-
-                        const response = await fetch(`${SITE_CONFIG_API_URL}/${currentDomain}`, {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Origin': window.location.origin
-                            }
-                        });
-
-                        if (response.ok) {
-                            config = await response.json();
-                            console.log(`Configurația încărcată cu succes din API (încercarea ${attempt})`);
-                            break;
-                        } else {
-                            lastError = new Error(`HTTP ${response.status}: ${response.statusText}`);
-                            console.warn(`Încercarea ${attempt} eșuată:`, lastError.message);
-                        }
-                    } catch (error) {
-                        lastError = error instanceof Error ? error : new Error(String(error));
-                        console.warn(`Încercarea ${attempt} eșuată:`, error);
-                    }
-
-                    // Așteaptă înainte de următoarea încercare (exponential backoff)
-                    if (attempt < 4) {
-                        const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000); // 1s, 2s, 4s, max 5s
-                        console.log(`Așteptare ${delay}ms înainte de următoarea încercare...`);
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                    }
-                }
+                // Folosește serviciul pentru încărcarea configurației
+                const config = await siteConfigService.loadSiteConfig();
 
                 if (config) {
                     setSiteConfig(config);
-                    // Salvează în localStorage pentru utilizările viitoare
-                    localStorage.setItem('site-config', JSON.stringify(config));
+                    console.log('Configurația încărcată cu succes prin serviciu');
                 } else {
-                    console.warn('Toate încercările de încărcare din API au eșuat, folosind configurația default');
-                    // 3. Fallback la configurația default
-                    const defaultResponse = await fetch('/site-config.json');
-                    const defaultConfig = await defaultResponse.json();
-                    setSiteConfig(defaultConfig);
-                    // Salvează și configurația default în localStorage
-                    localStorage.setItem('site-config', JSON.stringify(defaultConfig));
+                    setError('Failed to load site configuration');
                 }
             } catch (err) {
                 console.error('Error loading site config:', err);
-
-                // Afișează eroarea doar dacă nu s-a încercat retry-ul
-                if (!lastError) {
-                    setError('Failed to load site configuration');
-                } else {
-                    setError(`Failed to load site configuration after 4 attempts. Last error: ${lastError.message}`);
-                }
-
-                // Fallback la configurația default
-                try {
-                    const defaultResponse = await fetch('/site-config.json');
-                    const defaultConfig = await defaultResponse.json();
-                    setSiteConfig(defaultConfig);
-                    // Salvează și configurația default în localStorage
-                    localStorage.setItem('site-config', JSON.stringify(defaultConfig));
-                } catch (fallbackErr) {
-                    setError('Failed to load any site configuration');
-                }
+                setError('Failed to load site configuration');
             } finally {
                 setIsLoading(false);
             }
         };
 
         loadSiteConfig();
-    }, [retryCount]); // Se execută când se schimbă retryCount
+    }, [retryCount]);
 
-    // Funcție pentru retry manual
     const retryLoad = () => {
         setRetryCount(prev => prev + 1);
         setError(null);
@@ -115,45 +46,41 @@ export function useSiteConfig() {
     return { siteConfig, isLoading, error, retryLoad };
 }
 
-// Hook pentru salvarea configurației
+// Hook pentru salvarea configurației site-ului
 export function useSiteConfigSaver() {
-    const saveToLocalStorage = (config: SiteConfig) => {
+    const saveToLocalStorage = useCallback((config: SiteConfig): boolean => {
         try {
             localStorage.setItem('site-config', JSON.stringify(config));
-            return { success: true };
+            console.log('Configurația salvată în localStorage');
+            return true;
         } catch (error) {
             console.error('Error saving to localStorage:', error);
-            return { success: false, error: 'Failed to save to localStorage' };
+            return false;
         }
-    };
+    }, []);
 
-    const saveToServer = async (config: SiteConfig, domain: string) => {
+    const saveToServer = useCallback(async (config: SiteConfig, domain: string): Promise<boolean> => {
         try {
-            const response = await fetch(SITE_CONFIG_API_URL, {
+            const response = await fetch(`${SITE_CONFIG_API_URL}/${domain}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`
                 },
-                body: JSON.stringify({
-                    domain,
-                    config,
-                    timestamp: new Date().toISOString()
-                })
+                body: JSON.stringify(config),
             });
 
             if (response.ok) {
-                return { success: true };
+                console.log('Configurația salvată pe server');
+                return true;
             } else {
-                const errorData = await response.json();
-                return { success: false, error: errorData.message };
+                console.error('Failed to save to server:', response.status, response.statusText);
+                return false;
             }
         } catch (error) {
             console.error('Error saving to server:', error);
-            return { success: false, error: 'Failed to save to server' };
+            return false;
         }
-    };
+    }, []);
 
     return { saveToLocalStorage, saveToServer };
 }
-

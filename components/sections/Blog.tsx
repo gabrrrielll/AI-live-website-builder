@@ -6,7 +6,7 @@ import Editable from '@/components/Editable';
 import { blogTemplateMap } from '@/components/cards/templateMaps';
 import { BlogCardDefault } from '@/components/cards/blog';
 import type { Article } from '@/types';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 
 interface BlogProps {
     sectionId: string;
@@ -103,20 +103,16 @@ export const Blog: React.FC<BlogProps> = ({ sectionId }) => {
         <section className="py-20">
             <div className="container mx-auto px-6">
                 <div className="text-center title-underline">
-                    <Link href="/blog" passHref legacyBehavior>
-                        <a className="block">
-                            <Editable as="h2" sectionId={sectionId} elementId="blog-title" className="text-4xl font-bold hover:text-[#c29a47] transition-colors cursor-pointer" />
-                        </a>
+                    <Link to="/blog" className="block">
+                        <Editable as="h2" sectionId={sectionId} elementId="blog-title" className="text-4xl font-bold hover:text-[#c29a47] transition-colors cursor-pointer" />
                     </Link>
                 </div>
                 <Editable as="div" sectionId={sectionId} elementId="blog-subtitle" className="text-lg max-w-3xl mx-auto mb-16 text-center" />
                 <div className="flex flex-wrap justify-center -m-4">
                     {displayedArticles.map((article, index) => (
                         <div key={article.id} className={`w-full sm:w-1/2 p-4 ${widthClass}`}>
-                            <Link href={`/blog/${article.slug}`} passHref legacyBehavior>
-                                <a className="block h-full">
-                                    <CardComponent article={article} style={section.cardStyles} />
-                                </a>
+                            <Link to={`/blog/${article.slug}`} className="block h-full">
+                                <CardComponent article={article} style={section.cardStyles} />
                             </Link>
                         </div>
                     ))}
@@ -124,10 +120,8 @@ export const Blog: React.FC<BlogProps> = ({ sectionId }) => {
 
                 {/* View all articles button */}
                 <div className="text-center mt-12">
-                    <Link href="/blog" passHref legacyBehavior>
-                        <a className="inline-flex items-center px-6 py-3 bg-[#c29a47] text-white rounded-lg hover:bg-[#a67c3a] transition-colors font-semibold">
-                            Vezi toate articolele
-                        </a>
+                    <Link to="/blog" className="inline-flex items-center px-6 py-3 bg-[#c29a47] text-white rounded-lg hover:bg-[#a67c3a] transition-colors font-semibold">
+                        Vezi toate articolele
                     </Link>
                 </div>
             </div>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, Settings, Shield, Cookie } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 
 interface CookiePreferences {
     necessary: boolean;
