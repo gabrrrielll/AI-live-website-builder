@@ -15,15 +15,9 @@ function getSiteConfigUrl() {
     try {
         // Încarcă plans-config.json din public
         const plansConfigUrl = '/plans-config.json';
-        
-        // Pentru development, folosește fetch sincron (doar la prima încărcare)
-        if (import.meta.env.MODE === 'development') {
-            // În development, folosește întotdeauna local
-            return '/site-config.json';
-        }
-        
+
+        // Nu mai forțez fișierul local în development - să folosesc logica din siteConfigService
         // Pentru production, verifică plans-config.json
-        // Notă: Această verificare se face doar la build time sau prin cache
         return `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.SITE_CONFIG}`;
     } catch (error) {
         console.warn('Nu s-a putut citi plans-config.json, folosind API:', error);

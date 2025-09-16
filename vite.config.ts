@@ -69,7 +69,12 @@ export default defineConfig({
     },
     server: {
         port: 3000,
-        open: true
+        open: {
+            app: {
+                name: 'firefox',
+                arguments: ['--private-window', 'http://localhost:3000']
+            }
+        }
     },
     preview: {
         port: 4173,

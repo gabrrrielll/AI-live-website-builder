@@ -1,8 +1,7 @@
 "use client";
 
 import type { SiteConfig } from '@/types';
-import emailjs from '@emailjs/browser';
-import { EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, EMAILJS_PUBLIC_KEY } from '@/env';
+// EmailJS now handled by backend service
 
 // API to upload the site configuration to the server
 export const uploadConfig = async (config: SiteConfig): Promise<{ success: boolean }> => {
@@ -10,9 +9,9 @@ export const uploadConfig = async (config: SiteConfig): Promise<{ success: boole
     // Folosește API-ul de salvare din constants.js
     const { API_CONFIG } = await import('@/constants.js');
     const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.SITE_CONFIG}`;
-    
+
     console.log('Încărcare configurație pe server:', url);
-    
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -46,21 +45,40 @@ interface FormConfig {
   recipientEmail: string;
 }
 
-// Actual API to send a contact form submission via EmailJS directly in browser.
+// Send contact form via backend service
 export const sendContactForm = async (formData: FormData, config: FormConfig): Promise<{ success: boolean }> => {
   try {
-    await emailjs.send(
-      EMAILJS_SERVICE_ID,
-      EMAILJS_TEMPLATE_ID,
-      {
-        to_email: config.recipientEmail,
-        from_name: formData.name,
-        reply_to: formData.email,
-        phone: formData.phone,
-        message: formData.message,
+    // Get API base URL from constants
+    const { API_CONFIG } = await import('@/constants.js');
+    const url = `${API_CONFIG.BASE_URL}/ai-service.php`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      EMAILJS_PUBLIC_KEY
-    );
+      body: JSON.stringify({
+        action: 'send_email',
+        template_data: {
+          from_name: formData.name,
+          reply_to: formData.email,
+          phone: formData.phone,
+          message: formData.message,
+        },
+        recipient_email: config.recipientEmail
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.message || 'Failed to send email');
+    }
 
     return { success: true };
   } catch (error) {

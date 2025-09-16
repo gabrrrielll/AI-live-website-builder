@@ -1,4 +1,5 @@
 import { SITE_CONFIG_API_URL } from '@/constants.js';
+import { toast } from 'sonner';
 import type { SiteConfig } from '@/types';
 
 export interface SiteConfigService {
@@ -20,7 +21,7 @@ class SiteConfigServiceImpl implements SiteConfigService {
             const response = await fetch('/plans-config.json', {
                 cache: 'no-store'
             });
-            
+
             if (response.ok) {
                 this.plansConfig = await response.json();
                 console.log('Plans config încărcat:', this.plansConfig);
@@ -36,7 +37,7 @@ class SiteConfigServiceImpl implements SiteConfigService {
     // Determină URL-ul pentru site-config bazat pe plans-config
     private async getSiteConfigUrl(): Promise<string> {
         const plansConfig = await this.loadPlansConfig();
-        
+
         // Verifică setarea useLocal_site-config
         if (plansConfig && plansConfig['useLocal_site-config'] === true) {
             console.log('Folosind site-config.json local (useLocal_site-config = true)');
@@ -47,8 +48,8 @@ class SiteConfigServiceImpl implements SiteConfigService {
         } else {
             // Fallback la comportamentul default
             console.log('Folosind comportamentul default pentru site-config');
-            return import.meta.env.MODE === 'development' 
-                ? '/site-config.json' 
+            return import.meta.env.MODE === 'development'
+                ? '/site-config.json'
                 : SITE_CONFIG_API_URL;
         }
     }
@@ -104,11 +105,40 @@ class SiteConfigServiceImpl implements SiteConfigService {
                     console.log(`Site-config încărcat cu succes din ${source} (încercarea ${attempt})`);
                     return config;
                 } else {
+                    // Verificare specifică pentru fișierul local lipsă
+                    if (configUrl === '/site-config.json' && (response.status === 404 || response.status === 200)) {
+                        // Delay pentru a se asigura că aplicația este inițializată
+                        setTimeout(() => {
+                            if (typeof toast !== 'undefined' && toast.error) {
+                                toast.error('Setting "useLocal_site-config" is true but the configuration file is not in the public folder');
+                            } else {
+                                console.error('Toast not available - Setting "useLocal_site-config" is true but the configuration file is not in the public folder');
+                            }
+                        }, 100);
+                    }
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
             } catch (error) {
                 lastError = error instanceof Error ? error : new Error(String(error));
                 console.warn(`Eroare la încercarea ${attempt}/${maxRetries}:`, lastError.message);
+
+                // Verificare pentru erori de parsing JSON la fișierul local
+                if (lastError instanceof SyntaxError && configUrl === '/site-config.json' && attempt === 1) {
+                    // Verifică dacă setarea useLocal_site-config este true
+                    const plansConfig = await this.loadPlansConfig();
+                    const useLocalConfig = plansConfig?.['useLocal_site-config'];
+
+                    // Afișează toast doar dacă setarea este true
+                    if (useLocalConfig === true) {
+                        setTimeout(() => {
+                            if (typeof toast !== 'undefined' && toast.error) {
+                                toast.error('Setting "useLocal_site-config" is true but the configuration file is not in the public folder');
+                            } else {
+                                console.error('Toast not available - Setting "useLocal_site-config" is true but the configuration file is not in the public folder');
+                            }
+                        }, 100);
+                    }
+                }
 
                 // Nu așteaptă după ultima încercare
                 if (attempt < maxRetries) {

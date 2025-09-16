@@ -1,6 +1,6 @@
 "use client";
 
-import { UNSPLASH_API_KEY } from '@/env';
+// Backend Unsplash service integration
 
 export interface UnsplashPhoto {
     id: string;
@@ -19,23 +19,34 @@ export const searchUnsplashPhotos = async (query: string): Promise<UnsplashPhoto
     }
 
     try {
-        const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=12`;
+        // Get API base URL from constants
+        const { API_CONFIG } = await import('@/constants.js');
+        const url = `${API_CONFIG.BASE_URL}/ai-service.php`;
 
         const response = await fetch(url, {
+            method: 'POST',
             headers: {
-                'Authorization': `Client-ID ${UNSPLASH_API_KEY}`
-            }
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'search_images',
+                query: query.trim(),
+                per_page: 12
+            })
         });
 
-        const data = await response.json();
-
         if (!response.ok) {
-            const errorMessage = data.errors ? `Unsplash error: ${data.errors.join(', ')}` : `Unsplash API error: ${response.status}`;
-            console.error('Unsplash API error:', errorMessage);
-            throw new Error(errorMessage);
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
         }
 
-        return data.results || [];
+        const result = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.message || 'Failed to search images');
+        }
+
+        return result.photos || [];
     } catch (error: any) {
         console.error("Error fetching from Unsplash:", error);
         throw new Error(error.message || "An unknown error occurred.");

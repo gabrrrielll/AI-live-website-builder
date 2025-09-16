@@ -24,10 +24,10 @@ export const useSync = ({ siteConfig, setIsSyncing, t }: useSyncProps) => {
             toast.error(t.toolbar.syncIsPremium);
             return;
         }
-    
+
         setIsSyncing(true);
         const syncToast = toast.loading(t.toolbar.syncing);
-    
+
         try {
             await uploadConfig(siteConfig);
             toast.success(t.toolbar.syncSuccess, { id: syncToast });
