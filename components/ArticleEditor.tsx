@@ -15,7 +15,8 @@ import RichTextEditor from '@/components/editors/RichTextEditor';
 import { Save, Trash2, ArrowLeft, Globe, Loader, Sparkles } from 'lucide-react';
 import { translations } from '@/utils/translations';
 import ArticleImageEditorModal from './editors/ArticleImageEditorModal';
-import { generateTextWithRetry, generateText, canUseRebuild, useRebuild } from '@/services/aiService';
+import { generateTextWithRetry, generateText } from '@/services/aiService';
+import { useTestMode } from '@/context/TestModeContext';
 import { searchUnsplashPhotos } from '@/services/unsplashService';
 
 interface ArticleEditorProps {
@@ -27,6 +28,7 @@ interface ArticleEditorProps {
 const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, onBlogPageSave, onBlogPageClose }) => {
     const { isEditMode, updateArticle, deleteArticle, getImageUrl, storeImage } = useSite();
     const { language } = useLanguage();
+    const { canUseRebuild, useRebuild } = useTestMode();
     const navigate = useNavigate();
     const t = useMemo(() => translations[language].articleEditor, [language]);
     const editorsT = useMemo(() => translations[language].editors, [language]);
@@ -171,65 +173,53 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
         const toastId = toast.loading(t.generatingCompleteArticle);
 
         try {
-            // Generate content for both languages with retry logic
-            const romanianPrompt = `Generate a complete blog article in Romanian based on this topic: "${aiPrompt}".
+            // Generate content for both languages with a single AI request to ensure consistency
+            const bilingualPrompt = `Generate a complete blog article in BOTH Romanian and English based on this topic: "${aiPrompt}".
 
-            Requirements:
-            - Title: max 80 characters, engaging and SEO-friendly
-            - Excerpt: max 200 characters, compelling summary
-            - Content: exactly ${wordCount} words with proper HTML formatting (use <h1>, <h2>, <p>, <ul>, <li> tags)
-            - Meta title: max 60 characters for SEO
-            - Meta description: max 160 characters for SEO
-            - Image keywords: 2-3 keywords for image search
-            
-            CRITICAL: Return ONLY valid JSON in this exact format:
-            {
-                "title": "Titlul articolului",
-                "excerpt": "Rezumatul articolului",
-                "content": "<h1>Titlu</h1><p>Conținutul articolului...</p>",
-                "metaTitle": "Meta titlu pentru SEO",
-                "metaDescription": "Meta descriere pentru SEO",
-                "imageKeywords": "cuvinte cheie pentru imagine"
-            }`;
+IMPORTANT: Generate the SAME article content in both languages - this should be the same article translated, not two different articles about the same topic.
 
-            const englishPrompt = `Generate a complete blog article in English based on this topic: "${aiPrompt}".
+Requirements:
+- Romanian version: exactly ${wordCount} words with proper HTML formatting (use <h1>, <h2>, <p>, <ul>, <li> tags)
+- English version: exactly ${wordCount} words with the same structure and topics
+- Both versions must cover the same content, just in different languages
+- Title: max 80 characters, engaging and SEO-friendly for each language
+- Excerpt: max 200 characters, compelling summary for each language
+- Meta title: max 60 characters for SEO for each language
+- Meta description: max 160 characters for SEO for each language
+- Image keywords: 2-3 keywords for image search (can be the same for both languages)
 
-            Requirements:
-            - Title: max 80 characters, engaging and SEO-friendly
-            - Excerpt: max 200 characters, compelling summary
-            - Content: exactly ${wordCount} words with proper HTML formatting (use <h1>, <h2>, <p>, <ul>, <li> tags)
-            - Meta title: max 60 characters for SEO
-            - Meta description: max 160 characters for SEO
-            - Image keywords: 2-3 keywords for image search
-            
-            CRITICAL: Return ONLY valid JSON in this exact format:
-            {
-                "title": "Article Title",
-                "excerpt": "Article excerpt",
-                "content": "<h1>Title</h1><p>Article content...</p>",
-                "metaTitle": "Meta title for SEO",
-                "metaDescription": "Meta description for SEO",
-                "imageKeywords": "keywords for image"
-            }`;
+CRITICAL: Return ONLY valid JSON in this exact format:
+{
+    "ro": {
+        "title": "Titlul articolului în română",
+        "excerpt": "Rezumatul articolului în română",
+        "content": "<h1>Titlu</h1><p>Conținutul articolului în română...</p>",
+        "metaTitle": "Meta titlu pentru SEO în română",
+        "metaDescription": "Meta descriere pentru SEO în română",
+        "imageKeywords": "cuvinte cheie pentru imagine"
+    },
+    "en": {
+        "title": "Article Title in English",
+        "excerpt": "Article excerpt in English",
+        "content": "<h1>Title</h1><p>Article content in English...</p>",
+        "metaTitle": "Meta title for SEO in English",
+        "metaDescription": "Meta description for SEO in English",
+        "imageKeywords": "keywords for image"
+    }
+}`;
 
-            // Generate content for both languages with retry logic
-            const [romanianResult, englishResult] = await Promise.all([
-                generateTextWithRetry(romanianPrompt, 'json', 3, toastId?.toString()),
-                generateTextWithRetry(englishPrompt, 'json', 3, toastId?.toString())
-            ]);
+            // Generate content for both languages with a single request
+            console.log('Starting bilingual article generation...');
+            const bilingualResult = await generateTextWithRetry(bilingualPrompt, 'json', toastId?.toString());
+            console.log('Bilingual article generated successfully!');
 
-            // Parse the results with better error handling
-            let roData, enData;
-            try {
-                roData = JSON.parse(romanianResult);
-                enData = JSON.parse(englishResult);
-            } catch (parseError: unknown) {
-                console.error('JSON Parse Error:', parseError);
-                console.error('Romanian result:', romanianResult);
-                console.error('English result:', englishResult);
-                const errorMessage = parseError instanceof Error ? parseError.message : 'Unknown parsing error';
-                throw new Error(`Eroare la parsarea răspunsului AI: ${errorMessage}`);
-            }
+            // Parse the bilingual result
+            console.log('Bilingual result type:', typeof bilingualResult);
+            console.log('Bilingual result:', bilingualResult);
+
+            // Result is a parsed object from aiService.ts containing both languages
+            const roData = bilingualResult.ro;
+            const enData = bilingualResult.en;
 
             // Search for a relevant image on Unsplash
             const imageKeywords = (roData.imageKeywords || enData.imageKeywords || aiPrompt).toString();
@@ -262,6 +252,11 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
                 slug: slugify(roData.title)
             };
 
+            console.log('Setting updated bilingual article:', updatedArticle);
+            console.log('Article content structure:', {
+                ro: updatedArticle.content.ro ? 'Present' : 'Missing',
+                en: updatedArticle.content.en ? 'Present' : 'Missing'
+            });
             setArticle(updatedArticle);
             toast.success(t.completeArticleGenerated, { id: toastId });
             setAiPrompt(''); // Clear the prompt

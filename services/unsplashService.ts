@@ -23,6 +23,7 @@ export const searchUnsplashPhotos = async (query: string): Promise<UnsplashPhoto
         const { API_CONFIG } = await import('@/constants.js');
         const url = `${API_CONFIG.BASE_URL}/ai-service.php`;
 
+        // Call the backend directly
         const response = await fetch(url, {
             method: 'POST',
             headers: {

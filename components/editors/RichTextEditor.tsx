@@ -1,6 +1,36 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
+
+// Suppress react-quill related warnings and source map errors in development
+if (process.env.NODE_ENV === 'development') {
+  const originalConsoleWarn = console.warn;
+  const originalConsoleError = console.error;
+
+  console.warn = (...args) => {
+    if (typeof args[0] === 'string') {
+      const message = args[0];
+      if (message.includes('findDOMNode') ||
+        message.includes('DOMNodeInserted') ||
+        message.includes('Adăugarea unui ascultător pentru DOMNodeInserted')) {
+        return; // Suppress react-quill related warnings
+      }
+    }
+    originalConsoleWarn.apply(console, args);
+  };
+
+  console.error = (...args) => {
+    if (typeof args[0] === 'string') {
+      const message = args[0];
+      if (message.includes('source map') ||
+        message.includes('Eroare în source map') ||
+        message.includes('installHook.js.map')) {
+        return; // Suppress source map errors
+      }
+    }
+    originalConsoleError.apply(console, args);
+  };
+}
 import { lazy, Suspense } from 'react';
 import type { RichTextElement, Language, LocalizedString } from '@/types';
 import { toast } from 'sonner';
@@ -43,6 +73,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ element, onSave, onChan
   const t = useMemo(() => translations[language].editors, [language]);
 
   useEffect(() => {
+    console.log('RichTextEditor: element.content changed:', element?.content);
     if (element?.content) {
       setContent(element.content);
     }
@@ -80,12 +111,14 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ element, onSave, onChan
 
       {editorView === 'visual' ? (
         <div className="rich-text-editor">
-          <style jsx global>{`
+          <style>{`
               /* Stiluri pentru editor */
               .rich-text-editor .ql-editor {
                 font-family: Arial, Helvetica, sans-serif;
                 font-size: 14px;
                 line-height: 1.5;
+                color: #333333 !important;
+                background-color: #ffffff !important;
               }
               
               /* Stiluri pentru fonturi globale */

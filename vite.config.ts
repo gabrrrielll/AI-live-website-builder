@@ -76,6 +76,10 @@ export default defineConfig({
             }
         }
     },
+    define: {
+        // Suppress source map warnings in development
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+    },
     preview: {
         port: 4173,
         open: true

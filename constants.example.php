@@ -1,10 +1,10 @@
 <?php
 
 /**
- * API Keys Configuration
+ * API Keys Configuration Example
  *
- * IMPORTANT: Keep this file secure and never commit it to version control!
- * Add this file to .gitignore and create a constants.example.php for reference.
+ * Copy this file to constants.php and fill in your actual API keys.
+ * NEVER commit constants.php to version control!
  */
 
 // AI Services
@@ -31,3 +31,4 @@ define('ALLOWED_ORIGINS', [
 // Rate Limiting (requests per minute)
 define('RATE_LIMIT_REQUESTS', 60);
 define('RATE_LIMIT_WINDOW', 60); // seconds
+

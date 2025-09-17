@@ -10,7 +10,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import { useSite } from '@/context/SiteContext';
 import { useTestMode } from '@/context/TestModeContext';
-import { generateImage, canUseImageGen } from '@/services/aiService';
+import { generateImage } from '@/services/aiService';
 
 type AspectRatio = '16:9' | '4:3' | '1:1' | '3:2' | '2:3';
 

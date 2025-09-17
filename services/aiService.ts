@@ -13,7 +13,6 @@ import {
 export const generateTextWithRetry = async (
     prompt: string,
     format: 'text' | 'json' = 'text',
-    maxRetries: number = 3,
     toastId?: string
 ): Promise<string> => {
     // Verifică dacă serviciul poate fi folosit
@@ -22,10 +21,11 @@ export const generateTextWithRetry = async (
     }
 
     try {
-        // Get API base URL from constants
+        // For development - check if backend is available
         const { API_CONFIG } = await import('@/constants.js');
         const url = `${API_CONFIG.BASE_URL}/ai-service.php`;
 
+        // Call the backend directly
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -34,8 +34,7 @@ export const generateTextWithRetry = async (
             body: JSON.stringify({
                 action: 'generate_text',
                 prompt,
-                format,
-                maxRetries
+                format
             })
         });
 
@@ -53,18 +52,28 @@ export const generateTextWithRetry = async (
         // Incrementează contorul pentru serviciu
         useService('ai_text_generation');
 
+        // Always return parsed object for consistency
+        if (format === 'json') {
+            try {
+                return JSON.parse(result.text);
+            } catch (parseError) {
+                console.error('Failed to parse AI response as JSON:', parseError);
+                throw new Error('Invalid JSON response from AI service');
+            }
+        }
+
         return result.text;
 
     } catch (error: any) {
         console.error('AI text generation error:', error);
-        
+
         const errorMessage = error.message || "An unknown error occurred with the AI service.";
-        
+
         // Verifică pentru mesaje specifice legate de siguranță
         if (error.toString().includes('SAFETY') || error.toString().includes('blocked')) {
             throw new Error("The request was blocked due to safety settings. Please modify your prompt.");
         }
-        
+
         throw new Error(errorMessage);
     }
 };

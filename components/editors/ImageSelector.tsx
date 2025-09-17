@@ -6,7 +6,7 @@ import { Sparkles, Loader, UploadCloud, Search } from 'lucide-react';
 import { searchUnsplashPhotos, UnsplashPhoto } from '@/services/unsplashService';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
-import { generateImage, canUseImageGen, useImageGen } from '@/services/aiService';
+import { generateImage } from '@/services/aiService';
 import { useTestMode } from '@/context/TestModeContext';
 
 export type AspectRatio = 'square' | 'landscape' | 'portrait' | '16:9' | '4:3' | '1:1';

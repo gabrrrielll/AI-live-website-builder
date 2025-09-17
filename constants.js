@@ -31,7 +31,7 @@ const SITE_CONFIG_API_URL = getSiteConfigUrl();
 // Alte constante utile
 const APP_CONFIG = {
     // URL-ul de bază pentru site (pentru sitemap, robots.txt, etc.)
-    BASE_SITE_URL: import.meta?.env?.VITE_BASE_SITE_URL || 'https://yourdomain.com',
+    BASE_SITE_URL: import.meta?.env?.VITE_BASE_SITE_URL || 'https://ai-web.site',
 
     // Setări pentru rate limiting
     TEST_MODE: {
