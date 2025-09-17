@@ -7,7 +7,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import { useTestMode } from '@/context/TestModeContext';
 
-type ModalView = 'prompt' | 'loading' | 'explanation';
+type ModalView = 'prompt' | 'loading' | 'explanation' | 'error';
 
 const AIRebuildModal: React.FC = () => {
     const { isRebuildModalOpen, closeRebuildModal, rebuildSiteWithAI } = useSite();
@@ -17,6 +17,7 @@ const AIRebuildModal: React.FC = () => {
 
     const [prompt, setPrompt] = useState('');
     const [explanation, setExplanation] = useState('');
+    const [error, setError] = useState('');
     const [view, setView] = useState<ModalView>('prompt');
 
     const [progress, setProgress] = useState(0);
@@ -70,13 +71,20 @@ const AIRebuildModal: React.FC = () => {
         setProgress(0);
         setStatusTextKey('');
 
-        const result = await rebuildSiteWithAI(prompt);
+        try {
+            const result = await rebuildSiteWithAI(prompt, onProgress);
 
-        if (result) {
-            setExplanation(result);
-            setView('explanation');
-        } else {
-            setView('prompt');
+            if (result) {
+                setExplanation(result);
+                setView('explanation');
+            } else {
+                setError('AI-ul nu a putut procesa cererea. Te rog încearcă din nou cu un prompt mai simplu.');
+                setView('error');
+            }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : "A apărut o eroare neprevăzută.";
+            setError(errorMessage);
+            setView('error');
         }
     };
 
@@ -85,6 +93,7 @@ const AIRebuildModal: React.FC = () => {
         setTimeout(() => {
             setPrompt('');
             setExplanation('');
+            setError('');
             setView('prompt');
             setProgress(0);
             setStatusTextKey('');
@@ -106,9 +115,9 @@ const AIRebuildModal: React.FC = () => {
                 return (
                     <div className="p-8 text-center flex flex-col items-center justify-center space-y-4 min-h-[450px]">
                         <img
-                            src="https://andradadan.com/wp-content/uploads/2025/08/AI-on-work.gif"
+                            src="/AI-site-working.gif"
                             alt="AI is working..."
-                            className="w-100 h-auto rounded-lg"
+                            className="w-full max-w-md h-auto rounded-lg"
                         />
                         <h3 className="text-lg font-semibold text-gray-800">{t.generatingTitle}</h3>
                         <div className="w-full bg-gray-200 rounded-full h-2.5 mt-4">
@@ -165,6 +174,34 @@ const AIRebuildModal: React.FC = () => {
                             >
                                 <Sparkles size={20} className="mr-2" />
                                 <span>{t.generateButton}</span>
+                            </button>
+                        </div>
+                    </>
+                );
+            case 'error':
+                return (
+                    <>
+                        <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+                            <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+                                <X size={22} className="mr-2 text-red-600" />
+                                Eroare la Generare
+                            </h3>
+                            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                                <p className="text-red-800">{error}</p>
+                            </div>
+                        </div>
+                        <div className="flex justify-between p-4 border-t bg-gray-50 rounded-b-lg">
+                            <button
+                                onClick={() => setView('prompt')}
+                                className="px-6 py-2.5 bg-gray-600 text-white rounded-md hover:bg-gray-700 font-semibold"
+                            >
+                                Încearcă din nou
+                            </button>
+                            <button
+                                onClick={handleClose}
+                                className="px-6 py-2.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-semibold"
+                            >
+                                Închide
                             </button>
                         </div>
                     </>

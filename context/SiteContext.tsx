@@ -6,6 +6,9 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import type { SiteConfig, SiteElement, Section, Article } from '@/types';
 import { useSiteConfig, useSiteConfigSaver } from '@/hooks/useSiteConfig';
 import { useSiteMode } from './SiteModeContext';
+import { useLanguage } from './LanguageContext';
+import { useAI } from '@/hooks/useAI';
+import { translations } from '@/utils/translations';
 import { toast } from 'sonner';
 import { useHistory } from '@/hooks/useHistory';
 
@@ -33,7 +36,7 @@ interface SiteContextType {
     isRebuildModalOpen: boolean;
     openRebuildModal: () => void;
     closeRebuildModal: () => void;
-    rebuildSiteWithAI: (prompt: string) => Promise<string>;
+    rebuildSiteWithAI: (prompt: string, onProgress?: (progress: number, statusTextKey: string) => void) => Promise<string | undefined>;
     // Funcții pentru editarea elementelor
     editingElement: { sectionId: string; elementId: string; element: SiteElement } | null;
     startEditing: (sectionId: string, elementId: string) => void;
@@ -70,6 +73,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { siteConfig: initialConfig, isLoading, error, retryLoad } = useSiteConfig();
     const { saveToLocalStorage, saveToServer } = useSiteConfigSaver();
     const { isEditMode, currentDomain } = useSiteMode();
+    const { language } = useLanguage();
 
     // Hook pentru gestionarea istoricului
     const { undo: historyUndo, redo: historyRedo, canUndo, canRedo, initializeHistory, updateHistory } = useHistory();
@@ -284,6 +288,16 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return id;
     }, [siteConfig, updateSiteConfig]);
 
+    // Hook pentru AI rebuild
+    const t = translations[language];
+    const { rebuildSiteWithAI: aiRebuildSite } = useAI({
+        siteConfig,
+        setSiteConfig,
+        updateHistory,
+        t,
+        storeImage
+    });
+
     // Funcții pentru editor (pentru compatibilitate)
     const toggleShowHiddenInEditor = useCallback(() => {
         setShowHiddenInEditor(prev => !prev);
@@ -298,10 +312,9 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsRebuildModalOpen(false);
     }, []);
 
-    const rebuildSiteWithAI = useCallback(async (prompt: string): Promise<string> => {
-        // Implementare simplă - returnează un explanation
-        return `Site-ul va fi reconstruit pe baza prompt-ului: "${prompt}"`;
-    }, []);
+    const rebuildSiteWithAI = useCallback(async (prompt: string, onProgress?: (progress: number, statusTextKey: string) => void): Promise<string | undefined> => {
+        return await aiRebuildSite(prompt, onProgress || (() => { }));
+    }, [aiRebuildSite]);
 
     // Funcții pentru editarea elementelor
     const startEditing = useCallback((sectionId: string, elementId: string) => {

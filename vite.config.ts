@@ -57,12 +57,60 @@ export default defineConfig({
         outDir: 'dist',
         assetsDir: 'assets',
         sourcemap: false,
+        chunkSizeWarningLimit: 1000, // Increase warning limit to 1MB
+        minify: 'terser',
+        terserOptions: {
+            compress: {
+                drop_console: true,
+                drop_debugger: true,
+            },
+        },
         rollupOptions: {
             output: {
                 manualChunks: {
-                    vendor: ['react', 'react-dom'],
-                    router: ['react-router-dom'],
-                    ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-popover']
+                    // Core React
+                    'react-vendor': ['react', 'react-dom'],
+
+                    // Routing
+                    'router': ['react-router-dom'],
+
+                    // UI Libraries - split by size
+                    'radix-ui': [
+                        '@radix-ui/react-dialog',
+                        '@radix-ui/react-dropdown-menu',
+                        '@radix-ui/react-popover',
+                        '@radix-ui/react-select',
+                        '@radix-ui/react-slot',
+                        '@radix-ui/react-switch',
+                        '@radix-ui/react-tabs',
+                        '@radix-ui/react-toast',
+                        '@radix-ui/react-tooltip'
+                    ],
+
+                    // Large UI components
+                    'ui-components': [
+                        'react-beautiful-dnd',
+                        'react-quill',
+                        'react-image-crop',
+                        'lucide-react'
+                    ],
+
+                    // Utilities and helpers
+                    'utils': [
+                        'clsx',
+                        'class-variance-authority',
+                        'tailwind-merge',
+                        'tailwindcss-animate',
+                        'debounce',
+                        'dompurify',
+                        'sonner'
+                    ],
+
+                    // Validation
+                    'validation': ['zod', 'zod-validation-error'],
+
+                    // SEO and meta
+                    'seo': ['react-helmet-async']
                 }
             }
         }

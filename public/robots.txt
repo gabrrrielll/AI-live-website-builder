@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://yourdomain.com/sitemap.xml
+Sitemap: https://ai-web.site/sitemap.xml
 
 # Crawl-delay
 Crawl-delay: 1

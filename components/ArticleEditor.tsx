@@ -255,8 +255,22 @@ CRITICAL: Return ONLY valid JSON in this exact format:
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
 
+            // Check if it's a server error (503, 502, 504)
+            if (errorMessage.includes('HTTP 503') || errorMessage.includes('HTTP 502') || errorMessage.includes('HTTP 504')) {
+                toast.error("Serviciul AI este temporar indisponibil", {
+                    id: toastId,
+                    description: "Vă rugăm să încercați din nou în câteva momente. Serverul este încărcat."
+                });
+            }
+            // Check if it's a timeout error
+            else if (errorMessage.includes('timeout') || errorMessage.includes('TIMEOUT')) {
+                toast.error("Cererea a expirat", {
+                    id: toastId,
+                    description: "Generarea articolului durează mai mult decât de obicei. Vă rugăm să încercați din nou."
+                });
+            }
             // Check if it's a Gemini API overload error
-            if (errorMessage.includes('overloaded') || errorMessage.includes('503') || errorMessage.includes('UNAVAILABLE')) {
+            else if (errorMessage.includes('overloaded') || errorMessage.includes('UNAVAILABLE')) {
                 toast.error(t.geminiOverloadedError, {
                     id: toastId,
                     description: t.geminiOverloadedDescription

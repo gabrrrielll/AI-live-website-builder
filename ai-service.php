@@ -11,6 +11,11 @@
  * All API keys are kept secure on the server.
  */
 
+// Disable all output buffering and error display to prevent JSON corruption
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ob_clean();
+
 // Include constants
 require_once 'constants.php';
 
@@ -30,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Only allow POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['error' => 'Method not allowed']);
+    echo json_encode(['success' => false, 'error' => 'Method not allowed']);
     exit();
 }
 
@@ -50,7 +55,7 @@ error_log("Parsed Input: " . print_r($input, true));
 if (!$input || !isset($input['action'])) {
     error_log("ERROR: Missing action parameter");
     http_response_code(400);
-    echo json_encode(['error' => 'Missing action parameter']);
+    echo json_encode(['success' => false, 'error' => 'Missing action parameter']);
     exit();
 }
 
@@ -73,21 +78,58 @@ try {
 
         default:
             http_response_code(400);
-            echo json_encode(['error' => 'Invalid action']);
+            echo json_encode(['success' => false, 'error' => 'Invalid action']);
             exit();
     }
 
     error_log("Final Result: " . print_r($result, true));
-    echo json_encode($result);
+
+    // Ensure result has success field
+    if (!isset($result['success'])) {
+        $result['success'] = true;
+    }
+
+    // Clear any output buffer and ensure clean JSON
+    if (ob_get_level()) {
+        ob_clean();
+    }
+
+    $jsonResponse = json_encode($result);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        error_log("JSON encoding error: " . json_last_error_msg());
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'JSON encoding failed']);
+        exit();
+    }
+
+    echo $jsonResponse;
 
 } catch (Exception $e) {
     error_log("EXCEPTION: " . $e->getMessage());
     error_log("Stack trace: " . $e->getTraceAsString());
     http_response_code(500);
-    echo json_encode([
+
+    // Clear any output buffer and ensure clean JSON
+    if (ob_get_level()) {
+        ob_clean();
+    }
+
+    $errorResponse = [
+        'success' => false,
         'error' => 'Internal server error',
         'message' => $e->getMessage()
-    ]);
+    ];
+
+    error_log("Sending error response: " . json_encode($errorResponse));
+
+    $jsonResponse = json_encode($errorResponse);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        error_log("JSON encoding error in catch: " . json_last_error_msg());
+        echo json_encode(['success' => false, 'error' => 'JSON encoding failed']);
+        exit();
+    }
+
+    echo $jsonResponse;
 }
 
 /**
@@ -101,6 +143,12 @@ function generateText($input)
     if (!isset($input['prompt']) || !isset($input['format'])) {
         error_log("ERROR: Missing prompt or format parameter");
         throw new Exception('Missing prompt or format parameter');
+    }
+
+    // Check if API key is configured
+    if (!defined('GEMINI_API_KEY') || GEMINI_API_KEY === 'your_gemini_api_key_here' || empty(GEMINI_API_KEY)) {
+        error_log("ERROR: Gemini API key not configured");
+        throw new Exception('AI service not configured. Please contact administrator.');
     }
 
     $prompt = $input['prompt'];
@@ -129,7 +177,7 @@ function generateText($input)
     ];
     error_log("Request Data: " . json_encode($data));
 
-    // Try up to 3 times with much longer timeout
+    // Try up to 3 times with exponential backoff
     $maxAttempts = 3;
     $response = null;
 
@@ -143,13 +191,31 @@ function generateText($input)
             break;
         }
 
-        if ($attempt < $maxAttempts) {
-            error_log("Retrying in 10 seconds...");
-            sleep(10);
+        // Check if it's a 503 error (service unavailable) or timeout
+        $isRetryableError = false;
+        if (isset($response['error'])) {
+            $error = $response['error'];
+            $isRetryableError = (
+                strpos($error, 'HTTP 503') !== false ||
+                strpos($error, 'HTTP 502') !== false ||
+                strpos($error, 'HTTP 504') !== false ||
+                strpos($error, 'timeout') !== false ||
+                strpos($error, 'connection') !== false
+            );
+        }
+
+        if ($attempt < $maxAttempts && $isRetryableError) {
+            $delay = pow(2, $attempt) * 5; // Exponential backoff: 10s, 20s, 40s
+            error_log("Retryable error detected. Retrying in $delay seconds...");
+            sleep($delay);
+        } elseif ($attempt < $maxAttempts) {
+            error_log("Non-retryable error. Stopping retries.");
+            break;
         }
     }
 
     if (!$response['success']) {
+        error_log("Final attempt failed: " . print_r($response, true));
         throw new Exception('Gemini API request failed: ' . $response['error']);
     }
 
@@ -192,7 +258,7 @@ function searchImages($input)
     }
 
     $query = urlencode($input['query']);
-    $perPage = $input['per_page'] ?? 12;
+    $perPage = $input['per_page'] ?? 30;
 
     $url = "https://api.unsplash.com/search/photos?query={$query}&per_page={$perPage}";
 
@@ -278,8 +344,9 @@ function makeHttpRequest($url, $method = 'GET', $data = null, $headers = [])
 {
     $ch = curl_init();
 
-    // Use much longer timeout for Gemini API (20 minutes)
-    $timeout = (strpos($url, 'generativelanguage.googleapis.com') !== false) ? 1200 : TIMEOUT_SECONDS;
+    // Use longer timeout for AI requests
+    $timeout = (strpos($url, 'generativelanguage.googleapis.com') !== false) ? 300 : (defined('TIMEOUT_SECONDS') ? TIMEOUT_SECONDS : 30);
+    error_log("Using timeout: $timeout seconds for URL: $url");
 
     curl_setopt_array($ch, [
         CURLOPT_URL => $url,
@@ -302,10 +369,14 @@ function makeHttpRequest($url, $method = 'GET', $data = null, $headers = [])
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $error = curl_error($ch);
+    $curlInfo = curl_getinfo($ch);
 
     curl_close($ch);
 
+    error_log("CURL Info: " . print_r($curlInfo, true));
+
     if ($error) {
+        error_log("CURL Error: $error");
         return [
             'success' => false,
             'error' => $error

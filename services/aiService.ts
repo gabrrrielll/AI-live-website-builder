@@ -39,11 +39,19 @@ export const generateTextWithRetry = async (
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+            const responseText = await response.text();
+            console.error('AI Service Error Response:', responseText);
+            try {
+                const errorData = JSON.parse(responseText);
+                throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+            } catch (parseError) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText} - Response: ${responseText.substring(0, 200)}`);
+            }
         }
 
-        const result = await response.json();
+        const responseText = await response.text();
+        console.log('AI Service Response:', responseText.substring(0, 500));
+        const result = JSON.parse(responseText);
 
         if (!result.success) {
             throw new Error(result.message || 'Failed to generate text');
@@ -72,6 +80,16 @@ export const generateTextWithRetry = async (
         // Verifică pentru mesaje specifice legate de siguranță
         if (error.toString().includes('SAFETY') || error.toString().includes('blocked')) {
             throw new Error("The request was blocked due to safety settings. Please modify your prompt.");
+        }
+
+        // Verifică pentru erori de server (503, 502, 504)
+        if (errorMessage.includes('HTTP 503') || errorMessage.includes('HTTP 502') || errorMessage.includes('HTTP 504')) {
+            throw new Error("AI service is temporarily unavailable. Please try again in a few moments.");
+        }
+
+        // Verifică pentru timeout
+        if (errorMessage.includes('timeout') || errorMessage.includes('TIMEOUT')) {
+            throw new Error("Request timed out. The AI service is taking longer than expected. Please try again.");
         }
 
         throw new Error(errorMessage);

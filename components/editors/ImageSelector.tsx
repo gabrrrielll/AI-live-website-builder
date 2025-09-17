@@ -154,11 +154,21 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
           <button onClick={handleStockPhotoSearch} disabled={isSearchingStockPhotos} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-300 flex items-center justify-center min-w-[100px]">{isSearchingStockPhotos ? <Loader size={20} className="animate-spin" /> : t.search}</button>
         </div>
         {stockPhotos.length > 0 && (
-          <div className="grid grid-cols-3 gap-2 mt-4 max-h-60 overflow-y-auto p-1 border rounded-md">
+          <div className="grid grid-cols-3 gap-4 mt-4 max-h-[500px] overflow-y-auto p-3 border rounded-md bg-gray-50">
             {stockPhotos.map(photo => (
-              <button key={photo.id} onClick={() => handleStockPhotoSelect(photo)} className="aspect-video block overflow-hidden rounded-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                <img src={photo.urls.small} alt={photo.alt_description} className="w-full h-full object-cover transition-transform hover:scale-110" />
-              </button>
+              <div key={photo.id} className="relative group">
+                <button
+                  onClick={() => handleStockPhotoSelect(photo)}
+                  className="w-full h-32 overflow-hidden rounded-lg focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 hover:shadow-lg transition-all duration-200 border border-gray-200"
+                >
+                  <img
+                    src={photo.urls.small}
+                    alt={photo.alt_description}
+                    className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                    loading="lazy"
+                  />
+                </button>
+              </div>
             ))}
           </div>
         )}

@@ -32,7 +32,7 @@ export const searchUnsplashPhotos = async (query: string): Promise<UnsplashPhoto
             body: JSON.stringify({
                 action: 'search_images',
                 query: query.trim(),
-                per_page: 12
+                per_page: 30
             })
         });
 

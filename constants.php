@@ -20,6 +20,7 @@ define('EMAILJS_PUBLIC_KEY', 'your_emailjs_public_key');
 define('API_VERSION', '1.0');
 define('MAX_RETRIES', 3);
 define('TIMEOUT_SECONDS', 30);
+define('AI_TIMEOUT_SECONDS', 300); // 5 minutes for AI requests
 
 // CORS Headers
 define('ALLOWED_ORIGINS', [

@@ -84,7 +84,7 @@ The `ai-service.php` accepts POST requests with the following actions:
 {
   "action": "search_images", 
   "query": "search term",
-  "per_page": 12
+  "per_page": 30
 }
 ```
 
