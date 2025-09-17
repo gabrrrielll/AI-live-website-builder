@@ -141,17 +141,17 @@ const ArticlePage: React.FC = () => {
         >
             <>
                 {headerSection && <Header sectionId={headerSection.id} />}
-                <main>
+                <main className="bg-white">
                     {/* Breadcrumb */}
-                    <div className="container mx-auto px-6 py-4">
+                    <div className="container mx-auto px-6 py-4 bg-white">
                         <nav className="flex items-center space-x-2 text-sm text-gray-600">
                             <Link to="/" className="flex items-center hover:text-[#c29a47] transition-colors">
                                 <Home size={16} className="mr-1" />
-                                {t.breadcrumbHome}
+                                {t.blogPage.breadcrumbHome}
                             </Link>
                             <ChevronRight size={16} />
                             <Link to="/blog" className="hover:text-[#c29a47] transition-colors">
-                                {t.breadcrumbBlog}
+                                {t.blogPage.breadcrumbBlog}
                             </Link>
                             <ChevronRight size={16} />
                             <span className="text-gray-800 font-medium truncate max-w-xs">

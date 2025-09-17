@@ -209,13 +209,9 @@ CRITICAL: Return ONLY valid JSON in this exact format:
 }`;
 
             // Generate content for both languages with a single request
-            console.log('Starting bilingual article generation...');
             const bilingualResult = await generateTextWithRetry(bilingualPrompt, 'json', toastId?.toString());
-            console.log('Bilingual article generated successfully!');
 
             // Parse the bilingual result
-            console.log('Bilingual result type:', typeof bilingualResult);
-            console.log('Bilingual result:', bilingualResult);
 
             // Result is a parsed object from aiService.ts containing both languages
             const roData = bilingualResult.ro;
@@ -252,11 +248,6 @@ CRITICAL: Return ONLY valid JSON in this exact format:
                 slug: slugify(roData.title)
             };
 
-            console.log('Setting updated bilingual article:', updatedArticle);
-            console.log('Article content structure:', {
-                ro: updatedArticle.content.ro ? 'Present' : 'Missing',
-                en: updatedArticle.content.en ? 'Present' : 'Missing'
-            });
             setArticle(updatedArticle);
             toast.success(t.completeArticleGenerated, { id: toastId });
             setAiPrompt(''); // Clear the prompt
@@ -312,14 +303,16 @@ CRITICAL: Return ONLY valid JSON in this exact format:
 
     if (!isEditMode) {
         return (
-            <article className="container mx-auto px-4 py-12 max-w-4xl">
-                <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">{article.title[language]}</h1>
-                <p className="text-lg text-gray-600 mb-8">{article.excerpt[language]}</p>
-                {resolvedImageUrl && (
-                    <img src={resolvedImageUrl} alt={article.imageAlt[language]} className="w-full h-auto rounded-lg shadow-lg mb-8" />
-                )}
-                <div className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-p:leading-relaxed prose-h1:text-3xl prose-h1:font-bold prose-h1:mb-4 prose-h2:text-2xl prose-h2:font-semibold prose-h2:mb-3 prose-h3:text-xl prose-h3:font-semibold prose-h3:mb-2 prose-ul:list-disc prose-ul:pl-6 prose-ol:list-decimal prose-ol:pl-6 prose-li:mb-1 prose-strong:font-semibold prose-em:italic prose-a:text-[#c29a47] prose-a:no-underline hover:prose-a:underline prose-blockquote:border-l-4 prose-blockquote:border-[#c29a47] prose-blockquote:pl-4 prose-blockquote:italic" dangerouslySetInnerHTML={{ __html: article.content[language] }} />
-            </article>
+            <div className="min-h-screen bg-white">
+                <article className="container mx-auto px-4 py-12 max-w-4xl bg-white">
+                    <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">{article.title[language]}</h1>
+                    <p className="text-lg text-gray-600 mb-8">{article.excerpt[language]}</p>
+                    {resolvedImageUrl && (
+                        <img src={resolvedImageUrl} alt={article.imageAlt[language]} className="w-full h-auto rounded-lg shadow-lg mb-8" />
+                    )}
+                    <div className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-p:leading-relaxed prose-h1:text-3xl prose-h1:font-bold prose-h1:mb-4 prose-h2:text-2xl prose-h2:font-semibold prose-h2:mb-3 prose-h3:text-xl prose-h3:font-semibold prose-h3:mb-2 prose-ul:list-disc prose-ul:pl-6 prose-ol:list-decimal prose-ol:pl-6 prose-li:mb-1 prose-strong:font-semibold prose-em:italic prose-a:text-[#c29a47] prose-a:no-underline hover:prose-a:underline prose-blockquote:border-l-4 prose-blockquote:border-[#c29a47] prose-blockquote:pl-4 prose-blockquote:italic" dangerouslySetInnerHTML={{ __html: article.content[language] }} />
+                </article>
+            </div>
         );
     }
 
