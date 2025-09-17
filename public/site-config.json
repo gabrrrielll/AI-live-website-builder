@@ -1,0 +1,2186 @@
+{
+  "metadata": {
+    "version": "2.0.0",
+    "lastModified": "2024-08-01T12:00:00Z",
+    "userType": "free"
+  },
+  "sectionOrder": [
+    "header",
+    "about",
+    "hero",
+    "services",
+    "stats",
+    "portfolio",
+    "team",
+    "clients",
+    "pricing",
+    "testimonials",
+    "blog",
+    "faq",
+    "how-it-works",
+    "contact",
+    "footer"
+  ],
+  "articles": [
+    {
+      "id": "article-1722513600000",
+      "slug": "viitorul-inteligentei-artificiale-generative-in-web-design",
+      "title": {
+        "ro": "Viitorul Inteligenței Artificiale Generative în Web Design",
+        "en": "The Future of Generative AI in Web Design"
+      },
+      "excerpt": {
+        "ro": "Descoperă cum inteligența artificială revoluționează modul în care creăm site-uri web, de la conținut automatizat la layout-uri dinamice.",
+        "en": "Discover how artificial intelligence is revolutionizing the way we create websites, from automated content to dynamic layouts."
+      },
+      "content": {
+        "ro": "<h1>Explorând Noi Orizonturi</h1><p>Inteligența artificială generativă nu mai este doar un concept SF. Astăzi, ea redefinește peisajul digital, permițând designerilor și dezvoltatorilor să creeze experiențe web personalizate și captivante la o scară fără precedent. De la generarea de imagini unice la scrierea de cod, AI-ul devine un partener indispensabil în procesul creativ.</p>",
+        "en": "<h1>Exploring New Horizons</h1><p>Generative artificial intelligence is no longer just a sci-fi concept. Today, it is redefining the digital landscape, enabling designers and developers to create personalized and engaging web experiences on an unprecedented scale. From generating unique images to writing code, AI is becoming an indispensable partner in the creative process.</p>"
+      },
+      "imageUrl": "https://picsum.photos/seed/blog1/800/450",
+      "imageAlt": {
+        "ro": "Articol de blog despre tendințele AI",
+        "en": "Blog post about AI trends"
+      },
+      "metaTitle": {
+        "ro": "Viitorul AI în Web Design | Inovează SRL",
+        "en": "The Future of AI in Web Design | Innovate Inc."
+      },
+      "metaDescription": {
+        "ro": "O analiză aprofundată a modului în care AI-ul generativ transformă industria de web design și ce înseamnă acest lucru pentru afacerea ta.",
+        "en": "An in-depth analysis of how generative AI is transforming the web design industry and what this means for your business."
+      },
+      "createdAt": "2024-08-01T12:00:00Z",
+      "updatedAt": "2024-08-01T12:00:00Z"
+    },
+    {
+      "id": "article-1722427200000",
+      "slug": "5-sfaturi-seo-pentru-noul-tau-website",
+      "title": {
+        "ro": "5 Sfaturi SEO pentru Noul Tău Website",
+        "en": "5 SEO Tips for Your New Website"
+      },
+      "excerpt": {
+        "ro": "Învață strategiile SEO esențiale pentru a ajuta site-ul tău nou lansat să se claseze mai sus în rezultatele motoarelor de căutare.",
+        "en": "Learn the essential SEO strategies to help your newly launched website rank higher in search engine results."
+      },
+      "content": {
+        "ro": "<h1>Optimizare pentru Succes</h1><p>Lansarea unui site nou este doar primul pas. Pentru a atrage trafic organic, este crucial să implementezi o strategie SEO solidă încă de la început. Acest articol acoperă 5 piloni fundamentali: cercetarea cuvintelor cheie, optimizarea on-page, conținutul de calitate, construirea de link-uri și optimizarea tehnică.</p>",
+        "en": "<h1>Optimizing for Success</h1><p>Launching a new site is just the first step. To attract organic traffic, it's crucial to implement a solid SEO strategy from the outset. This article covers 5 fundamental pillars: keyword research, on-page optimization, quality content, link building, and technical optimization.</p>"
+      },
+      "imageUrl": "https://picsum.photos/seed/blog2/800/450",
+      "imageAlt": {
+        "ro": "Articol de blog despre marketing",
+        "en": "Blog post about marketing"
+      },
+      "metaTitle": {
+        "ro": "5 Sfaturi Esențiale SEO pentru 2024",
+        "en": "5 Essential SEO Tips for 2024"
+      },
+      "metaDescription": {
+        "ro": "Un ghid pentru începători despre cele mai importante practici SEO pe care trebuie să le aplici pe noul tău website pentru a obține vizibilitate.",
+        "en": "A beginner's guide to the most important SEO practices you need to apply to your new website to gain visibility."
+      },
+      "createdAt": "2024-07-31T12:00:00Z",
+      "updatedAt": "2024-07-31T12:00:00Z"
+    },
+    {
+      "id": "article-1722340800000",
+      "slug": "ui-vs-ux-care-este-diferenta-si-de-ce-conteaza",
+      "title": {
+        "ro": "UI vs. UX: Care este Diferența și De Ce Contează",
+        "en": "UI vs. UX: What's the Difference and Why It Matters"
+      },
+      "excerpt": {
+        "ro": "O analiză aprofundată a rolurilor critice ale designului de interfață utilizator și experiență utilizator în crearea de produse digitale de succes.",
+        "en": "A deep dive into the critical roles of User Interface and User Experience design in creating successful digital products."
+      },
+      "content": {
+        "ro": "<h1>Clarificând Termenii</h1><p>Deși adesea folosiți interschimbabil, UI (User Interface) și UX (User Experience) reprezintă două discipline distincte, dar complementare. UI se concentrează pe aspectul vizual și interactivitatea unui produs, în timp ce UX se ocupă de experiența generală a utilizatorului și de cât de ușor și plăcut este de utilizat produsul. Înțelegerea diferenței este esențială pentru a construi un produs digital care nu doar arată bine, ci și funcționează impecabil pentru utilizatorii săi.</p>",
+        "en": "<h1>Clarifying the Terms</h1><p>Although often used interchangeably, UI (User Interface) and UX (User Experience) represent two distinct but complementary disciplines. UI focuses on the visual appearance and interactivity of a product, while UX deals with the overall user experience and how easy and pleasant the product is to use. Understanding the difference is essential to building a digital product that not only looks good but also works flawlessly for its users.</p>"
+      },
+      "imageUrl": "https://picsum.photos/seed/blog3/800/450",
+      "imageAlt": {
+        "ro": "Articol de blog despre design",
+        "en": "Blog post about design"
+      },
+      "metaTitle": {
+        "ro": "UI vs. UX: Un Ghid Complet",
+        "en": "UI vs. UX: A Complete Guide"
+      },
+      "metaDescription": {
+        "ro": "Înțelege diferențele cheie dintre UI și UX și de ce ambele sunt vitale pentru succesul oricărui proiect digital.",
+        "en": "Understand the key differences between UI and UX and why both are vital for the success of any digital project."
+      },
+      "createdAt": "2024-07-30T12:00:00Z",
+      "updatedAt": "2024-07-30T12:00:00Z"
+    },
+    {
+      "id": "auto-generated-1757075095098-0",
+      "slug": "tendinte-web-design-2025-revolutia-digitala-asteapta-fii-pregatit",
+      "title": {
+        "ro": "Tendințe Web Design 2025: Revoluția Digitală Așteaptă | Fii Pregătit!",
+        "en": "Unveiling 2025 Web Design Trends: Innovation, AI, and Immersive Experiences"
+      },
+      "excerpt": {
+        "ro": "Descoperă tendințele de top în web design pentru 2025! Află cum inteligența artificială, experiențele imersive și sustenabilitatea vor redefini estetica și funcționalitatea site-urilor web. Pregătește-ți prezența online pentru viitor!",
+        "en": "Discover the cutting-edge web design trends shaping 2025. From AI-driven personalization to immersive experiences and sustainable practices, learn how to future-proof your digital presence and captivate users with next-gen designs."
+      },
+      "content": {
+        "ro": "<h1>Tendințele Web Design 2025: Revoluția Digitală Așteaptă</h1><p>Lumea digitală evoluează cu o viteză uluitoare, iar web designul nu face excepție. Anul 2025 promite să aducă inovații semnificative, redefinind modul în care interacționăm cu mediul online. Rămâneți la curent cu aceste tendințe nu este doar un avantaj, ci o necesitate fundamentală pentru orice prezență digitală care dorește să rămână relevantă și de succes pe termen lung. Haideți să explorăm direcțiile principale care vor modela peisajul web designului în anul ce vine, pregătind terenul pentru experiențe utilizator superioare.</p><h2>1. Inteligența Artificială și Personalizarea Hiper-Targetată</h2><p>Inteligența Artificială (AI) va continua să fie un pilon central în web design, transformând fundamental interacțiunea. În 2025, ne vom confrunta cu site-uri web care nu doar reacționează, ci anticipează nevoile utilizatorilor, oferind o experiență predictivă. De la conținut dinamic generat în timp real, adaptat preferințelor individuale, la interfețe care își ajustează aspectul și funcționalitatea pe baza comportamentului anterior, personalizarea va atinge cote fără precedent. Chatboții avansați, capabili de conversații complexe și rezolvarea eficientă a problemelor, vor deveni norma, oferind o experiență de utilizare mai fluidă și mai intuitivă. Această tendință va transforma site-urile din simple pagini informative în parteneri digitali inteligenți și proactivi.</p><h2>2. Experiențe Imersive și Interactivitate Avansată</h2><p>Utilizatorii moderni caută mai mult decât simpla informație; își doresc experiențe memorabile și captivante. 2025 va aduce o explozie de elemente 3D integrate fluid, animații sofisticate și chiar integrări timide de realitate augmentată (AR) sau virtuală (VR) direct în browsere, fără a necesita aplicații dedicate. Micro-interacțiunile vor deveni și mai rafinate, adăugând un strat suplimentar de încântare, feedback subtil și o senzație de control. Scopul principal este de a crea un sentiment de prezență și angajament profund, transformând navigarea dintr-o sarcină într-o aventură digitală captivantă. Site-urile vor arăta mai mult ca niște lumi digitale interactive decât ca pagini statice.</p><h2>3. Design Sustenabil și Conștientizare Ecologică</h2><p>Odată cu creșterea urgentă a preocupărilor legate de mediu, conceptul de \"green web design\" va deveni o tendință majoră și obligatorie. Aceasta include optimizarea riguroasă a performanței site-urilor pentru a reduce consumul energetic al serverelor (prin imagini optimizate, cod curat, video-uri eficiente și compresie inteligentă), utilizarea de hosting verde, alimentat cu energie regenerabilă, și adoptarea pe scară largă a modului întunecat (dark mode), care economisește semnificativ energie pe ecranele OLED. Designul minimalist, cu accent pe funcționalitate esențială și eliminarea elementelor vizuale inutile, contribuie de asemenea la o amprentă digitală mai mică și mai responsabilă. Sustenabilitatea nu va fi doar o opțiune de marketing, ci o cerință etică, de performanță și, în cele din urmă, de business.</p><h2>4. No-Code/Low-Code și Accesibilitate Universală</h2><p>Democratizarea web designului va continua accelerat prin platformele no-code și low-code, permițând chiar și non-tehnicienilor să creeze site-uri web complexe și funcționale cu efort minim. Această tendință va accelera inovarea și va reduce barierele de intrare în piață. În paralel, accesibilitatea universală va fi un factor crucial și un standard implicit. Designul incluziv, care asigură că site-urile sunt ușor utilizabile de către persoane cu diverse dizabilități (vizuale, auditive, motorii, cognitive), va deveni o prioritate absolută. Respectarea standardelor WCAG (Web Content Accessibility Guidelines) nu va fi doar o conformitate legală, ci o dovadă a responsabilității sociale și o lărgire semnificativă a audienței potențiale, transformând inclusivitatea într-un avantaj competitiv.</p><h2>5. Estetica Minimalistă Evoluată și Tipografia Curajoasă</h2><p>Minimalismul nu dispare, ci evoluează într-o formă mai rafinată și expresivă. În 2025, ne vom bucura de spații albe generoase, o ierarhie vizuală impecabilă și un accent puternic pe tipografie ca element central de design, adesea servind drept ilustrație. Fonturile vor fi folosite nu doar pentru a transmite informații, ci pentru a crea o declarație estetică puternică și memorabilă. Combinațiile îndrăznețe de fonturi, dimensiunile variabile și animațiile subtile ale textului vor adăuga personalitate și dinamism, fără a aglomera inutil designul general. Curățenia vizuală va fi esențială pentru o experiență utilizator plăcută, eficientă și memorabilă, unde conținutul primează.</p><p>Adoptarea proactivă a acestor tendințe nu este doar o chestiune de a fi \"la modă\", ci de a construi o prezență online rezistentă la viitor, care să ofere valoare reală utilizatorilor și să susțină cu succes obiectivele de business pe termen lung. Pregătiți-vă să transformați fundamental modul în care site-urile web arată și funcționează, îmbrățișând inovația și adaptabilitatea continuă pentru un succes digital durabil.</p>",
+        "en": "<h1>Unveiling 2025 Web Design Trends: Innovation, AI, and Immersive Experiences</h1><p>As the digital landscape relentlessly evolves, 2025 is poised to bring transformative shifts in web design. Websites are no longer static brochures, but dynamic, interactive ecosystems. Focus intensifies on creating deeply personal, intuitively engaging, and ethically responsible online experiences. Designers must adapt swiftly to these emerging currents to future-proof their digital presence and captivate a discerning audience.</p><h2>The Rise of AI-Powered Personalization</h2><p>Artificial Intelligence is becoming integral to the user experience. In 2025, AI will enable hyper-personalized journeys, dynamically adapting content, layouts, and visual styles based on individual user behavior and preferences. Imagine a website anticipating your next move, offering seamless, relevant interactions. This proactive personalization enhances engagement, converting casual visitors into loyal users.</p><h2>Immersive & Interactive Storytelling</h2><p>Flat, static pages yield to rich, immersive narratives. Expect more 3D elements, sophisticated micro-interactions, and engaging scrollytelling, transforming information consumption. Subtle Virtual and Augmented Reality elements will offer deeper engagement without specialized hardware. This trend crafts memorable experiences that resonate emotionally, keeping users exploring content longer and more deeply.</p><h2>Sustainable & Ethical Design Practices</h2><p>With growing environmental consciousness, &quot;green web design&quot; is a necessity. Designers will optimize websites for performance, reducing data transfer and energy consumption. This includes efficient code, optimized media, and wider dark mode adoption for energy saving. Ethical considerations like data privacy, transparency, and inclusive accessibility will move from compliance to core brand values, building trust.</p><h2>Dynamic Minimalism and Expressive Interfaces</h2><p>While minimalism endures, it's evolving from stark emptiness to dynamic simplicity. 2025 will see clean layouts combined with bold typography, vibrant yet harmonious color palettes, and organic shapes that add personality. Websites will use space thoughtfully, employing subtle animations and interactive elements to guide the user's eye and enhance clarity. This approach conveys unique brand identities with a refined user experience.</p><h2>Accessibility as a Core Principle</h2><p>Inclusive design is no longer a niche requirement but a fundamental pillar. Web design in 2025 will prioritize accessibility from initial conceptualization, ensuring websites are usable by everyone, regardless of ability. This goes beyond WCAG compliance, embracing features like advanced voice navigation, customizable interfaces, and enhanced contrast options. A truly inclusive web extends a welcoming hand to all.</p><h2>Conclusion: Future-Ready Digital Experiences</h2><p>The web design landscape of 2025 promises a blend of technological sophistication and human-centric empathy. From AI intelligence to immersive storytelling, sustainable practices, dynamic interfaces, and universal accessibility, these trends collectively aim to create richer, more meaningful digital interactions. Embracing these shifts ensures your online presence is truly future-ready, forging stronger connections.</p>"
+      },
+      "imageUrl": "https://images.unsplash.com/photo-1735293720488-e40ce63aab5e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3OTM0MjV8MHwxfHNlYXJjaHwxfHx3ZWIlMjBkZXNpZ24lMjAyMDI1JTJDJTIwdGVuZGluJUM4JTlCZSUyMGRpZ2l0YWxlJTJDJTIwdmlpdG9yJTIwd2VifGVufDB8fHx8MTc1NzI2NzYzMnww&ixlib=rb-4.1.0&q=85",
+      "imageAlt": {
+        "ro": "web design 2025, tendințe digitale, viitor web",
+        "en": "Web design 2025, Future UI UX, Digital trends"
+      },
+      "createdAt": "2025-09-05T12:24:55.098Z",
+      "updatedAt": "2025-09-07T17:54:49.272Z",
+      "metaTitle": {
+        "ro": "Web Design 2025: Tendințe și Inovații Pentru Viitorul Online",
+        "en": "2025 Web Design Trends: AI, Immersive UX & Sustainability"
+      },
+      "metaDescription": {
+        "ro": "Explorează tendințele cheie în web design pentru 2025! De la AI și experiențe imersive la sustenabilitate și no-code, pregătește-ți site-ul pentru succesul digital.",
+        "en": "Explore the top web design trends for 2025, including AI integration, hyper-personalization, immersive interfaces, and sustainable design. Get insights to elevate your website and create memorable user experiences."
+      }
+    },
+    {
+      "id": "auto-generated-1757075095098-1",
+      "slug": "cat-costa-un-site-de-prezentare-profesional-ghid-complet-de-preturi",
+      "title": {
+        "ro": "Cât Costă un Site de Prezentare Profesional? Ghid Complet de Prețuri",
+        "en": "Unveiling the Costs: Building Your Presentation Website with a Web Design Firm"
+      },
+      "excerpt": {
+        "ro": "Vrei un site de prezentare, dar te întrebi cât costă? Află factorii cheie care influențează prețul serviciilor unei firme de webdesign. De la design personalizat la funcționalități avansate, descoperă cum să investești inteligent.",
+        "en": "Considering a professional website? Discover the key factors influencing the cost of a presentation site when partnering with a web design agency. Understand where your investment goes for a high-quality online presence."
+      },
+      "content": {
+        "ro": "<h1>Cât Costă un Site de Prezentare Profesional? Ghid Complet de Prețuri</h1><p>Prezența online este esențială pentru orice afacere, iar un site de prezentare profesional reprezintă cartea ta de vizită digitală. Când apelezi la o firmă de webdesign, întrebarea \"cât costă?\" este firească. Prețul unui site nu este fix; el este o investiție strategică, influențată de o multitudine de factori. Acest ghid te va ajuta să înțelegi elementele care formează costul final și de ce merită să investești într-o soluție profesională și bine executată.</p><h2>Factori Cheie care Influențează Costul Creării unui Site</h2><p>Costul final reflectă timpul, expertiza și resursele alocate. Iată principalii factori care contribuie la formarea prețului:</p><ul><li><strong>Design Personalizat vs. Șabloane:</strong> Un design personalizat, creat de la zero pentru brandul tău, oferă unicitate și o experiență utilizator superioară, dar este mai costisitor. Utilizarea unui șablon preexistent este mai accesibilă, însă vine cu limitări de originalitate și adaptabilitate. Multe firme oferă soluții hibride, personalizând extensiv un șablon de bază pentru a echilibra costurile.</li><li><strong>Complexitatea Funcționalităților:</strong> Nevoile tale dictează complexitatea. Un site simplu (pagini de prezentare servicii, contact, galerie) va fi mai ieftin. Funcționalități avansate, precum formulare complexe, integrare cu sisteme de booking, hărți interactive, portofolii dinamice, bloguri profesionale sau chiar un mic magazin online, cresc semnificativ costurile, necesitând ore suplimentare de dezvoltare și testare riguroasă.</li><li><strong>Optimizarea SEO Inițială:</strong> Un site frumos, dar invizibil, este inutil. Optimizarea pentru motoarele de căutare (SEO) este crucială pentru vizibilitate online. Serviciile de bază includ cercetarea cuvintelor cheie, optimizarea meta-titlurilor și descrierilor, structura URL-urilor și optimizarea imaginilor. Un pachet SEO mai complex adaugă, desigur, la cost.</li><li><strong>Crearea de Conținut (Copywriting și Media):</strong> Textele persuasive, imaginile de înaltă calitate și, eventual, materialele video, sunt esențiale. Dacă nu dispui de ele, firma de webdesign poate oferi servicii de copywriting profesional, fotografie sau video. Acest lucru adaugă valoare și profesionalism site-ului, dar și costuri suplimentare proiectului.</li><li><strong>Design Responsive și Experiența Utilizatorului (UX):</strong> Astăzi, este imperativ ca un site să arate și să funcționeze impecabil pe orice dispozitiv (desktop, tabletă, mobil). Asigurarea unui design responsive perfect și a unei experiențe utilizator optime necesită efort și expertiză suplimentară din partea echipei de design și dezvoltare.</li><li><strong>Mentenanță și Suport Post-Lansare:</strong> După lansare, un site necesită actualizări regulate (software, plugin-uri), backup-uri de securitate și suport tehnic pentru eventualele probleme. Majoritatea firmelor oferă pachete de mentenanță lunară sau anuală. Aceasta nu este un cost inițial, dar este o cheltuială continuă de care trebuie să ții cont pentru a asigura buna funcționare.</li><li><strong>Management de Proiect și Comunicare:</strong> Timpul petrecut de echipa firmei pentru coordonarea proiectului, ședințe, revizii și comunicare constantă cu clientul este, de asemenea, inclus în prețul final. O comunicare eficientă asigură un rezultat care corespunde viziunii și așteptărilor tale.</li></ul><h2>De Ce Merită Investiția într-un Site Profesional?</h2><p>Deși costurile pot părea considerabile, un site de prezentare profesional este o investiție care se amortizează în timp. Acesta îți construiește credibilitate, consolidează imaginea de brand, te poziționează ca expert în domeniul tău și, cel mai important, îți aduce clienți noi. Un site bine optimizat funcționează 24/7 ca un agent de vânzări, oferind informații relevante și facilitând contactul cu potențialii clienți, transformându-se într-un avantaj competitiv semnificativ pe piață.</p><p>În concluzie, prețul pentru crearea unui site de prezentare variază de la câteva sute la câteva mii de euro. Esențial este să soliciți o ofertă detaliată, să înțelegi exact ce servicii sunt incluse și să alegi o firmă de webdesign care îți înțelege viziunea și se încadrează în bugetul tău. Investiția într-un site profesional este o investiție strategică în viitorul și succesul afacerii tale, aducând beneficii substanțiale pe termen lung și contribuind la creșterea constantă a afacerii.</p>",
+        "en": "<p>Auto-generated content for article 2.</p>"
+      },
+      "imageUrl": "https://images.unsplash.com/photo-1657812159055-7bae416f386d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3OTM0MjV8MHwxfHNlYXJjaHwxfHx3ZWJkZXNpZ24lMjBjb3N0cyUyQyUyMHNpdGUlMjBwcmV6ZW50YXJlJTJDJTIwcHJlJUM4JTlCJTIwc2l0ZXxlbnwwfHx8fDE3NTczMjA1MzV8MA&ixlib=rb-4.1.0&q=85",
+      "imageAlt": {
+        "ro": "webdesign costs, site prezentare, preț site",
+        "en": "web design cost, website development, agency pricing"
+      },
+      "createdAt": "2025-09-04T12:24:55.098Z",
+      "updatedAt": "2025-09-08T08:36:32.166Z",
+      "metaTitle": {
+        "ro": "Costuri Site Prezentare Profesional | Ghid Prețuri Webdesign",
+        "en": "Presentation Website Costs: Web Design Agency Pricing Guide"
+      },
+      "metaDescription": {
+        "ro": "Descoperă cât costă crearea unui site de prezentare profesional când colaborezi cu o firmă de webdesign. Află factorii ce influențează prețul și cum să alegi corect.",
+        "en": "Explore the essential costs of creating a professional presentation website when hiring a web design firm. Learn about design, functionality, SEO, and ongoing expenses to budget wisely for your online presence."
+      }
+    },
+    {
+      "id": "auto-generated-1757075095098-2",
+      "slug": "articol-auto-generat-3",
+      "title": {
+        "ro": "Articol Auto-Generat 3",
+        "en": "Auto-Generated Article 3"
+      },
+      "excerpt": {
+        "ro": "Acesta este un articol auto-generat pentru a completa secțiunea de blog.",
+        "en": "This is an auto-generated article to complete the blog section."
+      },
+      "content": {
+        "ro": "<p>Conținut auto-generat pentru articolul 3.</p>",
+        "en": "<p>Auto-generated content for article 3.</p>"
+      },
+      "imageUrl": "https://picsum.photos/seed/auto-blog-3/800/450",
+      "imageAlt": {
+        "ro": "Imagine placeholder pentru articolul 3",
+        "en": "Placeholder image for article 3"
+      },
+      "createdAt": "2025-09-03T12:24:55.098Z",
+      "updatedAt": "2025-09-03T12:24:55.098Z",
+      "metaTitle": {
+        "ro": "Articol Auto-Generat 3",
+        "en": "Auto-Generated Article 3"
+      },
+      "metaDescription": {
+        "ro": "Articol auto-generat pentru completarea secțiunii de blog.",
+        "en": "Auto-generated article to complete the blog section."
+      }
+    }
+  ],
+  "sections": {
+    "header": {
+      "id": "header",
+      "component": "Header",
+      "visible": true,
+      "elements": {
+        "header-logo": {
+          "type": "logo",
+          "logoType": "text",
+          "content": {
+            "ro": "Inovează SRL",
+            "en": "Innovate Inc."
+          },
+          "imageUrl": "",
+          "alt": {
+            "ro": "Logo Inovează SRL",
+            "en": "Innovate Inc. Logo"
+          },
+          "styles": {
+            "color": "#0a284e",
+            "fontSize": "24px",
+            "fontWeight": "bold"
+          }
+        }
+      }
+    },
+    "hero": {
+      "id": "hero",
+      "component": "Hero",
+      "navLinkVisible": true,
+      "visible": false,
+      "layout": {
+        "duration": 5,
+        "template": "gradient-waves",
+        "variant": "gradient-waves",
+        "gradientColors": {
+          "color1": "#ff1744",
+          "color2": "#00e5ff",
+          "color3": "#ff6f00",
+          "color4": "#76ff03"
+        },
+        "waveAnimation": {
+          "speed": 0.5,
+          "intensity": 1.2,
+          "spacing": 0.1,
+          "diffusion": 80
+        }
+      },
+      "items": [
+        {
+          "id": 1,
+          "styles": {
+            "background": "linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://picsum.photos/seed/slide1/1600/900')",
+            "backgroundSize": "cover",
+            "backgroundPosition": "center",
+            "backgroundRepeat": "no-repeat"
+          }
+        },
+        {
+          "id": 2,
+          "styles": {
+            "background": "linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://picsum.photos/seed/slide2/1600/900')",
+            "backgroundSize": "cover",
+            "backgroundPosition": "center",
+            "backgroundRepeat": "no-repeat"
+          }
+        },
+        {
+          "id": 3,
+          "styles": {
+            "background": "linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://picsum.photos/seed/slide3/1600/900')",
+            "backgroundSize": "cover",
+            "backgroundPosition": "center",
+            "backgroundRepeat": "no-repeat"
+          }
+        }
+      ],
+      "elements": {
+        "hero-nav-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Acasă",
+            "en": "Home"
+          }
+        },
+        "hero-title-1": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Construiește-ți Viitorul cu AI",
+            "en": "Build Your Future with AI"
+          },
+          "styles": {
+            "color": "#FFFFFF",
+            "fontSize": "52px",
+            "fontWeight": "bold",
+            "textAlign": "center"
+          }
+        },
+        "hero-subtitle-1": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p class=\"text-center\">Utilizează puterea inteligenței artificiale generative pentru a crea site-uri web uimitoare, bogate în conținut, în doar câteva minute. <strong>Fără cunoștințe de programare.</strong></p>",
+            "en": "<p class=\"text-center\">Harness the power of generative AI to create stunning, content-rich websites in minutes. <strong>No coding required.</strong></p>"
+          },
+          "styles": {
+            "color": "#E5E7EB",
+            "fontSize": "18px"
+          }
+        },
+        "hero-cta-1": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Începe Acum",
+            "en": "Get Started"
+          },
+          "styles": {
+            "color": "#FFFFFF",
+            "fontSize": "16px",
+            "fontWeight": "600"
+          }
+        },
+        "hero-title-2": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Inovație la Vârful Degetelor",
+            "en": "Innovation at Your Fingertips"
+          },
+          "styles": {
+            "color": "#FFFFFF",
+            "fontSize": "52px",
+            "fontWeight": "bold",
+            "textAlign": "center"
+          }
+        },
+        "hero-subtitle-2": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p class=\"text-center\">Creează imagini și texte unice, adaptate perfect viziunii tale, cu un singur click.</p>",
+            "en": "<p class=\"text-center\">Create unique images and text perfectly tailored to your vision, with a single click.</p>"
+          },
+          "styles": {
+            "color": "#E5E7EB",
+            "fontSize": "18px"
+          }
+        },
+        "hero-cta-2": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Descoperă Funcțiile",
+            "en": "Explore Features"
+          },
+          "styles": {
+            "color": "#FFFFFF",
+            "fontSize": "16px",
+            "fontWeight": "600"
+          }
+        },
+        "hero-title-3": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Publică Instantaneu, Oriunde",
+            "en": "Publish Instantly, Anywhere"
+          },
+          "styles": {
+            "color": "#FFFFFF",
+            "fontSize": "52px",
+            "fontWeight": "bold",
+            "textAlign": "center"
+          }
+        },
+        "hero-subtitle-3": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p class=\"text-center\">De la idee la un site live, gata să impresioneze publicul global, în timp record.</p>",
+            "en": "<p class=\"text-center\">From an idea to a live site, ready to impress a global audience in record time.</p>"
+          },
+          "styles": {
+            "color": "#E5E7EB",
+            "fontSize": "18px"
+          }
+        },
+        "hero-cta-3": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Vezi Planurile",
+            "en": "See Plans"
+          },
+          "styles": {
+            "color": "#FFFFFF",
+            "fontSize": "16px",
+            "fontWeight": "600"
+          }
+        },
+        "hero-content": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<h1><strong>Inovează SRL</strong></h1><h3>Suntem pionieri în aplicarea inteligenței artificiale pentru a rezolva probleme reale de afaceri. Călătoria noastră a început în 2020 cu misiunea de a face tehnologia avansată accesibilă tuturor. Credem în inovație, colaborare și crearea de valoare durabilă.</h3><h2>Echipa noastră este formată din ingineri de talie mondială, designeri și vizionari dedicați să depășească limitele posibilului.</h2>",
+            "en": ""
+          }
+        }
+      },
+      "cardStyles": {
+        "backgroundColor": "#ffffff",
+        "boxShadow": "none"
+      }
+    },
+    "about": {
+      "id": "about",
+      "component": "About",
+      "navLinkVisible": true,
+      "visible": true,
+      "layout": {
+        "template": "image-left",
+        "imageWidth": 50
+      },
+      "styles": {
+        "backgroundColor": "#f3f7fa"
+      },
+      "elements": {
+        "about-nav-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Despre",
+            "en": "About"
+          }
+        },
+        "about-image": {
+          "type": "image",
+          "content": "local-img-1757417759839",
+          "alt": {
+            "ro": "vapor",
+            "en": "vapor"
+          }
+        },
+        "about-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p>Despre Ino</p>",
+            "en": "About Innovate Inc."
+          },
+          "styles": {
+            "color": "#111827",
+            "fontSize": "36px",
+            "fontWeight": "bold"
+          }
+        },
+        "about-text": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p><strong>Suntem pionieri în aplicarea inteligenței artificiale pentru a rezolva probleme reale de afaceri. Călătoria noastră a început în 2020 cu misiunea de a face tehnologia avansată accesibilă tuturor. Credem în inovație, colaborare și crearea de valoare durabilă.</strong></p><p><strong>Echipa noastră este formată din ingineri de talie mondială, designeri și vizionari dedicați să depășească limitele posibilului.</strong></p>",
+            "en": "<p>We are pioneers in applying artificial intelligence to solve real-world business problems. Our journey started in 2020 with a mission to make advanced technology accessible to everyone. We believe in innovation, collaboration, and creating value that lasts.</p><p>Our team consists of world-class engineers, designers, and visionaries dedicated to pushing the boundaries of what's possible.</p>"
+          },
+          "ro": "<p><span class=\"ql-font-serif\">Suntem pionieri în aplicarea inteligenței artificiale pentru a rezolva probleme reale de afaceri. Călătoria noastră a început în 2020 cu misiunea de a face tehnologia avansată accesibilă tuturor. Credem în inovație, colaborare și crearea de valoare durabilă.</span></p><p><span class=\"ql-font-serif\">Echipa noastră este formată din ingineri de talie mondială, designeri și vizionari dedicați să depășească limitele posibilului.</span></p>",
+          "en": "<p>We are pioneers in applying artificial intelligence to solve real-world business problems. Our journey started in 2020 with a mission to make advanced technology accessible to everyone. We believe in innovation, collaboration, and creating value that lasts.</p><p>Our team consists of world-class engineers, designers, and visionaries dedicated to pushing the boundaries of what's possible.</p>"
+        }
+      }
+    },
+    "services": {
+      "id": "services",
+      "component": "Services",
+      "navLinkVisible": true,
+      "visible": true,
+      "styles": {
+        "backgroundColor": "#ffffff"
+      },
+      "layout": {
+        "template": "default",
+        "itemCount": 3
+      },
+      "cardStyles": {
+        "backgroundColor": "#ffffff",
+        "boxShadow": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
+      },
+      "items": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        }
+      ],
+      "elements": {
+        "services-nav-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Servicii",
+            "en": "Services"
+          }
+        },
+        "services-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Serviciile Noastre",
+            "en": "Our Services"
+          }
+        },
+        "service-1-icon": {
+          "type": "icon",
+          "iconName": "BotMessageSquare",
+          "size": 40,
+          "color": "#c29a47"
+        },
+        "service-1-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Generare Conținut AI",
+            "en": "AI Content Generation"
+          },
+          "styles": {
+            "color": "#1F2937",
+            "fontSize": "20px",
+            "fontWeight": "600"
+          }
+        },
+        "service-1-text": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Generează automat text de înaltă calitate pentru site-ul tău, de la articole de blog la descrieri de produse.",
+            "en": "Automatically generate high-quality text for your website, from blog posts to product descriptions."
+          },
+          "styles": {
+            "color": "#6B7280"
+          }
+        },
+        "service-2-icon": {
+          "type": "icon",
+          "iconName": "Code",
+          "size": 40,
+          "color": "#c29a47"
+        },
+        "service-2-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Creare Imagini AI",
+            "en": "AI Image Creation"
+          },
+          "styles": {
+            "color": "#1F2937",
+            "fontSize": "20px",
+            "fontWeight": "600"
+          }
+        },
+        "service-2-text": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Creează imagini unice, fără drepturi de autor, din simple descrieri text, pentru a se potrivi perfect cu estetica brandului tău.",
+            "en": "Create unique, royalty-free images from simple text prompts to perfectly match your brand's aesthetic."
+          },
+          "styles": {
+            "color": "#6B7280"
+          }
+        },
+        "service-3-icon": {
+          "type": "icon",
+          "iconName": "BotMessageSquare",
+          "size": 40,
+          "color": "#c29a47"
+        },
+        "service-3-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Editare Live",
+            "en": "Live Editing"
+          },
+          "styles": {
+            "color": "#1F2937",
+            "fontSize": "20px",
+            "fontWeight": "600"
+          }
+        },
+        "service-3-text": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Ceea ce vezi este ceea ce primești. Editează-ți site-ul direct în browser pentru o experiență intuitivă.",
+            "en": "What you see is what you get. Edit your website directly in the browser for an intuitive experience."
+          },
+          "styles": {
+            "color": "#6B7280"
+          }
+        }
+      }
+    },
+    "stats": {
+      "id": "stats",
+      "component": "Stats",
+      "navLinkVisible": true,
+      "visible": true,
+      "styles": {
+        "backgroundColor": "#f3f7fa"
+      },
+      "layout": {
+        "template": "default",
+        "itemCount": 3
+      },
+      "cardStyles": {
+        "backgroundColor": "transparent",
+        "boxShadow": "none"
+      },
+      "items": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        }
+      ],
+      "elements": {
+        "stats-nav-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Rezultate",
+            "en": "Results"
+          }
+        },
+        "stats-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Rezultatele noastre vorbesc de la sine",
+            "en": "Our Results Speak for Themselves"
+          },
+          "styles": {
+            "color": "#111827",
+            "fontSize": "36px",
+            "fontWeight": "bold",
+            "textAlign": "center"
+          }
+        },
+        "stat-1-icon": {
+          "type": "icon",
+          "iconName": "Rocket",
+          "size": 48,
+          "color": "#c29a47"
+        },
+        "stat-1-number": {
+          "type": "rich-text",
+          "content": {
+            "ro": "15.000+",
+            "en": "15,000+"
+          },
+          "styles": {
+            "color": "#0a284e",
+            "fontSize": "48px",
+            "fontWeight": "bold"
+          }
+        },
+        "stat-1-label": {
+          "type": "rich-text",
+          "content": {
+            "ro": "PROIECTE FINALIZATE",
+            "en": "PROJECTS COMPLETED"
+          },
+          "styles": {
+            "color": "#4B5563",
+            "fontWeight": "600"
+          }
+        },
+        "stat-2-icon": {
+          "type": "icon",
+          "iconName": "Users",
+          "size": 48,
+          "color": "#c29a47"
+        },
+        "stat-2-number": {
+          "type": "rich-text",
+          "content": {
+            "ro": "10.000+",
+            "en": "10,000+"
+          },
+          "styles": {
+            "color": "#0a284e",
+            "fontSize": "48px",
+            "fontWeight": "bold"
+          }
+        },
+        "stat-2-label": {
+          "type": "rich-text",
+          "content": {
+            "ro": "CLIENȚI MULȚUMIȚI",
+            "en": "HAPPY CLIENTS"
+          },
+          "styles": {
+            "color": "#4B5563",
+            "fontWeight": "600"
+          }
+        },
+        "stat-3-icon": {
+          "type": "icon",
+          "iconName": "Calendar",
+          "size": 48,
+          "color": "#c29a47"
+        },
+        "stat-3-number": {
+          "type": "rich-text",
+          "content": {
+            "ro": "12+",
+            "en": "12+"
+          },
+          "styles": {
+            "color": "#0a284e",
+            "fontSize": "48px",
+            "fontWeight": "bold"
+          }
+        },
+        "stat-3-label": {
+          "type": "rich-text",
+          "content": {
+            "ro": "ANI DE EXPERIENȚĂ",
+            "en": "YEARS OF EXPERIENCE"
+          },
+          "styles": {
+            "color": "#4B5563",
+            "fontWeight": "600"
+          }
+        }
+      }
+    },
+    "portfolio": {
+      "id": "portfolio",
+      "component": "Portfolio",
+      "navLinkVisible": true,
+      "visible": true,
+      "styles": {
+        "backgroundColor": "#ffffff"
+      },
+      "layout": {
+        "template": "default",
+        "itemCount": 6
+      },
+      "cardStyles": {
+        "backgroundColor": "transparent",
+        "boxShadow": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)"
+      },
+      "items": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        },
+        {
+          "id": 4
+        },
+        {
+          "id": 5
+        },
+        {
+          "id": 6
+        }
+      ],
+      "elements": {
+        "portfolio-nav-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Portofoliu",
+            "en": "Portfolio"
+          }
+        },
+        "portfolio-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Lucrările Noastre Recente",
+            "en": "Our Recent Work"
+          },
+          "styles": {
+            "color": "#111827",
+            "fontSize": "36px",
+            "fontWeight": "bold",
+            "textAlign": "center"
+          }
+        },
+        "portfolio-subtitle": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p><span class=\"ql-size-large\">Suntem mândri de munca noastră. Iată câteva dintre cele mai recente proiecte care demonstrează angajamentul nostru pentru excelență și inovație.</span></p>",
+            "en": "<p>We take pride in our work. Here are some of our latest projects that showcase our commitment to excellence and innovation.</p>"
+          }
+        },
+        "portfolio-1-image": {
+          "type": "image",
+          "content": "local-img-1757363842775",
+          "alt": {
+            "ro": "white and orange robot near wall",
+            "en": "white and orange robot near wall"
+          }
+        },
+        "portfolio-1-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Proiect Alfa",
+            "en": "Project Alpha"
+          }
+        },
+        "portfolio-1-category": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Web Design",
+            "en": "Web Design"
+          }
+        },
+        "portfolio-1-description": {
+          "type": "rich-text",
+          "content": {
+            "ro": "O scurtă descriere a proiectului Alfa.",
+            "en": "A short description of Project Alpha."
+          }
+        },
+        "portfolio-1-cta": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Vezi Proiect",
+            "en": "View Project"
+          }
+        },
+        "portfolio-2-image": {
+          "type": "image",
+          "content": "local-img-1757362196774",
+          "alt": {
+            "ro": "Roboti la calculatoare",
+            "en": "Roboti la calculatoare"
+          }
+        },
+        "portfolio-2-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Proiect Beta",
+            "en": "Project Beta"
+          }
+        },
+        "portfolio-2-category": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Branding",
+            "en": "Branding"
+          }
+        },
+        "portfolio-2-description": {
+          "type": "rich-text",
+          "content": {
+            "ro": "O scurtă descriere a proiectului Beta.",
+            "en": "A short description of Project Beta."
+          }
+        },
+        "portfolio-2-cta": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Vezi Proiect",
+            "en": "View Project"
+          }
+        },
+        "portfolio-3-image": {
+          "type": "image",
+          "content": "https://picsum.photos/seed/project3/600/400",
+          "alt": {
+            "ro": "Prezentare Proiect Trei",
+            "en": "Project Three Showcase"
+          }
+        },
+        "portfolio-3-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Proiect Gamma",
+            "en": "Project Gamma"
+          }
+        },
+        "portfolio-3-category": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Marketing Digital",
+            "en": "Digital Marketing"
+          }
+        },
+        "portfolio-3-description": {
+          "type": "rich-text",
+          "content": {
+            "ro": "O scurtă descriere a proiectului Gamma.",
+            "en": "A short description of Project Gamma."
+          }
+        },
+        "portfolio-3-cta": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Vezi Proiect",
+            "en": "View Project"
+          }
+        },
+        "portfolio-4-image": {
+          "type": "image",
+          "content": "https://picsum.photos/seed/project4/600/400",
+          "alt": {
+            "ro": "Prezentare Proiect Patru",
+            "en": "Project Four Showcase"
+          }
+        },
+        "portfolio-4-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Proiect Delta",
+            "en": "Project Delta"
+          }
+        },
+        "portfolio-4-category": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Dezvoltare Aplicații",
+            "en": "App Development"
+          }
+        },
+        "portfolio-4-description": {
+          "type": "rich-text",
+          "content": {
+            "ro": "O scurtă descriere a proiectului Delta.",
+            "en": "A short description of Project Delta."
+          }
+        },
+        "portfolio-4-cta": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Vezi Proiect",
+            "en": "View Project"
+          }
+        },
+        "portfolio-5-image": {
+          "type": "image",
+          "content": "https://picsum.photos/seed/project5/600/400",
+          "alt": {
+            "ro": "Prezentare Proiect Cinci",
+            "en": "Project Five Showcase"
+          }
+        },
+        "portfolio-5-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Proiect Epsilon",
+            "en": "Project Epsilon"
+          }
+        },
+        "portfolio-5-category": {
+          "type": "rich-text",
+          "content": {
+            "ro": "SEO",
+            "en": "SEO"
+          }
+        },
+        "portfolio-5-description": {
+          "type": "rich-text",
+          "content": {
+            "ro": "O scurtă descriere a proiectului Epsilon.",
+            "en": "A short description of Project Epsilon."
+          }
+        },
+        "portfolio-5-cta": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Vezi Proiect",
+            "en": "View Project"
+          }
+        },
+        "portfolio-6-image": {
+          "type": "image",
+          "content": "https://picsum.photos/seed/project6/600/400",
+          "alt": {
+            "ro": "Prezentare Proiect Șase",
+            "en": "Project Six Showcase"
+          }
+        },
+        "portfolio-6-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Proiect Zeta",
+            "en": "Project Zeta"
+          }
+        },
+        "portfolio-6-category": {
+          "type": "rich-text",
+          "content": {
+            "ro": "E-commerce",
+            "en": "E-commerce"
+          }
+        },
+        "portfolio-6-description": {
+          "type": "rich-text",
+          "content": {
+            "ro": "O scurtă descriere a proiectului Zeta.",
+            "en": "A short description of Project Zeta."
+          }
+        },
+        "portfolio-6-cta": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Vezi Proiect",
+            "en": "View Project"
+          }
+        }
+      }
+    },
+    "team": {
+      "id": "team",
+      "component": "Team",
+      "navLinkVisible": true,
+      "visible": true,
+      "styles": {
+        "backgroundColor": "#f3f7fa"
+      },
+      "layout": {
+        "template": "default",
+        "itemCount": 3
+      },
+      "cardStyles": {
+        "backgroundColor": "#ffffff",
+        "boxShadow": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
+      },
+      "items": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        }
+      ],
+      "elements": {
+        "team-nav-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Echipa",
+            "en": "Team"
+          }
+        },
+        "team-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Faceți cunoștință cu experții noștri",
+            "en": "Meet Our Experts"
+          },
+          "styles": {
+            "color": "#111827",
+            "fontSize": "36px",
+            "fontWeight": "bold",
+            "textAlign": "center"
+          }
+        },
+        "team-subtitle": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p>Forța motrice din spatele succesului nostru este echipa noastră de profesioniști dedicați și talentați.</p>",
+            "en": "<p>The driving force behind our success is our team of dedicated and talented professionals.</p>"
+          }
+        },
+        "team-member-1-image": {
+          "type": "image",
+          "content": "https://picsum.photos/seed/person1/400/400",
+          "alt": {
+            "ro": "Ana Popescu, CEO",
+            "en": "Jane Doe, CEO"
+          }
+        },
+        "team-member-1-name": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Ana Popescu",
+            "en": "Jane Doe"
+          }
+        },
+        "team-member-1-role": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Fondator & CEO",
+            "en": "Founder & CEO"
+          }
+        },
+        "team-member-1-bio": {
+          "type": "rich-text",
+          "content": {
+            "ro": "O scurtă biografie despre Ana Popescu.",
+            "en": "A short bio about Jane Doe."
+          }
+        },
+        "team-member-1-socials": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<a href=\"#\">FB</a> <a href=\"#\">LI</a>",
+            "en": "<a href=\"#\">FB</a> <a href=\"#\">LI</a>"
+          }
+        },
+        "team-member-2-image": {
+          "type": "image",
+          "content": "https://picsum.photos/seed/person2/400/400",
+          "alt": {
+            "ro": "Mihai Ionescu, CTO",
+            "en": "John Smith, CTO"
+          }
+        },
+        "team-member-2-name": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Mihai Ionescu",
+            "en": "John Smith"
+          }
+        },
+        "team-member-2-role": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Director Tehnologic",
+            "en": "Chief Technology Officer"
+          }
+        },
+        "team-member-2-bio": {
+          "type": "rich-text",
+          "content": {
+            "ro": "O scurtă biografie despre Mihai Ionescu.",
+            "en": "A short bio about John Smith."
+          }
+        },
+        "team-member-2-socials": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<a href=\"#\">FB</a> <a href=\"#\">LI</a>",
+            "en": "<a href=\"#\">FB</a> <a href=\"#\">LI</a>"
+          }
+        },
+        "team-member-3-image": {
+          "type": "image",
+          "content": "https://picsum.photos/seed/person3/400/400",
+          "alt": {
+            "ro": "Elena Dragomir, Designer Principal",
+            "en": "Emily White, Lead Designer"
+          }
+        },
+        "team-member-3-name": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Elena Dragomir",
+            "en": "Emily White"
+          }
+        },
+        "team-member-3-role": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Designer Principal",
+            "en": "Lead Designer"
+          }
+        },
+        "team-member-3-bio": {
+          "type": "rich-text",
+          "content": {
+            "ro": "O scurtă biografie despre Elena Dragomir.",
+            "en": "A short bio about Emily White."
+          }
+        },
+        "team-member-3-socials": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<a href=\"#\">FB</a> <a href=\"#\">LI</a>",
+            "en": "<a href=\"#\">FB</a> <a href=\"#\">LI</a>"
+          }
+        }
+      }
+    },
+    "clients": {
+      "id": "clients",
+      "component": "Clients",
+      "navLinkVisible": true,
+      "visible": true,
+      "styles": {
+        "backgroundColor": "#ffffff"
+      },
+      "layout": {
+        "template": "default",
+        "itemCount": 6
+      },
+      "cardStyles": {
+        "backgroundColor": "transparent",
+        "boxShadow": "none"
+      },
+      "items": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        },
+        {
+          "id": 4
+        },
+        {
+          "id": 5
+        },
+        {
+          "id": 6
+        }
+      ],
+      "elements": {
+        "clients-nav-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Clienți",
+            "en": "Clients"
+          }
+        },
+        "clients-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Apreciați de companii de top",
+            "en": "Trusted by Leading Companies"
+          },
+          "styles": {
+            "color": "#111827",
+            "fontSize": "36px",
+            "fontWeight": "bold",
+            "textAlign": "center"
+          }
+        },
+        "client-1-logo": {
+          "type": "image",
+          "content": "https://logo.clearbit.com/google.com",
+          "alt": {
+            "ro": "Logo Google",
+            "en": "Google Logo"
+          }
+        },
+        "client-2-logo": {
+          "type": "image",
+          "content": "https://logo.clearbit.com/microsoft.com",
+          "alt": {
+            "ro": "Logo Microsoft",
+            "en": "Microsoft Logo"
+          }
+        },
+        "client-3-logo": {
+          "type": "image",
+          "content": "https://logo.clearbit.com/amazon.com",
+          "alt": {
+            "ro": "Logo Amazon",
+            "en": "Amazon Logo"
+          }
+        },
+        "client-4-logo": {
+          "type": "image",
+          "content": "https://logo.clearbit.com/spotify.com",
+          "alt": {
+            "ro": "Logo Spotify",
+            "en": "Spotify Logo"
+          }
+        },
+        "client-5-logo": {
+          "type": "image",
+          "content": "https://logo.clearbit.com/netflix.com",
+          "alt": {
+            "ro": "Logo Netflix",
+            "en": "Netflix Logo"
+          }
+        },
+        "client-6-logo": {
+          "type": "image",
+          "content": "https://logo.clearbit.com/salesforce.com",
+          "alt": {
+            "ro": "Logo Salesforce",
+            "en": "Salesforce Logo"
+          }
+        }
+      }
+    },
+    "pricing": {
+      "id": "pricing",
+      "component": "Pricing",
+      "navLinkVisible": true,
+      "visible": true,
+      "styles": {
+        "backgroundColor": "#f3f7fa"
+      },
+      "layout": {
+        "template": "default",
+        "itemCount": 3
+      },
+      "cardStyles": {
+        "backgroundColor": "#ffffff",
+        "boxShadow": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
+      },
+      "items": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2,
+          "popular": true
+        },
+        {
+          "id": 3
+        }
+      ],
+      "elements": {
+        "pricing-nav-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Prețuri",
+            "en": "Pricing"
+          }
+        },
+        "pricing-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Planurile Noastre Tarifare",
+            "en": "Our Pricing Plans"
+          },
+          "styles": {
+            "color": "#111827",
+            "fontSize": "36px",
+            "fontWeight": "bold",
+            "textAlign": "center"
+          }
+        },
+        "pricing-subtitle": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p>Alege planul perfect pentru nevoile tale. Prețuri simple și transparente, fără taxe ascunse.</p>",
+            "en": "<p>Choose the perfect plan for your needs. Simple, transparent pricing with no hidden fees.</p>"
+          }
+        },
+        "plan-1-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Start",
+            "en": "Starter"
+          }
+        },
+        "plan-1-price": {
+          "type": "rich-text",
+          "content": {
+            "ro": "€29",
+            "en": "$29"
+          }
+        },
+        "plan-1-period": {
+          "type": "rich-text",
+          "content": {
+            "ro": "/ lună",
+            "en": "/ month"
+          }
+        },
+        "plan-1-features": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<ul><li>✓ 10 Generări AI</li><li>✓ Suport de Bază</li><li>✓ Editare Live</li><li>- Sincronizare Cloud</li></ul>",
+            "en": "<ul><li>✓ 10 AI Generations</li><li>✓ Basic Support</li><li>✓ Live Editing</li><li>- Cloud Sync</li></ul>"
+          }
+        },
+        "plan-1-cta": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Alege Planul",
+            "en": "Choose Plan"
+          }
+        },
+        "plan-2-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Afaceri",
+            "en": "Business"
+          }
+        },
+        "plan-2-price": {
+          "type": "rich-text",
+          "content": {
+            "ro": "€59",
+            "en": "$59"
+          }
+        },
+        "plan-2-period": {
+          "type": "rich-text",
+          "content": {
+            "ro": "/ lună",
+            "en": "/ month"
+          }
+        },
+        "plan-2-features": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<ul><li>✓ 100 Generări AI</li><li>✓ Suport Prioritar</li><li>✓ Editare Live</li><li>✓ Sincronizare Cloud</li></ul>",
+            "en": "<ul><li>✓ 100 AI Generations</li><li>✓ Priority Support</li><li>✓ Live Editing</li><li>✓ Cloud Sync</li></ul>"
+          }
+        },
+        "plan-2-cta": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Alege Planul",
+            "en": "Choose Plan"
+          }
+        },
+        "plan-3-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Enterprise",
+            "en": "Enterprise"
+          }
+        },
+        "plan-3-price": {
+          "type": "rich-text",
+          "content": {
+            "ro": "€99",
+            "en": "$99"
+          }
+        },
+        "plan-3-period": {
+          "type": "rich-text",
+          "content": {
+            "ro": "/ lună",
+            "en": "/ month"
+          }
+        },
+        "plan-3-features": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<ul><li>✓ Generări AI Nelimitate</li><li>✓ Suport Dedicat</li><li>✓ Editare Live</li><li>✓ Sincronizare & Backup Cloud</li></ul>",
+            "en": "<ul><li>✓ Unlimited AI Generations</li><li>✓ Dedicated Support</li><li>✓ Live Editing</li><li>✓ Cloud Sync & Backup</li></ul>"
+          }
+        },
+        "plan-3-cta": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Contactează-ne",
+            "en": "Contact Us"
+          }
+        }
+      }
+    },
+    "testimonials": {
+      "id": "testimonials",
+      "component": "Testimonials",
+      "navLinkVisible": true,
+      "visible": true,
+      "styles": {
+        "backgroundColor": "#0a284e"
+      },
+      "layout": {
+        "template": "default",
+        "itemCount": 4
+      },
+      "cardStyles": {
+        "backgroundColor": "#13345f",
+        "boxShadow": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
+      },
+      "items": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        },
+        {
+          "id": 4
+        }
+      ],
+      "elements": {
+        "testimonials-nav-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Testimoniale",
+            "en": "Testimonials"
+          }
+        },
+        "testimonials-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Ce spun clienții noștri?",
+            "en": "What Our Clients Say"
+          },
+          "styles": {
+            "color": "#FFFFFF",
+            "fontSize": "36px",
+            "fontWeight": "bold",
+            "textAlign": "center"
+          }
+        },
+        "testimonials-star-icon": {
+          "type": "icon",
+          "iconName": "Star",
+          "size": 20,
+          "color": "#FBBF24",
+          "styles": {
+            "fill": "currentColor"
+          }
+        },
+        "testimonials-quote-icon": {
+          "type": "icon",
+          "iconName": "Quote",
+          "size": 32,
+          "color": "#c29a47"
+        },
+        "testimonial-1-image": {
+          "type": "image",
+          "content": "https://picsum.photos/seed/person4/100/100",
+          "alt": {
+            "ro": "Andrei Popescu",
+            "en": "Andrei Popescu"
+          }
+        },
+        "testimonial-1-text": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p>“Servicii excelente! Echipa a fost promptă, profesionistă și a depășit toate așteptările. Recomand cu încredere!”</p>",
+            "en": "<p>“Excellent services! The team was prompt, professional, and exceeded all expectations. I highly recommend them!”</p>"
+          }
+        },
+        "testimonial-1-author": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Andrei Popescu",
+            "en": "Andrei Popescu"
+          },
+          "styles": {
+            "color": "#FFFFFF",
+            "fontWeight": "600"
+          }
+        },
+        "testimonial-2-image": {
+          "type": "image",
+          "content": "https://picsum.photos/seed/person5/100/100",
+          "alt": {
+            "ro": "Maria Ionescu",
+            "en": "Maria Ionescu"
+          }
+        },
+        "testimonial-2-text": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p>“O colaborare de excepție. Au înțeles perfect nevoile noastre și au livrat un produs final de înaltă calitate. Foarte mulțumit.”</p>",
+            "en": "<p>“An exceptional collaboration. They perfectly understood our needs and delivered a high-quality final product. Very satisfied.”</p>"
+          }
+        },
+        "testimonial-2-author": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Maria Ionescu",
+            "en": "Maria Ionescu"
+          },
+          "styles": {
+            "color": "#FFFFFF",
+            "fontWeight": "600"
+          }
+        },
+        "testimonial-3-image": {
+          "type": "image",
+          "content": "https://picsum.photos/seed/person6/100/100",
+          "alt": {
+            "ro": "George Stan",
+            "en": "George Stan"
+          }
+        },
+        "testimonial-3-text": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p>“Profesionalism și eficiență. Totul a decurs rapid și fără probleme. Voi apela din nou la serviciile lor, cu siguranță.”</p>",
+            "en": "<p>“Professionalism and efficiency. Everything went quickly and smoothly. I will definitely use their services again.”</p>"
+          }
+        },
+        "testimonial-3-author": {
+          "type": "rich-text",
+          "content": {
+            "ro": "George Stan",
+            "en": "George Stan"
+          },
+          "styles": {
+            "color": "#FFFFFF",
+            "fontWeight": "600"
+          }
+        },
+        "testimonial-4-image": {
+          "type": "image",
+          "content": "https://picsum.photos/seed/person7/100/100",
+          "alt": {
+            "ro": "Elena Vasile",
+            "en": "Elena Vasile"
+          }
+        },
+        "testimonial-4-text": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p>“Calitatea muncii lor este de neegalat. Am fost impresionat de atenția la detalii și de creativitatea lor.”</p>",
+            "en": "<p>“The quality of their work is unparalleled. I was impressed by their attention to detail and creativity.”</p>"
+          }
+        },
+        "testimonial-4-author": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Elena Vasile",
+            "en": "Elena Vasile"
+          },
+          "styles": {
+            "color": "#FFFFFF",
+            "fontWeight": "600"
+          }
+        }
+      }
+    },
+    "blog": {
+      "id": "blog",
+      "component": "Blog",
+      "navLinkVisible": true,
+      "visible": true,
+      "styles": {
+        "backgroundColor": "#f3f7fa"
+      },
+      "layout": {
+        "template": "default",
+        "itemCount": 6
+      },
+      "cardStyles": {
+        "backgroundColor": "#ffffff",
+        "boxShadow": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
+      },
+      "elements": {
+        "blog-nav-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Blog",
+            "en": "Blog"
+          }
+        },
+        "blog-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "De pe Blogul Nostru",
+            "en": "From Our Blog"
+          },
+          "styles": {
+            "color": "#111827",
+            "fontSize": "36px",
+            "fontWeight": "bold",
+            "textAlign": "center"
+          }
+        },
+        "blog-subtitle": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p>Rămâi la curent cu cele mai recente tendințe din industrie, perspective și noutăți despre companie.</p>",
+            "en": "<p>Stay updated with the latest industry trends, insights, and company news.</p>"
+          },
+          "styles": {
+            "color": "#6B7280"
+          }
+        }
+      }
+    },
+    "faq": {
+      "id": "faq",
+      "component": "FAQ",
+      "navLinkVisible": true,
+      "visible": true,
+      "styles": {
+        "backgroundColor": "#ffffff"
+      },
+      "items": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        }
+      ],
+      "elements": {
+        "faq-nav-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Întrebări Frecvente",
+            "en": "FAQ"
+          }
+        },
+        "faq-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Întrebări frecvente",
+            "en": "Frequently Asked Questions"
+          },
+          "styles": {
+            "color": "#111827",
+            "fontSize": "36px",
+            "fontWeight": "bold",
+            "textAlign": "center"
+          }
+        },
+        "faq-chevron-icon": {
+          "type": "icon",
+          "iconName": "ChevronDown",
+          "size": 24,
+          "color": "#c29a47"
+        },
+        "faq-1-question": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Care este durata de implementare a unui proiect?",
+            "en": "What is the project implementation duration?"
+          }
+        },
+        "faq-1-answer": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p>Durata de implementare variază în funcție de complexitatea proiectului. Un proiect standard durează între 2 și 4 săptămâni, dar termenele exacte vor fi stabilite în urma discuției inițiale.</p>",
+            "en": "<p>The implementation duration varies depending on the project's complexity. A standard project takes between 2 and 4 weeks, but the exact deadlines will be established after the initial discussion.</p>"
+          }
+        },
+        "faq-2-question": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Ce costuri implică serviciile oferite?",
+            "en": "What are the costs of the services offered?"
+          }
+        },
+        "faq-2-answer": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p>Costurile sunt personalizate pentru fiecare client. Oferim o consultanță gratuită pentru a evalua cerințele și a vă oferi o estimare de preț detaliată și transparentă.</p>",
+            "en": "<p>Costs are customized for each client. We offer a free consultation to assess the requirements and provide you with a detailed and transparent price estimate.</p>"
+          }
+        },
+        "faq-3-question": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Oferiți suport tehnic post-lansare?",
+            "en": "Do you offer post-launch technical support?"
+          }
+        },
+        "faq-3-answer": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p>Da, oferim pachete de mentenanță și suport tehnic pentru a ne asigura că totul funcționează optim după finalizarea proiectului. Suntem aici pentru a vă ajuta pe termen lung.</p>",
+            "en": "<p>Yes, we offer maintenance and technical support packages to ensure everything runs optimally after the project is completed. We are here to help you in the long run.</p>"
+          }
+        }
+      }
+    },
+    "how-it-works": {
+      "id": "how-it-works",
+      "component": "HowItWorks",
+      "navLinkVisible": true,
+      "visible": true,
+      "styles": {
+        "backgroundColor": "#f3f7fa"
+      },
+      "layout": {
+        "template": "default",
+        "itemCount": 3
+      },
+      "cardStyles": {
+        "backgroundColor": "#ffffff",
+        "boxShadow": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
+      },
+      "items": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        }
+      ],
+      "elements": {
+        "how-it-works-nav-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Cum Funcționează",
+            "en": "How It Works"
+          }
+        },
+        "how-it-works-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Cum se poate modifica ușor acest site",
+            "en": "How to Easily Modify This Site"
+          },
+          "styles": {
+            "color": "#111827",
+            "fontSize": "36px",
+            "fontWeight": "bold",
+            "textAlign": "center"
+          }
+        },
+        "how-it-works-subtitle": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p>Personalizează-ți prezența online în doar câțiva pași simpli. Cu editorul nostru intuitiv, ai control total asupra conținutului, fără a avea nevoie de cunoștințe tehnice.</p>",
+            "en": "<p>Customize your online presence in just a few simple steps. With our intuitive editor, you have full control over the content without needing any technical knowledge.</p>"
+          }
+        },
+        "how-it-works-step-1-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Activează Modul de Editare",
+            "en": "Activate Edit Mode"
+          }
+        },
+        "how-it-works-step-1-description": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Cu o simplă apăsare de buton din bara de unelte, activezi modul de editare. Toate elementele personalizabile vor fi evidențiate, gata pentru a fi modificate.",
+            "en": "With a simple button press from the toolbar, you activate edit mode. All customizable elements will be highlighted, ready to be modified."
+          }
+        },
+        "how-it-works-step-2-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Modifică Text și Imagini",
+            "en": "Modify Text and Images"
+          }
+        },
+        "how-it-works-step-2-description": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Fă dublu-click pe orice text sau imagine pentru a deschide editorul. Modifică textele, încarcă imagini noi sau generează conținut unic cu ajutorul inteligenței artificiale integrate.",
+            "en": "Double-click on any text or image to open the editor. Modify texts, upload new images, or generate unique content with the help of integrated artificial intelligence."
+          }
+        },
+        "how-it-works-step-3-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Salvează și Publică",
+            "en": "Save and Publish"
+          }
+        },
+        "how-it-works-step-3-description": {
+          "type": "rich-text",
+          "content": {
+            "ro": "După finalizarea modificărilor, alege planul care ți se potrivește. Odată achitat, toate setările tale vor fi salvate permanent pe serverele noastre și site-ul tău va fi public.",
+            "en": "After finishing your changes, choose the plan that suits you. Once paid, all your settings will be permanently saved on our servers, and your site will be public."
+          }
+        }
+      }
+    },
+    "contact": {
+      "id": "contact",
+      "component": "Contact",
+      "navLinkVisible": true,
+      "visible": true,
+      "styles": {
+        "backgroundColor": "#ffffff"
+      },
+      "items": [
+        {
+          "id": 1,
+          "iconVisible": true
+        },
+        {
+          "id": 2,
+          "iconVisible": true
+        },
+        {
+          "id": 3,
+          "iconVisible": true
+        }
+      ],
+      "elements": {
+        "contact-nav-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Contact",
+            "en": "Contact"
+          }
+        },
+        "contact-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Contact și Localizare",
+            "en": "Contact & Location"
+          },
+          "styles": {
+            "color": "#111827",
+            "fontSize": "36px",
+            "fontWeight": "bold",
+            "textAlign": "center"
+          }
+        },
+        "contact-item-1-icon": {
+          "type": "icon",
+          "iconName": "MapPin",
+          "size": 24,
+          "color": "#c29a47"
+        },
+        "contact-item-1-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Adresă",
+            "en": "Address"
+          }
+        },
+        "contact-item-1-text": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Str. Inovației, Nr. 1, București, România",
+            "en": "Innovation St, No. 1, Bucharest, Romania"
+          }
+        },
+        "contact-item-2-icon": {
+          "type": "icon",
+          "iconName": "Phone",
+          "size": 24,
+          "color": "#c29a47"
+        },
+        "contact-item-2-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Telefon",
+            "en": "Phone"
+          }
+        },
+        "contact-item-2-text": {
+          "type": "rich-text",
+          "content": {
+            "ro": "+40 712 345 678",
+            "en": "+40 712 345 678"
+          }
+        },
+        "contact-item-3-icon": {
+          "type": "icon",
+          "iconName": "Mail",
+          "size": 24,
+          "color": "#c29a47"
+        },
+        "contact-item-3-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Email",
+            "en": "Email"
+          }
+        },
+        "contact-item-3-text": {
+          "type": "rich-text",
+          "content": {
+            "ro": "contact@inoveaza.ro",
+            "en": "contact@innovate.com"
+          }
+        },
+        "contact-form-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Trimite-ne un mesaj",
+            "en": "Send us a message"
+          },
+          "styles": {
+            "fontSize": "24px",
+            "fontWeight": "600"
+          }
+        },
+        "contact-form-name-placeholder": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Numele Dvs.",
+            "en": "Your Name"
+          }
+        },
+        "contact-form-email-placeholder": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Adresa de Email",
+            "en": "Email Address"
+          }
+        },
+        "contact-form-phone-placeholder": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Număr de Telefon",
+            "en": "Phone Number"
+          }
+        },
+        "contact-form-message-placeholder": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Mesajul Dvs.",
+            "en": "Your Message"
+          }
+        },
+        "contact-form-submit-button": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Trimite Mesajul",
+            "en": "Send Message"
+          }
+        },
+        "contact-form-config": {
+          "type": "form-config",
+          "recipientEmail": "recipient@example.com"
+        },
+        "map-embed": {
+          "type": "map",
+          "content": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2848.832292984109!2d26.10125267683416!3d44.43612420202936!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40b1ff497634f187%3A0x9ace345a947df45b!2sPia%C8%9Ba%20Universit%C4%83%C8%9Bii!5e0!3m2!1sen!2sro!4v1700000000000!5m2!1sen!2sro\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
+        }
+      }
+    },
+    "footer": {
+      "id": "footer",
+      "component": "Footer",
+      "visible": true,
+      "styles": {
+        "backgroundColor": "#0a284e"
+      },
+      "elements": {
+        "footer-logo": {
+          "type": "logo",
+          "logoType": "text",
+          "content": {
+            "ro": "Inovează SRL",
+            "en": "Innovate Inc."
+          },
+          "imageUrl": "",
+          "alt": {
+            "ro": "Logo Inovează SRL",
+            "en": "Innovate Inc. Logo"
+          },
+          "styles": {
+            "color": "#ffffff",
+            "fontSize": "22px",
+            "fontWeight": "bold"
+          }
+        },
+        "footer-description": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Pionieri în aplicarea inteligenței artificiale pentru a rezolva probleme reale de afaceri.",
+            "en": "Pioneers in applying artificial intelligence to solve real-world business problems."
+          },
+          "styles": {
+            "color": "#9CA3AF"
+          }
+        },
+        "footer-links-1-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Linkuri Utile",
+            "en": "Quick Links"
+          },
+          "styles": {
+            "color": "#ffffff",
+            "fontWeight": "600"
+          }
+        },
+        "footer-links-1-content": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<ul><li><a href=\"#about\">Despre Noi</a></li><li><a href=\"#services\">Servicii</a></li><li><a href=\"#portfolio\">Portofoliu</a></li><li><a href=\"#contact\">Contact</a></li></ul>",
+            "en": "<ul><li><a href=\"#about\">About Us</a></li><li><a href=\"#services\">Services</a></li><li><a href=\"#portfolio\">Portfolio</a></li><li><a href=\"#contact\">Contact</a></li></ul>"
+          }
+        },
+        "footer-links-2-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Legal",
+            "en": "Legal"
+          },
+          "styles": {
+            "color": "#ffffff",
+            "fontWeight": "600"
+          }
+        },
+        "footer-links-2-content": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<ul><li><a href=\"page:terms-page\">Termeni și Condiții</a></li><li><a href=\"page:privacy-page\">Politica de Confidențialitate</a></li></ul>",
+            "en": "<ul><li><a href=\"page:terms-page\">Terms & Conditions</a></li><li><a href=\"page:privacy-page\">Privacy Policy</a></li></ul>"
+          }
+        },
+        "footer-contact-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Contact",
+            "en": "Contact"
+          },
+          "styles": {
+            "color": "#ffffff",
+            "fontWeight": "600"
+          }
+        },
+        "footer-contact-address": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Str. Inovației, Nr. 1, București",
+            "en": "Innovation St, No. 1, Bucharest"
+          }
+        },
+        "footer-contact-phone": {
+          "type": "rich-text",
+          "content": {
+            "ro": "+40 712 345 678",
+            "en": "+40 712 345 678"
+          }
+        },
+        "footer-contact-email": {
+          "type": "rich-text",
+          "content": {
+            "ro": "contact@inoveaza.ro",
+            "en": "contact@innovate.com"
+          }
+        },
+        "footer-copyright": {
+          "type": "rich-text",
+          "content": {
+            "ro": "© 2024 Inovează SRL. Toate drepturile rezervate.",
+            "en": "© 2024 Innovate Inc. All rights reserved."
+          },
+          "styles": {
+            "color": "#9CA3AF"
+          }
+        }
+      }
+    }
+  },
+  "pages": {
+    "terms-page": {
+      "id": "terms-page",
+      "elements": {
+        "terms-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Termeni și Condiții",
+            "en": "Terms & Conditions"
+          },
+          "styles": {
+            "fontSize": "32px",
+            "fontWeight": "bold"
+          }
+        },
+        "terms-content": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p>Vă rugăm să citiți acești termeni și condiții cu atenție înainte de a utiliza Serviciul nostru. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>",
+            "en": "<p>Please read these terms and conditions carefully before using Our Service. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>"
+          }
+        }
+      }
+    },
+    "privacy-page": {
+      "id": "privacy-page",
+      "elements": {
+        "privacy-title": {
+          "type": "rich-text",
+          "content": {
+            "ro": "Politica de Confidențialitate",
+            "en": "Privacy Policy"
+          },
+          "styles": {
+            "fontSize": "32px",
+            "fontWeight": "bold"
+          }
+        },
+        "privacy-content": {
+          "type": "rich-text",
+          "content": {
+            "ro": "<p>Această Politică de Confidențialitate descrie politicile și procedurile noastre privind colectarea, utilizarea și divulgarea informațiilor dumneavoastră atunci când utilizați Serviciul. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>",
+            "en": "<p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>"
+          }
+        }
+      }
+    }
+  },
+  "_localImages": {}
+}

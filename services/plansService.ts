@@ -199,3 +199,8 @@ export const showImportExportConfig = (): boolean => {
 export const showSaveButton = (): boolean => {
     return (plansConfig as any).show_save_button || false;
 };
+
+// Verifică dacă trebuie să salvez configurația local (în public) sau pe server
+export const useLocalSiteConfig = (): boolean => {
+    return (plansConfig as any)['useLocal_site-config'] === true;
+};

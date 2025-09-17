@@ -3,6 +3,39 @@
 import type { SiteConfig } from '@/types';
 // EmailJS now handled by backend service
 
+// Save site configuration locally to public folder
+export const saveConfigLocally = async (config: SiteConfig): Promise<{ success: boolean }> => {
+  try {
+    // Save to localStorage first (this is what the app uses)
+    localStorage.setItem('site-config', JSON.stringify(config));
+
+    // Create a downloadable file with the site configuration
+    const configJson = JSON.stringify(config, null, 2);
+    const blob = new Blob([configJson], { type: 'application/json' });
+
+    // Create download link
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'site-config.json';
+
+    // Trigger download
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    console.log('Configurația a fost salvată în localStorage și descărcată ca fișier');
+    return { success: true };
+  } catch (error) {
+    console.error('Eroare la salvarea locală:', error);
+    // Fallback: save to localStorage even if download fails
+    localStorage.setItem('site-config', JSON.stringify(config));
+    console.log('Configurația a fost salvată în localStorage ca fallback');
+    return { success: true };
+  }
+};
+
 // API to upload the site configuration to the server
 export const uploadConfig = async (config: SiteConfig): Promise<{ success: boolean }> => {
   try {

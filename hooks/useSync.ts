@@ -2,8 +2,8 @@
 
 import { useCallback } from 'react';
 import { toast } from 'sonner';
-import { uploadConfig } from '@/utils/api';
-import { showSaveButton } from '@/services/plansService';
+import { uploadConfig, saveConfigLocally } from '@/utils/api';
+import { showSaveButton, useLocalSiteConfig } from '@/services/plansService';
 import type { SiteConfig } from '@/types';
 import type { Translations } from '@/utils/translations';
 
@@ -29,8 +29,16 @@ export const useSync = ({ siteConfig, setIsSyncing, t }: useSyncProps) => {
         const syncToast = toast.loading(t.toolbar.syncing);
 
         try {
-            await uploadConfig(siteConfig);
-            toast.success(t.toolbar.syncSuccess, { id: syncToast });
+            // Verifică dacă trebuie să salvez local sau pe server
+            if (useLocalSiteConfig()) {
+                // Salvare locală cu download automat
+                await saveConfigLocally(siteConfig);
+                toast.success(t.toolbar.syncSuccessLocal, { id: syncToast });
+            } else {
+                // Salvare pe server prin API
+                await uploadConfig(siteConfig);
+                toast.success(t.toolbar.syncSuccess, { id: syncToast });
+            }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
             toast.error(`${t.toolbar.syncFailed}: ${errorMessage}`, { id: syncToast });
