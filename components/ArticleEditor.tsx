@@ -7,7 +7,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSite } from '@/context/SiteContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { slugify } from '@/utils/slugify';
 import type { Article, Language, LocalizedString } from '@/types';
@@ -30,6 +30,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
     const { language } = useLanguage();
     const { canUseRebuild, useRebuild } = useTestMode();
     const navigate = useNavigate();
+    const location = useLocation();
     const t = useMemo(() => translations[language].articleEditor, [language]);
     const editorsT = useMemo(() => translations[language].editors, [language]);
 
@@ -136,7 +137,12 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article: initialArticle, 
 
         if (window.confirm(t.deleteArticleConfirm)) {
             deleteArticle(article.id);
-            navigate('/');
+            // If we're on an article page, redirect to blog instead of home
+            if (location.pathname.startsWith('/blog/')) {
+                navigate('/blog');
+            } else {
+                navigate('/');
+            }
         }
     };
 

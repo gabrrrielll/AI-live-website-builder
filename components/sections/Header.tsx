@@ -4,7 +4,6 @@ import React, { useState, useMemo, useRef, useLayoutEffect, useCallback } from '
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { useSite } from '@/context/SiteContext';
-import { useLanguage } from '@/context/LanguageContext';
 import { Menu, X, Eye, EyeOff } from 'lucide-react';
 import Editable from '@/components/Editable';
 import SectionControls from '@/components/SectionControls';
@@ -21,7 +20,7 @@ export const Header: React.FC<HeaderProps> = ({ sectionId }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const pathname = location.pathname;
-    const isArticlePage = pathname.startsWith('/blog/');
+    const isArticlePage = pathname.startsWith('/blog');
 
     const headerSection = siteConfig?.sections[sectionId];
 
@@ -46,7 +45,15 @@ export const Header: React.FC<HeaderProps> = ({ sectionId }) => {
                     if (inPanel) setIsMenuOpen(false);
                     if (isArticlePage) {
                         e.preventDefault();
-                        navigate(href);
+                        // Navigate to home first, then scroll to section
+                        navigate('/');
+                        // Use setTimeout to ensure navigation completes before scrolling
+                        setTimeout(() => {
+                            const element = document.getElementById(item.id);
+                            if (element) {
+                                element.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        }, 100);
                     }
                 };
 
@@ -139,7 +146,7 @@ export const Header: React.FC<HeaderProps> = ({ sectionId }) => {
 
             <nav ref={navContainerRef} className="container mx-auto px-6 py-4 flex justify-between items-center">
                 <div ref={logoRef}>
-                    <Link href="/" aria-label="Back to Homepage">
+                    <Link to="/" aria-label="Back to Homepage">
                         <Editable sectionId={sectionId} elementId="header-logo" />
                     </Link>
                 </div>

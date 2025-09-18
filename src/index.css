@@ -66,6 +66,21 @@ html {
     scroll-behavior: smooth;
 }
 
+/* Footer links styles */
+.footer-links div {
+    margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+    color: #9CA3AF;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: #ffffff;
+}
+
 /* Print styles */
 @media print {
     .no-print {

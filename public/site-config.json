@@ -581,9 +581,9 @@
         },
         "service-4-icon": {
           "type": "icon",
-          "iconName": "BotMessageSquare",
+          "iconName": "SparklesIcon",
           "size": 40,
-          "color": "#c29a47",
+          "color": "rgba(0, 0, 0, 1)",
           "styles": {
             "color": "#007bff"
           }
@@ -619,7 +619,7 @@
         },
         "service-5-icon": {
           "type": "icon",
-          "iconName": "AlertCircle",
+          "iconName": "LucideWheat",
           "size": 40,
           "color": "rgba(0, 0, 0, 1)",
           "styles": {}
@@ -655,9 +655,10 @@
         },
         "service-6-icon": {
           "type": "icon",
-          "iconName": "BotMessageSquare",
+          "iconName": "Brain",
           "size": 40,
-          "color": "#c29a47"
+          "color": "rgba(0, 0, 0, 1)",
+          "styles": {}
         },
         "service-6-title": {
           "type": "rich-text",
@@ -2282,8 +2283,8 @@
         "footer-links-1-content": {
           "type": "rich-text",
           "content": {
-            "ro": "<ul><li><a href=\"#about\">Despre Noi</a></li><li><a href=\"#services\">Servicii</a></li><li><a href=\"#portfolio\">Portofoliu</a></li><li><a href=\"#contact\">Contact</a></li></ul>",
-            "en": "<ul><li><a href=\"#about\">About Us</a></li><li><a href=\"#services\">Services</a></li><li><a href=\"#portfolio\">Portfolio</a></li><li><a href=\"#contact\">Contact</a></li></ul>"
+            "ro": "<div><a href=\"#about\">Despre Noi</a></div><div><a href=\"#services\">Servicii</a></div><div><a href=\"#portfolio\">Portofoliu</a></div><div><a href=\"#contact\">Contact</a></div>",
+            "en": "<div><a href=\"#about\">About Us</a></div><div><a href=\"#services\">Services</a></div><div><a href=\"#portfolio\">Portfolio</a></div><div><a href=\"#contact\">Contact</a></div>"
           }
         },
         "footer-links-2-title": {
@@ -2300,8 +2301,8 @@
         "footer-links-2-content": {
           "type": "rich-text",
           "content": {
-            "ro": "<ul><li><a>Termeni și Condiții</a></li><li><a>Politica de Confidențialitate</a></li></ul>",
-            "en": "<ul><li><a>Terms &amp; Conditions</a></li><li><a>Privacy Policy</a></li></ul>"
+            "ro": "<div><a>Termeni și Condiții</a></div><div><a>Politica de Confidențialitate</a></div>",
+            "en": "<div><a>Terms &amp; Conditions</a></div><div><a>Privacy Policy</a></div>"
           }
         },
         "footer-contact-title": {

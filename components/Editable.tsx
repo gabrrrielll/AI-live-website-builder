@@ -104,8 +104,15 @@ const renderWithRouterLinks = (htmlContent: string, navigate: (path: string) => 
         if (element) {
           element.scrollIntoView({ behavior: 'smooth' });
         } else {
-          // If not on home page, navigate to home and then scroll using React Router
-          navigate(`/#${anchor}`);
+          // If not on home page, navigate to home first, then scroll to section
+          navigate('/');
+          // Use setTimeout to ensure navigation completes before scrolling
+          setTimeout(() => {
+            const element = document.getElementById(anchor);
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth' });
+            }
+          }, 100);
         }
       };
 
