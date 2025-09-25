@@ -7,7 +7,6 @@ import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import * as icons from 'lucide-react';
 import ColorPicker from './editors/ColorPicker';
-import SectionBackgroundEditor from './editors/SectionBackgroundEditor';
 
 const shadowPresets = {
     'none': 'shadowNone',
@@ -736,7 +735,7 @@ const CardLayoutModal: React.FC = () => {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">{t.cardShadow}</label>
                             <select value={shadowValueToKey(cardShadow)} onChange={(e) => setCardShadow(shadowKeyToValue(e.target.value))} className="w-full p-2 border border-gray-300 rounded-md bg-white">
-                                {Object.entries(shadowPresets).map(([value, key]) => (
+                                {Object.entries(shadowPresets).map(([, key]) => (
                                     <option key={key} value={key}>{t[key as keyof typeof t]}</option>
                                 ))}
                             </select>
@@ -934,7 +933,7 @@ const CardLayoutModal: React.FC = () => {
                         </div>
 
                         {/* CSS for gradient animation */}
-                        <style jsx>{`
+                        <style>{`
                             @keyframes gradientShift {
                                 0% { background-position: 0% 50%; }
                                 25% { background-position: 100% 0%; }
