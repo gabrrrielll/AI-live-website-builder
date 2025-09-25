@@ -4,6 +4,7 @@ import React from 'react';
 import { useSite } from '@/context/SiteContext';
 import { aboutTemplateMap } from '@/components/cards/templateMaps';
 import { AboutLayoutImageLeft } from '@/components/layouts/about';
+import { ScrollAnimation } from '@/components/animations/ScrollAnimation';
 
 interface AboutProps {
     sectionId: string;
@@ -20,7 +21,9 @@ export const About: React.FC<AboutProps> = ({ sectionId }) => {
     return (
         <section className="py-20">
             <div className="container mx-auto px-6">
-                <LayoutComponent sectionId={sectionId} imageWidth={layout.imageWidth} />
+                <ScrollAnimation direction="up" distance={80} delay={0.2}>
+                    <LayoutComponent sectionId={sectionId} imageWidth={layout.imageWidth} />
+                </ScrollAnimation>
             </div>
         </section>
     );

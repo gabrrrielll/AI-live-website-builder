@@ -5,6 +5,7 @@ import { useSite } from '@/context/SiteContext';
 import Editable from '@/components/Editable';
 import { portfolioTemplateMap } from '@/components/cards/templateMaps';
 import { PortfolioCardDefault } from '@/components/cards/portfolio';
+import { ConditionalAnimation } from '@/components/animations/ConditionalAnimation';
 
 interface PortfolioProps {
     sectionId: string;
@@ -17,14 +18,14 @@ export const Portfolio: React.FC<PortfolioProps> = ({ sectionId }) => {
 
     const { items = [], layout = { template: 'default', itemCount: 6, carousel: false }, cardStyles } = section;
     const CardComponent = portfolioTemplateMap[layout.template as keyof typeof portfolioTemplateMap] || PortfolioCardDefault;
-    
+
     const renderCarousel = () => (
         <div className="scrolling-container">
             <div className="scrolling-wrapper">
                 {[...items, ...items].map((item, index) => (
                     <div key={`${item.id}-${index}`} className="flex-shrink-0 w-[90vw] sm:w-[45vw] lg:w-[30vw] px-4">
                         <div className="h-96">
-                           <CardComponent sectionId={sectionId} item={item} style={cardStyles} />
+                            <CardComponent sectionId={sectionId} item={item} style={cardStyles} />
                         </div>
                     </div>
                 ))}

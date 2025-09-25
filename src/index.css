@@ -81,6 +81,91 @@ html {
     color: #ffffff;
 }
 
+/* Editable zones styling */
+.editable-outline {
+    outline: 2px dashed #c29a47;
+    outline-offset: 2px;
+    transition: outline-color 0.2s ease;
+}
+
+.editable-outline:hover {
+    outline-color: #a67c00;
+}
+
+/* Dashed border boxes for cards */
+.dashed-border-box {
+    border: 2px dashed #c29a47;
+    border-radius: 8px;
+    transition: border-color 0.2s ease;
+}
+
+.dashed-border-box:hover {
+    border-color: #a67c00;
+}
+
+/* Scroll Animation Utilities */
+.scroll-animate {
+    will-change: transform, opacity;
+}
+
+/* Smooth scroll behavior for better performance */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Optimize animations for better performance */
+@media (prefers-reduced-motion: reduce) {
+
+    .scroll-animate,
+    [data-framer-motion] {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* Custom easing for water rise effect */
+@keyframes waterRise {
+    0% {
+        transform: translateY(60px) scale(0.9);
+        opacity: 0;
+        filter: blur(4px);
+    }
+
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+        filter: blur(0px);
+    }
+}
+
+/* Hide scrollbar for mobile toolbar */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+}
+
+/* Gradient animation for hero sections */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
 /* Print styles */
 @media print {
     .no-print {

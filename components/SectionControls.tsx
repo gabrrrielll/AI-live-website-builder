@@ -2,10 +2,11 @@
 
 import React, { useMemo } from 'react';
 import { useSite } from '@/context/SiteContext';
-import { Eye, EyeOff, Trash2, Palette, ArrowUp, ArrowDown, LayoutGrid, Copy, PlusCircle } from 'lucide-react';
+import { Eye, EyeOff, Trash2, Palette, ArrowUp, ArrowDown, LayoutGrid, Copy, PlusCircle, Zap } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import { useNavigate } from 'react-router-dom';
+import { AnimationToggle } from '@/components/controls/AnimationToggle';
 
 interface SectionControlsProps {
   sectionId: string;
@@ -92,6 +93,12 @@ const SectionControls: React.FC<SectionControlsProps> = ({ sectionId }) => {
         >
           <Palette size={18} />
         </button>
+      )}
+      {/* Animation Toggle - Show for all sections except Header/Footer */}
+      {!isHeaderFooter && (
+        <div className="px-2 py-1">
+          <AnimationToggle sectionId={sectionId} />
+        </div>
       )}
       {!isHeaderFooter && (
         <button

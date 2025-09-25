@@ -41,25 +41,25 @@ const ImageCropperModal: React.FC<ImageCropperModalProps> = ({ src, onSave, onCl
     if (!image || !completedCrop) {
       throw new Error('Crop details not available');
     }
-  
+
     const canvas = document.createElement('canvas');
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
-  
+
     canvas.width = completedCrop.width;
     canvas.height = completedCrop.height;
     const ctx = canvas.getContext('2d');
-  
+
     if (!ctx) {
       throw new Error('No 2d context');
     }
-  
+
     const pixelRatio = window.devicePixelRatio;
     canvas.width = completedCrop.width * pixelRatio;
     canvas.height = completedCrop.height * pixelRatio;
     ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     ctx.imageSmoothingQuality = 'high';
-  
+
     ctx.drawImage(
       image,
       completedCrop.x * scaleX,
@@ -71,47 +71,47 @@ const ImageCropperModal: React.FC<ImageCropperModalProps> = ({ src, onSave, onCl
       completedCrop.width,
       completedCrop.height,
     );
-  
+
     const base64Image = canvas.toDataURL('image/jpeg');
     onSave(base64Image);
   }
 
   return (
-    <div className="fixed inset-0 bg-black/70 z-[60] flex items-center justify-center p-4 pb-28">
-      <div className="bg-white rounded-lg shadow-2xl w-full max-w-4xl transform transition-all flex flex-col max-h-full">
-        <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
-          <h2 className="text-xl font-semibold text-gray-800">{t.cropImage}</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-            <X size={24} />
+    <div className="fixed inset-0 bg-black/70 z-[60] flex items-center justify-center" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
+      <div className="bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden" style={{ width: '90%', height: '80%', maxWidth: '1200px', margin: '0 auto' }}>
+        <div className="flex items-center justify-between p-3 sm:p-4 border-b flex-shrink-0">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">{t.cropImage}</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1">
+            <X size={20} className="sm:w-6 sm:h-6" />
           </button>
         </div>
-        <div className="p-4 md:p-6 flex-grow overflow-auto flex items-center justify-center">
-            {src && (
-                <ReactCrop
-                    crop={crop}
-                    onChange={(_, percentCrop) => setCrop(percentCrop)}
-                    onComplete={(c) => setCompletedCrop(c)}
-                    aspect={ASPECT_RATIO}
-                    minWidth={MIN_WIDTH}
-                >
-                    <img
-                        ref={imgRef}
-                        alt="Crop me"
-                        src={src}
-                        onLoad={onImageLoad}
-                        style={{ maxHeight: '70vh' }}
-                        crossOrigin="anonymous"
-                    />
-                </ReactCrop>
-            )}
+        <div className="p-3 sm:p-4 md:p-6 flex-grow overflow-auto flex items-center justify-center">
+          {src && (
+            <ReactCrop
+              crop={crop}
+              onChange={(_, percentCrop) => setCrop(percentCrop)}
+              onComplete={(c) => setCompletedCrop(c)}
+              aspect={ASPECT_RATIO}
+              minWidth={MIN_WIDTH}
+            >
+              <img
+                ref={imgRef}
+                alt="Crop me"
+                src={src}
+                onLoad={onImageLoad}
+                style={{ maxHeight: '70vh' }}
+                crossOrigin="anonymous"
+              />
+            </ReactCrop>
+          )}
         </div>
-        <div className="flex justify-end p-4 border-t space-x-2 flex-shrink-0">
-            <button onClick={onClose} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
-                {t.cancel}
-            </button>
-            <button onClick={handleSaveCrop} className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                {t.cropImage}
-            </button>
+        <div className="flex justify-end p-3 sm:p-4 border-t space-x-2 flex-shrink-0">
+          <button onClick={onClose} className="px-4 sm:px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 text-sm sm:text-base">
+            {t.cancel}
+          </button>
+          <button onClick={handleSaveCrop} className="px-4 sm:px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm sm:text-base">
+            {t.cropImage}
+          </button>
         </div>
       </div>
     </div>

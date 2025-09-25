@@ -55,12 +55,10 @@ interface RichTextEditorProps {
 const modules = {
   toolbar: [
     [{ 'header': [1, 2, 3, false] }],
-    [{ 'font': ['Arial', 'Helvetica', 'Times New Roman', 'Georgia', 'Verdana', 'Courier New', 'serif', 'sans-serif', 'monospace'] }],
-    [{ 'size': ['8px', '10px', '12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px', '64px'] }],
-    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-    [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
-    ['link', 'image'],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
     [{ 'color': [] }, { 'background': [] }],
+    ['link'],
     ['clean']
   ]
 };
@@ -151,11 +149,29 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ element, onSave, onChan
                 border-top: 1px solid #ccc;
                 border-left: 1px solid #ccc;
                 border-right: 1px solid #ccc;
+                padding: 8px;
               }
               .rich-text-editor .ql-container {
                 border-bottom: 1px solid #ccc;
                 border-left: 1px solid #ccc;
                 border-right: 1px solid #ccc;
+              }
+              .rich-text-editor .ql-toolbar .ql-formats {
+                margin-right: 8px;
+              }
+              @media (max-width: 640px) {
+                .rich-text-editor .ql-toolbar {
+                  padding: 4px;
+                  font-size: 12px;
+                }
+                .rich-text-editor .ql-toolbar .ql-formats {
+                  margin-right: 4px;
+                }
+                .rich-text-editor .ql-toolbar button {
+                  padding: 4px;
+                  width: 28px;
+                  height: 28px;
+                }
               }
             `}</style>
           <Suspense fallback={<div>Loading editor...</div>}>
@@ -177,11 +193,11 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ element, onSave, onChan
       )}
 
       {!hideSaveButton && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 p-4">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 p-3 sm:p-4">
           <div className="flex justify-end">
             <button
               onClick={handleSave}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition-colors font-medium"
+              className="px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition-colors font-medium text-sm sm:text-base"
             >
               {t.saveChanges}
             </button>

@@ -5,6 +5,7 @@ import { useSite } from '@/context/SiteContext';
 import Editable from '@/components/Editable';
 import { testimonialTemplateMap } from '@/components/cards/templateMaps';
 import { TestimonialCardDefault } from '@/components/cards/testimonials';
+import { ConditionalAnimation } from '@/components/animations/ConditionalAnimation';
 
 interface TestimonialsProps {
     sectionId: string;
@@ -30,12 +31,23 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ sectionId }) => {
     return (
         <section className="py-20">
             <div className="container mx-auto px-6">
-                <div className="text-center title-underline">
-                    <Editable as="h2" sectionId={sectionId} elementId="testimonials-title" className="text-4xl font-bold" />
-                </div>
+                <ConditionalAnimation sectionId={sectionId} direction="up" distance={60} delay={0.1}>
+                    <div className="text-center title-underline">
+                        <Editable as="h2" sectionId={sectionId} elementId="testimonials-title" className="text-4xl font-bold" />
+                    </div>
+                </ConditionalAnimation>
+
                 <div className={`grid grid-cols-1 ${gridCols} gap-8`}>
-                    {items.map(item => (
-                        <CardComponent key={item.id} sectionId={sectionId} item={item} style={cardStyles} />
+                    {items.map((item, index) => (
+                        <ConditionalAnimation
+                            key={item.id}
+                            sectionId={sectionId}
+                            direction="up"
+                            distance={50}
+                            delay={0.3 + (index * 0.1)}
+                        >
+                            <CardComponent sectionId={sectionId} item={item} style={cardStyles} />
+                        </ConditionalAnimation>
                     ))}
                 </div>
             </div>

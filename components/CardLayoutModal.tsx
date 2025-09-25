@@ -950,29 +950,29 @@ const CardLayoutModal: React.FC = () => {
     );
 
     return (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 pb-28" onClick={stopEditingSectionLayout}>
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center" onClick={stopEditingSectionLayout} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
             <div
-                className="bg-white rounded-lg shadow-2xl w-full max-w-2xl transform transition-all flex flex-col max-h-full"
+                className="bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden" style={{ width: '90%', height: '80%', maxWidth: '1000px', margin: '0 auto' }}
                 onClick={(e) => e.stopPropagation()}
             >
                 {view === 'main' ? (
-                    <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
-                        <h2 className="text-xl font-semibold text-gray-800">{t.editSectionLayout} ({section.component})</h2>
-                        <button onClick={stopEditingSectionLayout} className="text-gray-400 hover:text-gray-600">
-                            <X size={24} />
+                    <div className="flex items-center justify-between p-3 sm:p-4 border-b flex-shrink-0">
+                        <h2 className="text-lg sm:text-xl font-semibold text-gray-800">{t.editSectionLayout} ({section.component})</h2>
+                        <button onClick={stopEditingSectionLayout} className="text-gray-400 hover:text-gray-600 p-1">
+                            <X size={20} className="sm:w-6 sm:h-6" />
                         </button>
                     </div>
                 ) : null}
 
-                <div className="overflow-y-auto pb-20">
+                <div className="overflow-y-auto pb-20 flex-1 p-3 sm:p-4">
                     {view === 'main' ? renderMainEditor() : renderSlideEditor()}
                 </div>
 
-                <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 p-4">
+                <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 p-3 sm:p-4">
                     <div className="flex justify-end">
                         <button
                             onClick={handleApply}
-                            className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition-colors font-medium"
+                            className="px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition-colors font-medium text-sm sm:text-base"
                         >
                             {t.applyChanges}
                         </button>

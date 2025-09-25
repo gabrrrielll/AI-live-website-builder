@@ -6,6 +6,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import Editable from '@/components/Editable';
 import { toast } from 'sonner';
+import { ConditionalAnimation } from '@/components/animations/ConditionalAnimation';
 
 interface FAQItemProps {
     sectionId: string;

@@ -9,7 +9,7 @@ export default defineConfig({
         react(),
         VitePWA({
             registerType: 'autoUpdate',
-            includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+            includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'masked-icon.svg', 'plans-config.json'],
             manifest: {
                 name: 'AI-Powered Live Website Editor',
                 short_name: 'AI Website Editor',
@@ -65,6 +65,7 @@ export default defineConfig({
                 drop_debugger: true,
             },
         },
+        copyPublicDir: true, // Ensure public files are copied to build
         rollupOptions: {
             output: {
                 manualChunks: {

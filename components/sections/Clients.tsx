@@ -5,6 +5,7 @@ import Editable from '@/components/Editable';
 import { useSite } from '@/context/SiteContext';
 import { clientTemplateMap } from '@/components/cards/templateMaps';
 import { ClientCardDefault } from '@/components/cards/clients';
+import { ConditionalAnimation } from '@/components/animations/ConditionalAnimation';
 
 interface ClientsProps {
     sectionId: string;

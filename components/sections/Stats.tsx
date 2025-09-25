@@ -5,6 +5,7 @@ import { useSite } from '@/context/SiteContext';
 import Editable from '@/components/Editable';
 import { statsTemplateMap } from '@/components/cards/templateMaps';
 import { StatCardDefault } from '@/components/cards/stats';
+import { ScrollAnimation } from '@/components/animations/ScrollAnimation';
 
 interface StatsProps {
     sectionId: string;
@@ -30,12 +31,21 @@ export const Stats: React.FC<StatsProps> = ({ sectionId }) => {
     return (
         <section className="py-20">
             <div className="container mx-auto px-6">
-                <div className="text-center title-underline">
-                    <Editable as="h2" sectionId={sectionId} elementId="stats-title" className="text-4xl font-bold text-gray-800" />
-                </div>
+                <ScrollAnimation direction="up" distance={60} delay={0.1}>
+                    <div className="text-center title-underline">
+                        <Editable as="h2" sectionId={sectionId} elementId="stats-title" className="text-4xl font-bold text-gray-800" />
+                    </div>
+                </ScrollAnimation>
                 <div className={`grid grid-cols-1 ${gridCols} gap-8 text-center`}>
-                    {items.map((item) => (
-                        <CardComponent key={item.id} sectionId={sectionId} item={item} style={cardStyles} />
+                    {items.map((item, index) => (
+                        <ScrollAnimation
+                            key={item.id}
+                            direction="up"
+                            distance={50}
+                            delay={0.3 + (index * 0.1)}
+                        >
+                            <CardComponent sectionId={sectionId} item={item} style={cardStyles} />
+                        </ScrollAnimation>
                     ))}
                 </div>
             </div>

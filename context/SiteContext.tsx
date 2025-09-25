@@ -11,6 +11,7 @@ import { useAI } from '@/hooks/useAI';
 import { translations } from '@/utils/translations';
 import { toast } from 'sonner';
 import { useHistory } from '@/hooks/useHistory';
+import { slugify } from '@/utils/slugify';
 
 interface SiteContextType {
     siteConfig: SiteConfig | null;
@@ -102,7 +103,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const hasLocalConfig = localStorage.getItem('site-config') !== null;
             if (!hasLocalConfig) {
                 // Salvează configurația actuală în localStorage pentru a activa modul editare
-                const result = saveToLocalStorage(siteConfig);
+                saveToLocalStorage(siteConfig);
             }
         }
     }, [siteConfig, isEditMode, isLoading, saveToLocalStorage]);
@@ -120,7 +121,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         // Salvează automat în localStorage ÎNTOTDEAUNA pentru persistență
-        const result = saveToLocalStorage(newConfig);
+        saveToLocalStorage(newConfig);
     }, [saveToLocalStorage, updateHistory]);
 
     // Funcție pentru salvarea configurației pe server
@@ -129,10 +130,10 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (isEditMode) {
             const result = await saveToServer(siteConfig, currentDomain);
-            if (result.success) {
+            if (result) {
                 toast.success('Configurația a fost salvată pe server!');
             } else {
-                toast.error(`Eroare la salvarea pe server: ${result.error}`);
+                toast.error('Eroare la salvarea pe server');
             }
         }
     }, [siteConfig, isEditMode, currentDomain, saveToServer]);
@@ -203,17 +204,18 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const addArticle = useCallback((): Article | null => {
         if (!siteConfig) return null;
 
+        const placeholderTitle = `Articol Nou ${(siteConfig.articles?.length || 0) + 1}`;
         const newArticle: Article = {
             id: `article-${Date.now()}`,
-            slug: `articol-${Date.now()}`,
-            title: { ro: 'Articol Nou', en: 'New Article' },
+            slug: slugify(placeholderTitle),
+            title: { ro: placeholderTitle, en: `New Article ${(siteConfig.articles?.length || 0) + 1}` },
             excerpt: { ro: 'Descriere articol nou', en: 'New article description' },
             content: { ro: '<p>Conținut articol nou</p>', en: '<p>New article content</p>' },
             imageUrl: '',
             imageAlt: { ro: 'Articol nou', en: 'New article' },
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            metaTitle: { ro: 'Articol Nou', en: 'New Article' },
+            metaTitle: { ro: placeholderTitle, en: `New Article ${(siteConfig.articles?.length || 0) + 1}` },
             metaDescription: { ro: 'Descriere articol nou', en: 'New article description' }
         };
 

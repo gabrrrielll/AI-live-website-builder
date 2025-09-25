@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Editable from '@/components/Editable';
 import { useSite } from '@/context/SiteContext';
 import { resolveBackgroundImage } from '@/utils/styleUtils';
+import { ScrollAnimation, WaterRiseAnimation, StaggerAnimation } from '@/components/animations/ScrollAnimation';
 
 interface HeroProps {
     sectionId: string;
@@ -68,9 +69,15 @@ export const Hero: React.FC<HeroProps> = ({ sectionId }) => {
                         >
                             <div className="w-full h-full flex items-center justify-center">
                                 <div className="text-center text-white p-4 max-w-3xl">
-                                    <Editable sectionId={sectionId} elementId={`${sectionId}-title-${item.id.toString().split('-').pop()}`} as="h1" className="text-5xl md:text-6xl font-extrabold leading-tight mb-4 text-shadow" />
-                                    <Editable sectionId={sectionId} elementId={`${sectionId}-subtitle-${item.id.toString().split('-').pop()}`} as="div" className="text-lg md:text-xl text-gray-200 mb-8" />
-                                    <Editable sectionId={sectionId} as="button" elementId={`${sectionId}-cta-${item.id.toString().split('-').pop()}`} className="bg-[#c29a47] hover:bg-[#b58b3c] text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105" />
+                                    <WaterRiseAnimation delay={0.2}>
+                                        <Editable sectionId={sectionId} elementId={`${sectionId}-title-${item.id.toString().split('-').pop()}`} as="h1" className="text-5xl md:text-6xl font-extrabold leading-tight mb-4 text-shadow" />
+                                    </WaterRiseAnimation>
+                                    <WaterRiseAnimation delay={0.4}>
+                                        <Editable sectionId={sectionId} elementId={`${sectionId}-subtitle-${item.id.toString().split('-').pop()}`} as="div" className="text-lg md:text-xl text-gray-200 mb-8" />
+                                    </WaterRiseAnimation>
+                                    <WaterRiseAnimation delay={0.6}>
+                                        <Editable sectionId={sectionId} as="button" elementId={`${sectionId}-cta-${item.id.toString().split('-').pop()}`} className="bg-[#c29a47] hover:bg-[#b58b3c] text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105" />
+                                    </WaterRiseAnimation>
                                 </div>
                             </div>
                         </div>

@@ -9,6 +9,7 @@ import type { FormConfigElement, Section } from '@/types';
 import Editable from '@/components/Editable';
 import { Loader, Trash2, Eye, EyeOff, PlusCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { ConditionalAnimation } from '@/components/animations/ConditionalAnimation';
 
 interface ContactProps {
     sectionId: string;

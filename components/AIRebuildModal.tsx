@@ -139,7 +139,7 @@ const AIRebuildModal: React.FC = () => {
                             </h3>
                             <div className="prose prose-sm max-w-none text-gray-800" dangerouslySetInnerHTML={{ __html: explanation }} />
                         </div>
-                        <div className="flex justify-end p-4 border-t bg-gray-50 rounded-b-lg">
+                        <div className="flex justify-end p-3 sm:p-4 border-t bg-gray-50 rounded-b-lg flex-shrink-0">
                             <button
                                 onClick={handleClose}
                                 className="px-6 py-2.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-semibold"
@@ -153,24 +153,24 @@ const AIRebuildModal: React.FC = () => {
             default:
                 return (
                     <>
-                        <div className="p-6 space-y-4">
+                        <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
                             <p className="text-gray-600">{t.description}</p>
                             <textarea
                                 value={prompt}
                                 onChange={(e) => setPrompt(e.target.value)}
                                 placeholder={t.placeholder}
-                                className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 resize-none"
-                                rows={5}
+                                className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 resize-none text-sm sm:text-base"
+                                rows={4}
                             />
                             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 text-sm text-yellow-800">
                                 <strong>Warning:</strong> {t.warning}
                             </div>
                         </div>
-                        <div className="flex justify-end p-4 border-t bg-gray-50 rounded-b-lg">
+                        <div className="flex justify-end p-3 sm:p-4 border-t bg-gray-50 rounded-b-lg flex-shrink-0">
                             <button
                                 onClick={handleGenerate}
                                 disabled={!prompt.trim()}
-                                className="px-6 py-2.5 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:bg-purple-300 disabled:cursor-not-allowed flex items-center justify-center min-w-[150px] font-semibold"
+                                className="px-4 sm:px-6 py-2 sm:py-2.5 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:bg-purple-300 disabled:cursor-not-allowed flex items-center justify-center min-w-[120px] sm:min-w-[150px] font-semibold text-sm sm:text-base"
                             >
                                 <Sparkles size={20} className="mr-2" />
                                 <span>{t.generateButton}</span>
@@ -212,20 +212,20 @@ const AIRebuildModal: React.FC = () => {
     return (
         <div
             id="ai-rebuild-modal"
-            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
             onClick={view !== 'loading' ? handleClose : undefined}
         >
             <div
-                className="bg-white rounded-lg shadow-2xl w-full max-w-2xl transform transition-all"
+                className="bg-white rounded-lg shadow-2xl overflow-hidden flex flex-col" style={{ width: '90%', height: '80%', maxWidth: '1000px', margin: '0 auto' }}
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="flex items-center justify-between p-4 border-b">
-                    <h2 className="text-xl font-semibold text-gray-800 flex items-center">
-                        <Bot size={24} className="mr-2 text-purple-600" />
+                <div className="flex items-center justify-between p-3 sm:p-4 border-b flex-shrink-0">
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-800 flex items-center">
+                        <Bot size={20} className="mr-2 text-purple-600 sm:w-6 sm:h-6" />
                         {t.title}
                     </h2>
-                    <button onClick={handleClose} className="text-gray-400 hover:text-gray-600" disabled={view === 'loading'}>
-                        <X size={24} />
+                    <button onClick={handleClose} className="text-gray-400 hover:text-gray-600 p-1" disabled={view === 'loading'}>
+                        <X size={20} className="sm:w-6 sm:h-6" />
                     </button>
                 </div>
                 {renderContent()}

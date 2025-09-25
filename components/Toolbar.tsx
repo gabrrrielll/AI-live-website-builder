@@ -29,11 +29,11 @@ const Toolbar: React.FC = () => {
   const importInputRef = useRef<HTMLInputElement>(null);
   const { language } = useLanguage();
   const t = useMemo(() => translations[language], [language]);
-  
+
   // Hook pentru sincronizare
   const { syncConfig } = useSync({ siteConfig, setIsSyncing, t });
 
-  const buttonClass = "flex items-center justify-center p-3 rounded-full text-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
+  const buttonClass = "flex items-center justify-center p-0.5 sm:p-3 rounded-full text-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 min-w-[28px] sm:min-w-[44px] min-h-[28px] sm:min-h-[44px]";
   const enabledClass = "bg-white hover:bg-gray-100";
   const activeClass = "bg-[#F7F2E9] text-[#c29a47] hover:bg-[#F3EADF]";
 
@@ -87,14 +87,14 @@ const Toolbar: React.FC = () => {
 
   return (
     <>
-      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
-        <div className="flex items-center space-x-2 bg-white/70 backdrop-blur-md p-2 rounded-full shadow-lg border border-gray-200">
+      <div className="fixed bottom-2 left-2 right-2 z-50 sm:bottom-5 sm:left-auto sm:right-auto sm:w-auto sm:mx-auto">
+        <div className="flex items-center justify-center space-x-0.5 sm:space-x-2 bg-white/90 backdrop-blur-md p-1.5 sm:p-2 sm:rounded-full rounded-lg shadow-lg border border-gray-200 overflow-x-auto scrollbar-hide">
           <button
             onClick={isEditMode ? switchToViewMode : switchToEditMode}
             className={`${buttonClass} ${isEditMode ? activeClass : enabledClass}`}
             title={isEditMode ? t.toolbar.previewMode : t.toolbar.editMode}
           >
-            {isEditMode ? <Eye size={20} /> : <Edit size={20} />}
+            {isEditMode ? <Eye size={16} className="sm:w-5 sm:h-5" /> : <Edit size={16} className="sm:w-5 sm:h-5" />}
           </button>
 
           <button
@@ -102,19 +102,19 @@ const Toolbar: React.FC = () => {
             className={`${buttonClass} ${enabledClass} bg-purple-100 text-purple-700 hover:bg-purple-200`}
             title={t.toolbar.aiRebuild}
           >
-            <Bot size={20} />
+            <Bot size={16} className="sm:w-5 sm:h-5" />
           </button>
 
-          <div className="w-px h-6 bg-gray-300 mx-2"></div>
+          <div className="w-px h-2 sm:h-6 bg-gray-300 mx-0.5 sm:mx-2"></div>
 
           <button onClick={undo} disabled={!canUndo} className={`${buttonClass} ${enabledClass}`} title={t.toolbar.undo}>
-            <Undo2 size={20} />
+            <Undo2 size={16} className="sm:w-5 sm:h-5" />
           </button>
           <button onClick={redo} disabled={!canRedo} className={`${buttonClass} ${enabledClass}`} title={t.toolbar.redo}>
-            <Redo2 size={20} />
+            <Redo2 size={16} className="sm:w-5 sm:h-5" />
           </button>
 
-          <div className="w-px h-6 bg-gray-300 mx-2"></div>
+          <div className="w-px h-2 sm:h-6 bg-gray-300 mx-0.5 sm:mx-2"></div>
 
           {showSaveButton() && (
             <button
@@ -123,16 +123,16 @@ const Toolbar: React.FC = () => {
               className={`${buttonClass} ${enabledClass}`}
               title={t.toolbar.syncToCloud}
             >
-              {isSyncing ? <Loader size={20} className="animate-spin" /> : <Cloud size={20} />}
+              {isSyncing ? <Loader size={16} className="animate-spin sm:w-5 sm:h-5" /> : <Cloud size={16} className="sm:w-5 sm:h-5" />}
             </button>
           )}
           {!isTestMode && showImportExportConfig() && (
             <>
               <button onClick={exportConfig} className={`${buttonClass} ${enabledClass}`} title={t.toolbar.exportConfig}>
-                <Download size={20} />
+                <Download size={16} className="sm:w-5 sm:h-5" />
               </button>
               <button onClick={handleImportClick} className={`${buttonClass} ${enabledClass}`} title={t.toolbar.importConfig}>
-                <Upload size={20} />
+                <Upload size={16} className="sm:w-5 sm:h-5" />
               </button>
               <input
                 type="file"
@@ -144,16 +144,16 @@ const Toolbar: React.FC = () => {
             </>
           )}
 
-          <div className="w-px h-6 bg-gray-300 mx-2"></div>
+          <div className="w-px h-2 sm:h-6 bg-gray-300 mx-0.5 sm:mx-2"></div>
 
           <button onClick={resetToDefaults} className={`${buttonClass} ${enabledClass} hover:bg-red-100 hover:text-red-600`} title={t.toolbar.resetToDefaults}>
-            <RefreshCw size={20} />
+            <RefreshCw size={16} className="sm:w-5 sm:h-5" />
           </button>
 
-          <div className="w-px h-6 bg-gray-300 mx-2"></div>
+          <div className="w-px h-2 sm:h-6 bg-gray-300 mx-0.5 sm:mx-2"></div>
 
           <button onClick={() => setShowHelp(true)} className={`${buttonClass} ${enabledClass}`} title={t.toolbar.help}>
-            <HelpCircle size={20} />
+            <HelpCircle size={16} className="sm:w-5 sm:h-5" />
           </button>
         </div>
       </div>

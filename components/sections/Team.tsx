@@ -5,6 +5,7 @@ import { useSite } from '@/context/SiteContext';
 import Editable from '@/components/Editable';
 import { teamTemplateMap } from '@/components/cards/templateMaps';
 import { TeamCardDefault } from '@/components/cards/team';
+import { ConditionalAnimation } from '@/components/animations/ConditionalAnimation';
 
 interface TeamProps {
     sectionId: string;
@@ -32,15 +33,28 @@ export const Team: React.FC<TeamProps> = ({ sectionId }) => {
     return (
         <section className="py-20">
             <div className="container mx-auto px-6">
-                <div className="text-center title-underline">
-                    <Editable as="h2" sectionId={sectionId} elementId="team-title" className="text-4xl font-bold text-gray-800" />
-                </div>
-                <Editable as="div" sectionId={sectionId} elementId="team-subtitle" className="text-lg text-gray-600 max-w-3xl mx-auto mb-16 text-center" />
+                <ConditionalAnimation sectionId={sectionId} direction="up" distance={60} delay={0.1}>
+                    <div className="text-center title-underline">
+                        <Editable as="h2" sectionId={sectionId} elementId="team-title" className="text-4xl font-bold text-gray-800" />
+                    </div>
+                </ConditionalAnimation>
+
+                <ConditionalAnimation sectionId={sectionId} direction="up" distance={40} delay={0.2}>
+                    <Editable as="div" sectionId={sectionId} elementId="team-subtitle" className="text-lg text-gray-600 max-w-3xl mx-auto mb-16 text-center" />
+                </ConditionalAnimation>
+
                 <div className="flex flex-wrap justify-center -m-4">
-                    {items.map(item => (
-                       <div key={item.id} className={`w-full sm:w-1/2 p-4 ${widthClass}`}>
-                         <CardComponent sectionId={sectionId} item={item} style={cardStyles} />
-                       </div>
+                    {items.map((item, index) => (
+                        <ConditionalAnimation
+                            key={item.id}
+                            sectionId={sectionId}
+                            direction="up"
+                            distance={50}
+                            delay={0.3 + (index * 0.1)}
+                            className={`w-full sm:w-1/2 p-4 ${widthClass}`}
+                        >
+                            <CardComponent sectionId={sectionId} item={item} style={cardStyles} />
+                        </ConditionalAnimation>
                     ))}
                 </div>
             </div>

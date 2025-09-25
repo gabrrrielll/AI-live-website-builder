@@ -21,7 +21,7 @@ An interactive website builder that allows for real-time, in-browser editing of 
 
 ## 🚀 Tech Stack
 
--   **Framework**: Next.js (App Router)
+-   **Framework**: React.js
 -   **Language**: TypeScript
 -   **Styling**: Tailwind CSS
 -   **AI**: Google Gemini API (`@google/genai`)

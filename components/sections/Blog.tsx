@@ -7,6 +7,7 @@ import { blogTemplateMap } from '@/components/cards/templateMaps';
 import { BlogCardDefault } from '@/components/cards/blog';
 import type { Article } from '@/types';
 import { Link } from 'react-router-dom';
+import { ConditionalAnimation } from '@/components/animations/ConditionalAnimation';
 
 interface BlogProps {
     sectionId: string;
@@ -102,28 +103,43 @@ export const Blog: React.FC<BlogProps> = ({ sectionId }) => {
     return (
         <section className="py-20">
             <div className="container mx-auto px-6">
-                <div className="text-center title-underline">
-                    <Link to="/blog" className="block">
-                        <Editable as="h2" sectionId={sectionId} elementId="blog-title" className="text-4xl font-bold hover:text-[#c29a47] transition-colors cursor-pointer" />
-                    </Link>
-                </div>
-                <Editable as="div" sectionId={sectionId} elementId="blog-subtitle" className="text-lg max-w-3xl mx-auto mb-16 text-center" />
+                <ConditionalAnimation sectionId={sectionId} direction="up" distance={60} delay={0.1}>
+                    <div className="text-center title-underline">
+                        <Link to="/blog" className="block">
+                            <Editable as="h2" sectionId={sectionId} elementId="blog-title" className="text-4xl font-bold hover:text-[#c29a47] transition-colors cursor-pointer" />
+                        </Link>
+                    </div>
+                </ConditionalAnimation>
+
+                <ConditionalAnimation sectionId={sectionId} direction="up" distance={40} delay={0.2}>
+                    <Editable as="div" sectionId={sectionId} elementId="blog-subtitle" className="text-lg max-w-3xl mx-auto mb-16 text-center" />
+                </ConditionalAnimation>
+
                 <div className="flex flex-wrap justify-center -m-4">
                     {displayedArticles.map((article, index) => (
-                        <div key={article.id} className={`w-full sm:w-1/2 p-4 ${widthClass}`}>
+                        <ConditionalAnimation
+                            key={article.id}
+                            sectionId={sectionId}
+                            direction="up"
+                            distance={50}
+                            delay={0.3 + (index * 0.1)}
+                            className={`w-full sm:w-1/2 p-4 ${widthClass}`}
+                        >
                             <Link to={`/blog/${article.slug}`} className="block h-full">
                                 <CardComponent article={article} style={section.cardStyles} />
                             </Link>
-                        </div>
+                        </ConditionalAnimation>
                     ))}
                 </div>
 
                 {/* View all articles button */}
-                <div className="text-center mt-12">
-                    <Link to="/blog" className="inline-flex items-center px-6 py-3 bg-[#c29a47] text-white rounded-lg hover:bg-[#a67c3a] transition-colors font-semibold">
-                        Vezi toate articolele
-                    </Link>
-                </div>
+                <ConditionalAnimation sectionId={sectionId} direction="up" distance={40} delay={0.8}>
+                    <div className="text-center mt-12">
+                        <Link to="/blog" className="inline-flex items-center px-6 py-3 bg-[#c29a47] text-white rounded-lg hover:bg-[#a67c3a] transition-colors font-semibold">
+                            Vezi toate articolele
+                        </Link>
+                    </div>
+                </ConditionalAnimation>
             </div>
         </section>
     );
