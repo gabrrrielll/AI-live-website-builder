@@ -1,0 +1,202 @@
+@import 'react-image-crop/dist/ReactCrop.css';
+@import 'react-quill/dist/quill.snow.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: light;
+    color: #213547;
+    background-color: #ffffff;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    place-items: center;
+    min-width: 320px;
+    min-height: 100vh;
+}
+
+#root {
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c29a47;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a67c00;
+}
+
+/* Focus styles */
+*:focus {
+    outline: 2px solid #c29a47;
+    outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Footer links styles */
+.footer-links div {
+    margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+    color: #9CA3AF;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: #ffffff;
+}
+
+/* Editable zones styling */
+.editable-outline {
+    outline: 2px dashed #c29a47;
+    outline-offset: 2px;
+    transition: outline-color 0.2s ease;
+}
+
+.editable-outline:hover {
+    outline-color: #a67c00;
+}
+
+/* Dashed border boxes for cards */
+.dashed-border-box {
+    border: 2px dashed #c29a47;
+    border-radius: 8px;
+    transition: border-color 0.2s ease;
+}
+
+.dashed-border-box:hover {
+    border-color: #a67c00;
+}
+
+/* Scroll Animation Utilities */
+.scroll-animate {
+    will-change: transform, opacity;
+}
+
+/* Smooth scroll behavior for better performance */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Optimize animations for better performance */
+@media (prefers-reduced-motion: reduce) {
+
+    .scroll-animate,
+    [data-framer-motion] {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* Custom easing for water rise effect */
+@keyframes waterRise {
+    0% {
+        transform: translateY(60px) scale(0.9);
+        opacity: 0;
+        filter: blur(4px);
+    }
+
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+        filter: blur(0px);
+    }
+}
+
+/* Hide scrollbar for mobile toolbar */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+}
+
+/* Fix horizontal scroll on mobile for navigation links */
+@media (max-width: 640px) {
+
+    /* Target all navigation editable elements */
+    .editable-outline.prose-content {
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+
+    /* Specific fix for navigation links */
+    .px-1.py-2.editable-outline.prose-content {
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+
+    /* Remove any whitespace-nowrap from navigation containers */
+    nav .flex.items-center {
+        flex-wrap: wrap !important;
+    }
+
+    /* Ensure navigation links can wrap */
+    nav a {
+        white-space: normal !important;
+    }
+}
+
+/* Gradient animation for hero sections */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+}
