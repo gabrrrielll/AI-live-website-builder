@@ -1,0 +1,28 @@
+{
+    "name": "ai-live-website-builder",
+    "version": "1.0.0",
+    "description": "AI-powered website builder with WordPress backend",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "deploy:frontend": "cd frontend && npm run deploy",
+        "deploy:backend": "node scripts/deploy-backend.js",
+        "deploy:all": "npm run deploy:backend && npm run deploy:frontend",
+        "build:frontend": "cd frontend && npm run build",
+        "dev:frontend": "cd frontend && npm run dev"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/gabrrrielll/AI-live-website-builder.git"
+    },
+    "keywords": [
+        "ai",
+        "website-builder",
+        "wordpress",
+        "react",
+        "cpanel",
+        "subdomain"
+    ],
+    "author": "Gabriel",
+    "license": "MIT"
+}

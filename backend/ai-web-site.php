@@ -22,6 +22,7 @@ define('AI_WEB_SITE_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('AI_WEB_SITE_PLUGIN_FILE', __FILE__);
 
 // Include required files
+require_once AI_WEB_SITE_PLUGIN_DIR . 'includes/class-debug-logger.php';
 require_once AI_WEB_SITE_PLUGIN_DIR . 'includes/class-ai-web-site.php';
 require_once AI_WEB_SITE_PLUGIN_DIR . 'includes/class-cpanel-api.php';
 require_once AI_WEB_SITE_PLUGIN_DIR . 'includes/class-database.php';
@@ -78,6 +79,11 @@ class AI_Web_Site_Plugin
         AI_Web_Site::get_instance();
         AI_Web_Site_CPanel_API::get_instance();
         AI_Web_Site_Database::get_instance();
+
+        // Log before initializing admin class
+        $logger = AI_Web_Site_Debug_Logger::get_instance();
+        $logger->info('PLUGIN', 'INIT_ADMIN', 'Initializing admin class');
+
         AI_Web_Site_Admin::get_instance();
 
         // Load text domain for translations
@@ -92,11 +98,13 @@ class AI_Web_Site_Plugin
         // Create database tables
         AI_Web_Site_Database::create_tables();
 
+        // Create logs table
+        $logger = AI_Web_Site_Debug_Logger::get_instance();
+        $logger->create_table();
+
         // Set default options
         $default_options = array(
             'cpanel_username' => '',
-            'cpanel_password' => '',
-            'cpanel_host' => 'ai-web.site',
             'cpanel_api_token' => '',
             'main_domain' => 'ai-web.site'
         );
@@ -105,6 +113,9 @@ class AI_Web_Site_Plugin
 
         // Flush rewrite rules
         flush_rewrite_rules();
+
+        // Log activation
+        $logger->info('PLUGIN', 'ACTIVATION', 'Plugin activated successfully');
     }
 
     /**
