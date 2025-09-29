@@ -7,6 +7,7 @@
     "scripts": {
         "deploy:frontend": "cd frontend && npm run deploy",
         "deploy:backend": "node scripts/deploy-backend.js",
+        "deploy:plugin": "node scripts/deploy-plugin-new.js",
         "deploy:all": "npm run deploy:backend && npm run deploy:frontend",
         "build:frontend": "cd frontend && npm run build",
         "dev:frontend": "cd frontend && npm run dev"

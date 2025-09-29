@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Plugin Name: AI Web Site Manager
+ * Plugin Name: AI Web Site Plugin
  * Plugin URI: https://ai-web.site
  * Description: Gestionează subdomeniile și site-urile create cu AI Website Builder
  * Version: 1.0.0
  * Author: AI Web Site
  * License: GPL v2 or later
- * Text Domain: ai-web-site
+ * Text Domain: ai-web-site-plugin
  */
 
 // Prevent direct access
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('AI_WEB_SITE_VERSION', '1.0.0');
+define('AI_WEB_SITE_PLUGIN_VERSION', '1.0.0');
 define('AI_WEB_SITE_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AI_WEB_SITE_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('AI_WEB_SITE_PLUGIN_FILE', __FILE__);

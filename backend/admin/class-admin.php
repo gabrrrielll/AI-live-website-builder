@@ -85,8 +85,8 @@ class AI_Web_Site_Admin
         // Always load scripts for debugging - remove the hook check temporarily
         $logger->info('ADMIN', 'ENQUEUE_SCRIPTS_LOADING', 'Loading scripts for hook', array(
             'hook' => $hook,
-            'expected' => 'settings_page_ai-web-site',
-            'is_correct_hook' => ($hook === 'settings_page_ai-web-site')
+            'expected' => 'settings_page_ai-web-site-plugin',
+            'is_correct_hook' => ($hook === 'settings_page_ai-web-site-plugin')
         ));
 
         // Load CSS inline
@@ -131,10 +131,10 @@ class AI_Web_Site_Admin
         $logger->info('ADMIN', 'MENU_ADD', 'Adding admin menu');
 
         add_options_page(
-            __('AI Web Site Manager', 'ai-web-site'),
-            __('AI Web Site', 'ai-web-site'),
+            __('AI Web Site Plugin', 'ai-web-site-plugin'),
+            __('AI Web Site Plugin', 'ai-web-site-plugin'),
             'manage_options',
-            'ai-web-site',
+            'ai-web-site-plugin',
             array($this, 'admin_page')
         );
 
