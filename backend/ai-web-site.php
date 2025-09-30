@@ -26,6 +26,8 @@ require_once AI_WEB_SITE_PLUGIN_DIR . 'includes/class-debug-logger.php';
 require_once AI_WEB_SITE_PLUGIN_DIR . 'includes/class-ai-web-site.php';
 require_once AI_WEB_SITE_PLUGIN_DIR . 'includes/class-cpanel-api.php';
 require_once AI_WEB_SITE_PLUGIN_DIR . 'includes/class-database.php';
+require_once AI_WEB_SITE_PLUGIN_DIR . 'includes/class-ump-integration.php';
+require_once AI_WEB_SITE_PLUGIN_DIR . 'includes/class-home-page-shortcode.php';
 require_once AI_WEB_SITE_PLUGIN_DIR . 'admin/class-admin.php';
 
 /**
@@ -68,12 +70,6 @@ class AI_Web_Site_Plugin
 
         // Initialize plugin
         add_action('plugins_loaded', array($this, 'init'));
-
-        // Add global hooks for debugging
-        add_action('admin_init', array($this, 'debug_admin_init'));
-        add_action('admin_post', array($this, 'debug_admin_post'));
-        add_action('wp_ajax_save_ai_web_site_options', array($this, 'debug_ajax_save'));
-        add_action('wp_ajax_nopriv_save_ai_web_site_options', array($this, 'debug_ajax_save'));
     }
 
     /**
@@ -86,14 +82,17 @@ class AI_Web_Site_Plugin
         AI_Web_Site_CPanel_API::get_instance();
         AI_Web_Site_Database::get_instance();
 
-        // Log before initializing admin class
-        $logger = AI_Web_Site_Debug_Logger::get_instance();
-        $logger->info('PLUGIN', 'INIT_ADMIN', 'Initializing admin class');
+        // Initialize UMP integration and domain override
+        $ump_integration = AI_Web_Site_UMP_Integration::get_instance();
+        $ump_integration->init_domain_override();
+
+        // Initialize home page shortcode
+        AI_Web_Site_Home_Page_Shortcode::get_instance();
 
         AI_Web_Site_Admin::get_instance();
 
         // Load text domain for translations
-        load_plugin_textdomain('ai-web-site', false, dirname(plugin_basename(__FILE__)) . '/languages');
+        load_plugin_textdomain('ai-web-site-plugin', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
 
     /**
@@ -119,9 +118,6 @@ class AI_Web_Site_Plugin
 
         // Flush rewrite rules
         flush_rewrite_rules();
-
-        // Log activation
-        $logger->info('PLUGIN', 'ACTIVATION', 'Plugin activated successfully');
     }
 
     /**
@@ -131,49 +127,6 @@ class AI_Web_Site_Plugin
     {
         // Flush rewrite rules
         flush_rewrite_rules();
-    }
-
-    /**
-     * Debug admin_init hook
-     */
-    public function debug_admin_init()
-    {
-        $logger = AI_Web_Site_Debug_Logger::get_instance();
-        $logger->info('PLUGIN', 'ADMIN_INIT', 'admin_init hook triggered', array(
-            'current_screen' => get_current_screen() ? get_current_screen()->id : 'unknown',
-            'is_admin' => is_admin(),
-            'request_uri' => $_SERVER['REQUEST_URI'] ?? 'unknown'
-        ));
-    }
-
-    /**
-     * Debug admin_post hook
-     */
-    public function debug_admin_post()
-    {
-        $logger = AI_Web_Site_Debug_Logger::get_instance();
-        $logger->info('PLUGIN', 'ADMIN_POST', 'admin_post hook triggered', array(
-            'action' => $_POST['action'] ?? 'not_set',
-            'all_post_data' => $_POST,
-            'request_method' => $_SERVER['REQUEST_METHOD'],
-            'user_id' => get_current_user_id(),
-            'user_can_manage_options' => current_user_can('manage_options')
-        ));
-    }
-
-    /**
-     * Debug AJAX save hook
-     */
-    public function debug_ajax_save()
-    {
-        $logger = AI_Web_Site_Debug_Logger::get_instance();
-        $logger->info('PLUGIN', 'AJAX_SAVE', 'AJAX save hook triggered', array(
-            'action' => $_POST['action'] ?? 'not_set',
-            'all_post_data' => $_POST,
-            'request_method' => $_SERVER['REQUEST_METHOD'],
-            'user_id' => get_current_user_id(),
-            'is_ajax' => wp_doing_ajax()
-        ));
     }
 }
 
