@@ -11,24 +11,22 @@ class SiteConfigServiceImpl implements SiteConfigService {
     private cachedConfig: SiteConfig | null = null;
     private plansConfig: any = null;
 
-    // Încarcă plans-config.json pentru a determina sursa site-config
+    // Încarcă plans-config din site-config.json pentru a determina sursa site-config
     private async loadPlansConfig(): Promise<any> {
         if (this.plansConfig) {
             return this.plansConfig;
         }
 
         try {
-            const response = await fetch('/plans-config.json', {
-                cache: 'no-store'
-            });
-
-            if (response.ok) {
-                this.plansConfig = await response.json();
-                console.log('Plans config încărcat:', this.plansConfig);
+            // Încarcă site-config.json și extrage plans-config din el
+            const siteConfig = await this.loadSiteConfig();
+            if (siteConfig && (siteConfig as any)['plans-config']) {
+                this.plansConfig = (siteConfig as any)['plans-config'];
+                console.log('Plans config încărcat din site-config.json:', this.plansConfig);
                 return this.plansConfig;
             }
         } catch (error) {
-            console.warn('Nu s-a putut încărca plans-config.json:', error);
+            console.warn('Nu s-a putut încărca plans-config din site-config.json:', error);
         }
 
         return null;

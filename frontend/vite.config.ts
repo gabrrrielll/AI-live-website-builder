@@ -9,7 +9,7 @@ export default defineConfig({
         react(),
         VitePWA({
             registerType: 'autoUpdate',
-            includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'masked-icon.svg', 'plans-config.json'],
+            includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'masked-icon.svg'],
             manifest: {
                 name: 'AI-Powered Live Website Editor',
                 short_name: 'AI Website Editor',

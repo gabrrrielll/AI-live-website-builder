@@ -12,7 +12,7 @@ import {
 // Generare imagine cu Pollinations.ai (GRATUIT și client-side!)
 export const generateImage = async (prompt: string): Promise<string> => {
     // Verifică dacă serviciul poate fi folosit
-    if (!canUseService('ai_image_generation')) {
+    if (!(await canUseService('ai_image_generation'))) {
         throw new Error('Service usage limit reached for image generation');
     }
 
@@ -25,7 +25,7 @@ export const generateImage = async (prompt: string): Promise<string> => {
         const imageBase64 = await urlToBase64(imageUrl);
 
         // Incrementează contorul pentru serviciu
-        useService('ai_image_generation');
+        await useService('ai_image_generation');
 
         return imageBase64;
 
@@ -112,7 +112,7 @@ async function generateWithFreeService(prompt: string): Promise<string> {
                     ctx.fillText('AI Generated Image (Free Service)', 512, 500);
 
                     // Incrementează contorul pentru serviciu
-                    useService('ai_image_generation');
+                    useService('ai_image_generation').catch(console.error);
 
                     resolve(canvas.toDataURL('image/jpeg', 0.9));
                 };
@@ -133,12 +133,12 @@ async function generateWithFreeService(prompt: string): Promise<string> {
 }
 
 // Funcții de compatibilitate pentru codul existent
-export const canUseImageGen = (): boolean => {
-    return canUseService('ai_image_generation');
+export const canUseImageGen = async (): Promise<boolean> => {
+    return await canUseService('ai_image_generation');
 };
 
-export const useImageGen = (): void => {
-    useService('ai_image_generation');
+export const useImageGen = async (): Promise<void> => {
+    await useService('ai_image_generation');
 };
 
 export const getImagesLeft = (): number => {

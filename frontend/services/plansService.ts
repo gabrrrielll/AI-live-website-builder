@@ -1,6 +1,31 @@
 "use client";
 
-import plansConfig from '../plans-config.json';
+// plansConfig va fi încărcat din site-config.json
+let plansConfig: any = null;
+
+// Funcție pentru a încărca plansConfig din site-config.json
+const loadPlansConfig = async (): Promise<any> => {
+    if (plansConfig) {
+        return plansConfig;
+    }
+
+    try {
+        const response = await fetch('/site-config.json', {
+            cache: 'no-store'
+        });
+
+        if (response.ok) {
+            const siteConfig = await response.json();
+            plansConfig = siteConfig['plans-config'];
+            console.log('Plans config încărcat din site-config.json:', plansConfig);
+            return plansConfig;
+        }
+    } catch (error) {
+        console.warn('Nu s-a putut încărca plans-config din site-config.json:', error);
+    }
+
+    return null;
+};
 
 export interface ServiceLimit {
     type: 'unlimited' | 'daily_limit' | 'monthly_limit' | 'total_limit';
@@ -69,8 +94,13 @@ export const getDomainType = (): 'localhost' | 'test_domain' | 'public_domain' =
 };
 
 // Verifică dacă un serviciu poate fi folosit
-export const canUseService = (serviceName: string): boolean => {
-    const service = (plansConfig.services as any)[serviceName];
+export const canUseService = async (serviceName: string): Promise<boolean> => {
+    const config = await loadPlansConfig();
+    if (!config || !config.services) {
+        return false;
+    }
+
+    const service = config.services[serviceName];
     if (!service || !service.enabled) {
         return false;
     }
@@ -89,8 +119,11 @@ export const canUseService = (serviceName: string): boolean => {
 };
 
 // Incrementează contorul pentru un serviciu
-export const useService = (serviceName: string): void => {
-    const service = (plansConfig.services as any)[serviceName];
+export const useService = async (serviceName: string): Promise<void> => {
+    const config = await loadPlansConfig();
+    if (!config || !config.services) return;
+
+    const service = config.services[serviceName];
     if (!service) return;
 
     const domainType = getDomainType();
@@ -105,7 +138,9 @@ export const useService = (serviceName: string): void => {
 
 // Obține numărul de utilizări rămase pentru un serviciu
 export const getServiceUsageLeft = (serviceName: string): number => {
-    const service = (plansConfig.services as any)[serviceName];
+    if (!plansConfig || !plansConfig.services) return 0;
+
+    const service = plansConfig.services[serviceName];
     if (!service) return 0;
 
     const domainType = getDomainType();
@@ -123,29 +158,33 @@ export const getServiceUsageLeft = (serviceName: string): number => {
 
 // Obține informații despre un serviciu
 export const getServiceInfo = (serviceName: string): ServiceConfig | null => {
-    return (plansConfig.services as any)[serviceName] || null;
+    if (!plansConfig || !plansConfig.services) return null;
+    return plansConfig.services[serviceName] || null;
 };
 
 // Obține toate serviciile disponibile
 export const getAllServices = (): Record<string, ServiceConfig> => {
-    return plansConfig.services as any;
+    return plansConfig?.services || {};
 };
 
 // Verifică dacă un serviciu este activat
 export const isServiceEnabled = (serviceName: string): boolean => {
-    const service = (plansConfig.services as any)[serviceName];
+    if (!plansConfig || !plansConfig.services) return false;
+    const service = plansConfig.services[serviceName];
     return service ? service.enabled : false;
 };
 
 // Obține provider-ul pentru un serviciu
 export const getServiceProvider = (serviceName: string): string | null => {
-    const service = (plansConfig.services as any)[serviceName];
+    if (!plansConfig || !plansConfig.services) return null;
+    const service = plansConfig.services[serviceName];
     return service ? service.provider : null;
 };
 
 // Obține fallback provider-ul pentru un serviciu
 export const getServiceFallbackProvider = (serviceName: string): string | null => {
-    const service = (plansConfig.services as any)[serviceName];
+    if (!plansConfig || !plansConfig.services) return null;
+    const service = plansConfig.services[serviceName];
     return service ? service.fallback_provider || null : null;
 };
 
@@ -156,10 +195,12 @@ export const resetServiceUsage = (serviceName?: string): void => {
         localStorage.removeItem(usageKey);
     } else {
         // Resetează toate serviciile
-        Object.keys(plansConfig.services).forEach(service => {
-            const usageKey = `service_${service}_usage`;
-            localStorage.removeItem(usageKey);
-        });
+        if (plansConfig && plansConfig.services) {
+            Object.keys(plansConfig.services).forEach(service => {
+                const usageKey = `service_${service}_usage`;
+                localStorage.removeItem(usageKey);
+            });
+        }
     }
 };
 
@@ -167,40 +208,54 @@ export const resetServiceUsage = (serviceName?: string): void => {
 export const getUsageStats = (): Record<string, { used: number; left: number; limit: ServiceLimit }> => {
     const stats: Record<string, { used: number; left: number; limit: ServiceLimit }> = {};
 
-    Object.keys(plansConfig.services).forEach(serviceName => {
-        const service = (plansConfig.services as any)[serviceName];
-        const domainType = getDomainType();
-        const limit = service.limits[domainType];
-        const usageKey = `service_${serviceName}_usage`;
-        const used = getUsage(usageKey);
-        const left = getServiceUsageLeft(serviceName);
+    if (plansConfig && plansConfig.services) {
+        Object.keys(plansConfig.services).forEach(serviceName => {
+            const service = plansConfig.services[serviceName];
+            const domainType = getDomainType();
+            const limit = service.limits[domainType];
+            const usageKey = `service_${serviceName}_usage`;
+            const used = getUsage(usageKey);
+            const left = getServiceUsageLeft(serviceName);
 
-        stats[serviceName] = {
-            used,
-            left: left === Infinity ? -1 : left,
-            limit
-        };
-    });
+            stats[serviceName] = {
+                used,
+                left: left === Infinity ? -1 : left,
+                limit
+            };
+        });
+    }
 
     return stats;
 };
 
 // Verifică dacă site-ul poate fi editat
 export const isSiteEditable = (): boolean => {
-    return plansConfig.isEditable;
+    // Pe localhost, implicit este editabil (pentru development)
+    const domainType = getDomainType();
+    if (domainType === 'localhost') {
+        return true;
+    }
+
+    // Pentru alte domenii, verifică configurația
+    return plansConfig?.isEditable || false;
 };
 
 // Verifică dacă butoanele de import/export configurație trebuie afișate
 export const showImportExportConfig = (): boolean => {
-    return plansConfig.show_import_export_config;
+    return plansConfig?.show_import_export_config || false;
 };
 
 // Verifică dacă butonul de salvare (sync) trebuie afișat
 export const showSaveButton = (): boolean => {
-    return (plansConfig as any).show_save_button || false;
+    return plansConfig?.show_save_button || false;
 };
 
 // Verifică dacă trebuie să salvez configurația local (în public) sau pe server
 export const useLocalSiteConfig = (): boolean => {
-    return (plansConfig as any)['useLocal_site-config'] === true;
+    return plansConfig?.['useLocal_site-config'] === true;
+};
+
+// Funcție pentru a inițializa plansConfig (trebuie apelată la începutul aplicației)
+export const initializePlansConfig = async (): Promise<void> => {
+    await loadPlansConfig();
 };

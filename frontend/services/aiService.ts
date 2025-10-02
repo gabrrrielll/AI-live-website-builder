@@ -16,7 +16,7 @@ export const generateTextWithRetry = async (
     toastId?: string
 ): Promise<string> => {
     // Verifică dacă serviciul poate fi folosit
-    if (!canUseService('ai_text_generation')) {
+    if (!(await canUseService('ai_text_generation'))) {
         throw new Error('Service usage limit reached for text generation');
     }
 
@@ -58,7 +58,7 @@ export const generateTextWithRetry = async (
         }
 
         // Incrementează contorul pentru serviciu
-        useService('ai_text_generation');
+        await useService('ai_text_generation');
 
         // Always return parsed object for consistency
         if (format === 'json') {
@@ -99,7 +99,7 @@ export const generateTextWithRetry = async (
 // Generare imagine cu Craiyon (gratuit) - unchanged as it uses free service
 export const generateImage = async (prompt: string): Promise<string> => {
     // Verifică dacă serviciul poate fi folosit
-    if (!canUseService('ai_image_generation')) {
+    if (!(await canUseService('ai_image_generation'))) {
         throw new Error('Service usage limit reached for image generation');
     }
 
