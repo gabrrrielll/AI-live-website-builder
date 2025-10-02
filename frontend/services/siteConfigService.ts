@@ -10,6 +10,8 @@ export interface SiteConfigService {
 class SiteConfigServiceImpl implements SiteConfigService {
     private cachedConfig: SiteConfig | null = null;
     private plansConfig: any = null;
+    private isLoading: boolean = false;
+    private hasTriedLocal: boolean = false;
 
     // Încarcă plans-config din site-config.json pentru a determina sursa site-config
     private async loadPlansConfig(): Promise<any> {
@@ -32,34 +34,41 @@ class SiteConfigServiceImpl implements SiteConfigService {
         return null;
     }
 
-    // Determină URL-ul pentru site-config bazat pe plans-config
+    // Determină URL-ul pentru site-config bazat pe domeniul curent
     private async getSiteConfigUrl(): Promise<string> {
-        const plansConfig = await this.loadPlansConfig();
-
-        // Verifică setarea useLocal_site-config
-        if (plansConfig && plansConfig['useLocal_site-config'] === true) {
-            console.log('Folosind site-config.json local (useLocal_site-config = true)');
-            return '/site-config.json';
-        } else if (plansConfig && plansConfig['useLocal_site-config'] === false) {
-            console.log('Folosind API pentru site-config (useLocal_site-config = false)');
-            return SITE_CONFIG_API_URL;
-        } else {
-            // Fallback la comportamentul default
-            console.log('Folosind comportamentul default pentru site-config');
-            return import.meta.env.MODE === 'development'
-                ? '/site-config.json'
-                : SITE_CONFIG_API_URL;
+        // În development (localhost), folosește configurația editorului
+        if (import.meta.env.MODE === 'development') {
+            const editorUrl = import.meta.env.VITE_EDITOR_URL || 'https://editor.ai-web.site';
+            const editorDomain = new URL(editorUrl).hostname;
+            const apiUrl = `${SITE_CONFIG_API_URL.replace('/website-config', '')}/website-config/${editorDomain}`;
+            console.log('Development mode - folosind configurația editorului:', apiUrl);
+            return apiUrl;
         }
+
+        // În production, folosește domeniul curent din browser
+        const currentDomain = window.location.hostname;
+        const apiUrl = `${SITE_CONFIG_API_URL.replace('/website-config', '')}/website-config/${currentDomain}`;
+        console.log('Production mode - folosind domeniul curent:', apiUrl);
+        return apiUrl;
     }
 
     async loadSiteConfig(): Promise<SiteConfig | null> {
+        // Previne multiple încărcări simultane
+        if (this.isLoading) {
+            console.log('Încărcare deja în desfășurare, aștept...');
+            return this.cachedConfig;
+        }
+
         try {
+            this.isLoading = true;
+
             // 1. Verifică dacă site-ul este montat și există date în localStorage
             if (typeof window !== 'undefined') {
                 const localConfig = localStorage.getItem('site-config');
                 if (localConfig) {
                     const config = JSON.parse(localConfig);
                     this.cachedConfig = config;
+                    console.log('Site-config încărcat din localStorage');
                     return config;
                 }
             }
@@ -69,86 +78,49 @@ class SiteConfigServiceImpl implements SiteConfigService {
             return await this.loadFromUrlWithRetry(configUrl);
         } catch (error) {
             console.warn('Eroare la încărcarea site-config:', error);
+        } finally {
+            this.isLoading = false;
+            // Reset flag-urile pentru următoarea încărcare
+            this.hasTriedLocal = false;
         }
 
         return null;
     }
 
     private async loadFromUrlWithRetry(configUrl: string): Promise<SiteConfig | null> {
-        const maxRetries = 5;
-        let lastError: Error | null = null;
+        try {
+            console.log(`Încărcare din API (${configUrl})...`);
 
-        for (let attempt = 1; attempt <= maxRetries; attempt++) {
-            try {
-                const source = configUrl === '/site-config.json' ? 'local file' : 'API';
-                console.log(`Încercare ${attempt}/${maxRetries} de încărcare din ${source} (${configUrl})...`);
+            const response = await fetch(configUrl, {
+                cache: 'no-store'
+            });
 
-                const response = await fetch(configUrl, {
-                    cache: 'no-store'
-                });
+            if (response.ok) {
+                const config = await response.json();
+                this.cachedConfig = config;
 
-                if (response.ok) {
-                    const config = await response.json();
-                    this.cachedConfig = config;
-
-                    // Salvează automat în localStorage dacă nu există
-                    if (typeof window !== 'undefined') {
-                        const existingConfig = localStorage.getItem('site-config');
-                        if (!existingConfig) {
-                            localStorage.setItem('site-config', JSON.stringify(config));
-                            console.log(`Site-config salvat automat în localStorage (încercarea ${attempt})`);
-                        }
-                    }
-
-                    console.log(`Site-config încărcat cu succes din ${source} (încercarea ${attempt})`);
-                    return config;
-                } else {
-                    // Verificare specifică pentru fișierul local lipsă
-                    if (configUrl === '/site-config.json' && (response.status === 404 || response.status === 200)) {
-                        // Delay pentru a se asigura că aplicația este inițializată
-                        setTimeout(() => {
-                            if (typeof toast !== 'undefined' && toast.error) {
-                                toast.error('Setting "useLocal_site-config" is true but the configuration file is not in the public folder');
-                            } else {
-                                console.error('Toast not available - Setting "useLocal_site-config" is true but the configuration file is not in the public folder');
-                            }
-                        }, 100);
-                    }
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-            } catch (error) {
-                lastError = error instanceof Error ? error : new Error(String(error));
-                console.warn(`Eroare la încercarea ${attempt}/${maxRetries}:`, lastError.message);
-
-                // Verificare pentru erori de parsing JSON la fișierul local
-                if (lastError instanceof SyntaxError && configUrl === '/site-config.json' && attempt === 1) {
-                    // Verifică dacă setarea useLocal_site-config este true
-                    const plansConfig = await this.loadPlansConfig();
-                    const useLocalConfig = plansConfig?.['useLocal_site-config'];
-
-                    // Afișează toast doar dacă setarea este true
-                    if (useLocalConfig === true) {
-                        setTimeout(() => {
-                            if (typeof toast !== 'undefined' && toast.error) {
-                                toast.error('Setting "useLocal_site-config" is true but the configuration file is not in the public folder');
-                            } else {
-                                console.error('Toast not available - Setting "useLocal_site-config" is true but the configuration file is not in the public folder');
-                            }
-                        }, 100);
+                // Salvează automat în localStorage dacă nu există
+                if (typeof window !== 'undefined') {
+                    const existingConfig = localStorage.getItem('site-config');
+                    if (!existingConfig) {
+                        localStorage.setItem('site-config', JSON.stringify(config));
+                        console.log(`Site-config salvat automat în localStorage`);
                     }
                 }
 
-                // Nu așteaptă după ultima încercare
-                if (attempt < maxRetries) {
-                    const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000); // Exponential backoff, max 5s
-                    console.log(`Aștept ${delay}ms înainte de următoarea încercare...`);
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                }
+                console.log(`Site-config încărcat cu succes din API`);
+                return config;
+            } else if (response.status === 404) {
+                console.error(`Configurația pentru domeniul curent nu există (404) - site-ul nu se poate încărca`);
+                return null;
+            } else {
+                console.warn(`HTTP ${response.status} pentru ${configUrl}`);
+                return null;
             }
+        } catch (error) {
+            console.error(`Eroare la încărcarea din API:`, error);
+            return null;
         }
-
-        console.error(`Eșec la încărcarea site-config din ${configUrl} după ${maxRetries} încercări:`, lastError);
-        return null;
     }
 
     loadSiteConfigSync(): SiteConfig | null {

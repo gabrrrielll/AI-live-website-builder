@@ -1,6 +1,7 @@
 "use client";
 
 import type { SiteConfig } from '@/types';
+import { getCurrentSubdomain } from '@/constants.js';
 // EmailJS now handled by backend service
 
 // Save site configuration locally to public folder
@@ -39,18 +40,28 @@ export const saveConfigLocally = async (config: SiteConfig): Promise<{ success: 
 // API to upload the site configuration to the server
 export const uploadConfig = async (config: SiteConfig): Promise<{ success: boolean }> => {
   try {
-    // Folosește API-ul de salvare din constants.js
+    // Folosește noul WordPress REST API endpoint
     const { API_CONFIG } = await import('@/constants.js');
-    const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.SITE_CONFIG}`;
+    const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.WORDPRESS_REST}`;
 
     console.log('Încărcare configurație pe server:', url);
+
+    // Adaugă informații despre subdomain și domain pentru identificare
+    const currentSubdomain = getCurrentSubdomain();
+    const domain = currentSubdomain ? `${currentSubdomain}.ai-web.site` : 'ai-web.site';
+
+    const requestData = {
+      config,
+      domain,
+      subdomain: currentSubdomain || 'my-site'
+    };
 
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ config }),
+      body: JSON.stringify(requestData),
     });
 
     if (response.ok) {
