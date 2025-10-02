@@ -13,7 +13,7 @@ const loadPlansConfig = async (): Promise<any> => {
         // Import siteConfigService pentru a folosi API-ul
         const { siteConfigService } = await import('./siteConfigService');
         const siteConfig = await siteConfigService.loadSiteConfig();
-        
+
         if (siteConfig && siteConfig['plans-config']) {
             plansConfig = siteConfig['plans-config'];
             console.log('Plans config încărcat din API:', plansConfig);

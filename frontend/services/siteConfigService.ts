@@ -87,51 +87,76 @@ class SiteConfigServiceImpl implements SiteConfigService {
     }
 
     private async loadFromUrlWithRetry(configUrl: string): Promise<SiteConfig | null> {
-        try {
-            console.log(`Încărcare din API cu timeout extins (${configUrl})...`);
+        const maxRetries = 5;
+        const baseDelay = 1000; // 1 secundă
 
-            // Timeout de 30 de secunde pentru API
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 30000);
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                console.log(`Încărcare din API (încercarea ${attempt}/${maxRetries}): ${configUrl}`);
 
-            const response = await fetch(configUrl, {
-                cache: 'no-store',
-                signal: controller.signal,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                // Timeout de 30 de secunde pentru API
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+                const response = await fetch(configUrl, {
+                    cache: 'no-store',
+                    signal: controller.signal,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                clearTimeout(timeoutId);
+
+                if (response.ok) {
+                    const config = await response.json();
+                    this.cachedConfig = config;
+
+                    // Salvează automat în localStorage după încărcarea cu succes din API
+                    if (typeof window !== 'undefined') {
+                        localStorage.setItem('site-config', JSON.stringify(config));
+                        console.log(`Site-config salvat în localStorage după încărcarea din API`);
+                    }
+
+                    console.log(`Site-config încărcat cu succes din API (${response.status}) la încercarea ${attempt}`);
+                    return config;
+                } else if (response.status === 404) {
+                    console.error(`Configurația pentru domeniul curent nu există (404) - site-ul nu se poate încărca`);
+                    return null;
+                } else {
+                    console.warn(`HTTP ${response.status} pentru ${configUrl} la încercarea ${attempt}`);
+
+                    // Dacă nu este ultima încercare, continuă
+                    if (attempt < maxRetries) {
+                        const delay = baseDelay * Math.pow(2, attempt - 1); // Exponential backoff
+                        console.log(`Aștept ${delay}ms înainte de următoarea încercare...`);
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        continue;
+                    } else {
+                        console.error(`Toate încercările au eșuat - site-ul nu se poate încărca`);
+                        return null;
+                    }
                 }
-            });
+            } catch (error) {
+                console.warn(`Eroare la încercarea ${attempt}/${maxRetries}:`, error);
 
-            clearTimeout(timeoutId);
-
-            if (response.ok) {
-                const config = await response.json();
-                this.cachedConfig = config;
-
-                // Salvează automat în localStorage după încărcarea cu succes din API
-                if (typeof window !== 'undefined') {
-                    localStorage.setItem('site-config', JSON.stringify(config));
-                    console.log(`Site-config salvat în localStorage după încărcarea din API`);
+                if (attempt < maxRetries) {
+                    const delay = baseDelay * Math.pow(2, attempt - 1); // Exponential backoff
+                    console.log(`Aștept ${delay}ms înainte de următoarea încercare...`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                } else {
+                    if (error.name === 'AbortError') {
+                        console.error(`Timeout la încărcarea din API (30s) după ${maxRetries} încercări`);
+                    } else {
+                        console.error(`Toate încercările au eșuat - eroare:`, error);
+                    }
+                    return null;
                 }
-
-                console.log(`Site-config încărcat cu succes din API (${response.status})`);
-                return config;
-            } else if (response.status === 404) {
-                console.error(`Configurația pentru domeniul curent nu există (404) - site-ul nu se poate încărca`);
-                return null;
-            } else {
-                console.error(`HTTP ${response.status} pentru ${configUrl} - site-ul nu se poate încărca`);
-                return null;
             }
-        } catch (error) {
-            if (error.name === 'AbortError') {
-                console.error(`Timeout la încărcarea din API (30s) - site-ul nu se poate încărca`);
-            } else {
-                console.error(`Eroare la încărcarea din API:`, error);
-            }
-            return null;
         }
+
+        return null;
     }
 
     loadSiteConfigSync(): SiteConfig | null {
