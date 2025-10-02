@@ -1,27 +1,26 @@
 "use client";
 
-// plansConfig va fi încărcat din site-config.json
+// plansConfig va fi încărcat din API
 let plansConfig: any = null;
 
-// Funcție pentru a încărca plansConfig din site-config.json
+// Funcție pentru a încărca plansConfig din API
 const loadPlansConfig = async (): Promise<any> => {
     if (plansConfig) {
         return plansConfig;
     }
 
     try {
-        const response = await fetch('/site-config.json', {
-            cache: 'no-store'
-        });
-
-        if (response.ok) {
-            const siteConfig = await response.json();
+        // Import siteConfigService pentru a folosi API-ul
+        const { siteConfigService } = await import('./siteConfigService');
+        const siteConfig = await siteConfigService.loadSiteConfig();
+        
+        if (siteConfig && siteConfig['plans-config']) {
             plansConfig = siteConfig['plans-config'];
-            console.log('Plans config încărcat din site-config.json:', plansConfig);
+            console.log('Plans config încărcat din API:', plansConfig);
             return plansConfig;
         }
     } catch (error) {
-        console.warn('Nu s-a putut încărca plans-config din site-config.json:', error);
+        console.warn('Nu s-a putut încărca plans-config din API:', error);
     }
 
     return null;

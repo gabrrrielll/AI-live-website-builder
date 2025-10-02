@@ -13,22 +13,22 @@ class SiteConfigServiceImpl implements SiteConfigService {
     private isLoading: boolean = false;
     private hasTriedLocal: boolean = false;
 
-    // Încarcă plans-config din site-config.json pentru a determina sursa site-config
+    // Încarcă plans-config din API pentru a determina sursa site-config
     private async loadPlansConfig(): Promise<any> {
         if (this.plansConfig) {
             return this.plansConfig;
         }
 
         try {
-            // Încarcă site-config.json și extrage plans-config din el
+            // Încarcă din API și extrage plans-config din el
             const siteConfig = await this.loadSiteConfig();
             if (siteConfig && (siteConfig as any)['plans-config']) {
                 this.plansConfig = (siteConfig as any)['plans-config'];
-                console.log('Plans config încărcat din site-config.json:', this.plansConfig);
+                console.log('Plans config încărcat din API:', this.plansConfig);
                 return this.plansConfig;
             }
         } catch (error) {
-            console.warn('Nu s-a putut încărca plans-config din site-config.json:', error);
+            console.warn('Nu s-a putut încărca plans-config din API:', error);
         }
 
         return null;
@@ -62,26 +62,25 @@ class SiteConfigServiceImpl implements SiteConfigService {
         try {
             this.isLoading = true;
 
-            // 1. Verifică dacă site-ul este montat și există date în localStorage
+            // Verifică cache-ul din localStorage pentru performanță
             if (typeof window !== 'undefined') {
                 const localConfig = localStorage.getItem('site-config');
                 if (localConfig) {
                     const config = JSON.parse(localConfig);
                     this.cachedConfig = config;
-                    console.log('Site-config încărcat din localStorage');
+                    console.log('Site-config încărcat din cache (localStorage)');
                     return config;
                 }
             }
 
-            // 2. Prima încărcare sau localStorage gol - determină sursa și încarcă
+            // Prima încărcare sau cache gol - încarcă din API
             const configUrl = await this.getSiteConfigUrl();
+            console.log('Încărcare din API (fără fallback pe fișiere locale):', configUrl);
             return await this.loadFromUrlWithRetry(configUrl);
         } catch (error) {
-            console.warn('Eroare la încărcarea site-config:', error);
+            console.error('Eroare la încărcarea site-config din API:', error);
         } finally {
             this.isLoading = false;
-            // Reset flag-urile pentru următoarea încărcare
-            this.hasTriedLocal = false;
         }
 
         return null;
@@ -89,36 +88,48 @@ class SiteConfigServiceImpl implements SiteConfigService {
 
     private async loadFromUrlWithRetry(configUrl: string): Promise<SiteConfig | null> {
         try {
-            console.log(`Încărcare din API (${configUrl})...`);
+            console.log(`Încărcare din API cu timeout extins (${configUrl})...`);
+
+            // Timeout de 30 de secunde pentru API
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000);
 
             const response = await fetch(configUrl, {
-                cache: 'no-store'
+                cache: 'no-store',
+                signal: controller.signal,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
             });
+
+            clearTimeout(timeoutId);
 
             if (response.ok) {
                 const config = await response.json();
                 this.cachedConfig = config;
 
-                // Salvează automat în localStorage dacă nu există
+                // Salvează automat în localStorage după încărcarea cu succes din API
                 if (typeof window !== 'undefined') {
-                    const existingConfig = localStorage.getItem('site-config');
-                    if (!existingConfig) {
-                        localStorage.setItem('site-config', JSON.stringify(config));
-                        console.log(`Site-config salvat automat în localStorage`);
-                    }
+                    localStorage.setItem('site-config', JSON.stringify(config));
+                    console.log(`Site-config salvat în localStorage după încărcarea din API`);
                 }
 
-                console.log(`Site-config încărcat cu succes din API`);
+                console.log(`Site-config încărcat cu succes din API (${response.status})`);
                 return config;
             } else if (response.status === 404) {
                 console.error(`Configurația pentru domeniul curent nu există (404) - site-ul nu se poate încărca`);
                 return null;
             } else {
-                console.warn(`HTTP ${response.status} pentru ${configUrl}`);
+                console.error(`HTTP ${response.status} pentru ${configUrl} - site-ul nu se poate încărca`);
                 return null;
             }
         } catch (error) {
-            console.error(`Eroare la încărcarea din API:`, error);
+            if (error.name === 'AbortError') {
+                console.error(`Timeout la încărcarea din API (30s) - site-ul nu se poate încărca`);
+            } else {
+                console.error(`Eroare la încărcarea din API:`, error);
+            }
             return null;
         }
     }
