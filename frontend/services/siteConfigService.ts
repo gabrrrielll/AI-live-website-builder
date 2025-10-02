@@ -40,14 +40,14 @@ class SiteConfigServiceImpl implements SiteConfigService {
         if (import.meta.env.MODE === 'development') {
             const editorUrl = import.meta.env.VITE_EDITOR_URL || 'https://editor.ai-web.site';
             const editorDomain = new URL(editorUrl).hostname;
-            const apiUrl = `${SITE_CONFIG_API_URL.replace('/website-config', '')}/website-config/${editorDomain}`;
+            const apiUrl = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.WORDPRESS_REST}/${editorDomain}`;
             console.log('Development mode - folosind configurația editorului:', apiUrl);
             return apiUrl;
         }
 
         // În production, folosește domeniul curent din browser
         const currentDomain = window.location.hostname;
-        const apiUrl = `${SITE_CONFIG_API_URL.replace('/website-config', '')}/website-config/${currentDomain}`;
+        const apiUrl = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.WORDPRESS_REST}/${currentDomain}`;
         console.log('Production mode - folosind domeniul curent:', apiUrl);
         return apiUrl;
     }

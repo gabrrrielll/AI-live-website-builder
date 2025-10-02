@@ -28,6 +28,7 @@ require_once AI_WEB_SITE_PLUGIN_DIR . 'includes/class-cpanel-api.php';
 require_once AI_WEB_SITE_PLUGIN_DIR . 'includes/class-database.php';
 require_once AI_WEB_SITE_PLUGIN_DIR . 'includes/class-ump-integration.php';
 require_once AI_WEB_SITE_PLUGIN_DIR . 'includes/class-home-page-shortcode.php';
+require_once AI_WEB_SITE_PLUGIN_DIR . 'includes/class-website-manager.php'; // NEW
 require_once AI_WEB_SITE_PLUGIN_DIR . 'admin/class-admin.php';
 
 /**
@@ -89,6 +90,9 @@ class AI_Web_Site_Plugin
         // Initialize home page shortcode
         AI_Web_Site_Home_Page_Shortcode::get_instance();
 
+        // Initialize website manager
+        AI_Web_Site_Website_Manager::get_instance();
+
         AI_Web_Site_Admin::get_instance();
 
         // Load text domain for translations
@@ -107,6 +111,10 @@ class AI_Web_Site_Plugin
         $logger = AI_Web_Site_Debug_Logger::get_instance();
         $logger->create_table();
 
+        // Create website manager table
+        $website_manager = AI_Web_Site_Website_Manager::get_instance();
+        $website_manager->create_table();
+
         // Set default options
         $default_options = array(
             'cpanel_username' => '',
@@ -115,6 +123,9 @@ class AI_Web_Site_Plugin
         );
 
         add_option('ai_web_site_options', $default_options);
+
+        // Create default configuration for editor.ai-web.site
+        $this->create_default_editor_config();
 
         // Flush rewrite rules
         flush_rewrite_rules();
@@ -127,6 +138,76 @@ class AI_Web_Site_Plugin
     {
         // Flush rewrite rules
         flush_rewrite_rules();
+    }
+
+    /**
+     * Create default configuration for editor.ai-web.site
+     */
+    private function create_default_editor_config()
+    {
+        $website_manager = AI_Web_Site_Website_Manager::get_instance();
+
+        // Verifică dacă configurația pentru editor.ai-web.site există deja
+        $existing_config = $website_manager->get_website_config_by_domain('editor.ai-web.site');
+
+        if ($existing_config === null) {
+            // Încarcă configurația din fișierul public/site-config.json
+            // Încearcă mai multe căi posibile
+            $possible_paths = array(
+                AI_WEB_SITE_PLUGIN_DIR . '../frontend/public/site-config.json',
+                AI_WEB_SITE_PLUGIN_DIR . '../../frontend/public/site-config.json',
+                ABSPATH . '../frontend/public/site-config.json'
+            );
+            
+            $config_file = null;
+            foreach ($possible_paths as $path) {
+                if (file_exists($path)) {
+                    $config_file = $path;
+                    break;
+                }
+            }
+
+            if ($config_file && file_exists($config_file)) {
+                $config_content = file_get_contents($config_file);
+                $config_data = json_decode($config_content, true);
+
+                if ($config_data) {
+                    // Salvează configurația pentru editor.ai-web.site
+                    $save_data = array(
+                        'config' => $config_data,
+                        'domain' => 'editor.ai-web.site',
+                        'subdomain' => 'editor'
+                    );
+
+                    try {
+                        $result = $website_manager->save_website_config($save_data);
+
+                        $logger = AI_Web_Site_Debug_Logger::get_instance();
+                        $logger->info('PLUGIN', 'DEFAULT_CONFIG', 'Default editor configuration created', array(
+                            'website_id' => $result['website_id'],
+                            'config_file' => $config_file
+                        ));
+
+                    } catch (Exception $e) {
+                        $logger = AI_Web_Site_Debug_Logger::get_instance();
+                        $logger->error('PLUGIN', 'DEFAULT_CONFIG', 'Failed to create default editor configuration', array(
+                            'error' => $e->getMessage(),
+                            'config_file' => $config_file
+                        ));
+                    }
+                } else {
+                    $logger = AI_Web_Site_Debug_Logger::get_instance();
+                    $logger->error('PLUGIN', 'DEFAULT_CONFIG', 'Failed to parse config file', array(
+                        'config_file' => $config_file
+                    ));
+                }
+            } else {
+                $logger = AI_Web_Site_Debug_Logger::get_instance();
+                $logger->error('PLUGIN', 'DEFAULT_CONFIG', 'Config file not found', array(
+                    'possible_paths' => $possible_paths
+                ));
+            }
+        }
     }
 }
 
