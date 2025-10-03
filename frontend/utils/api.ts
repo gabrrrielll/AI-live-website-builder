@@ -10,28 +10,30 @@ async function getWordPressNonce(): Promise<string> {
     // Import constants pentru URL-uri
     const { API_CONFIG } = await import('@/constants.js');
 
-    // Încearcă să obțină nonce-ul din WordPress REST API
-    const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.WORDPRESS_NONCE}`, {
+    // Pentru WordPress, nonce-ul se obține de obicei din script-ul wp_localize_script
+    // sau din meta tag-uri. Pentru moment, folosim un endpoint simplu
+    const response = await fetch(`${API_CONFIG.BASE_URL}/wp-json/wp/v2/`, {
       credentials: 'include', // Include cookies pentru autentificare
+      method: 'GET'
     });
 
     if (response.ok) {
-      // Dacă utilizatorul este logat, obține nonce-ul din header-ele
+      // Încearcă să obține nonce-ul din header-ele
       const nonce = response.headers.get('X-WP-Nonce');
       if (nonce) {
+        console.log('✅ Nonce obținut din WordPress:', nonce);
         return nonce;
       }
     }
 
-    // Fallback: generează nonce-ul din JavaScript (pentru testare)
-    // În producție, acest nonce ar trebui să vină de la WordPress
-    console.warn('Nu s-a putut obține nonce-ul din WordPress, folosind fallback');
-    return 'fallback-nonce-' + Date.now();
+    // Fallback: pentru localhost/testare, folosim un nonce de testare
+    console.warn('Nu s-a putut obține nonce-ul din WordPress, folosind nonce de testare');
+    return 'test-nonce-12345';
 
   } catch (error) {
     console.error('Eroare la obținerea nonce-ului:', error);
     // Fallback pentru testare
-    return 'fallback-nonce-' + Date.now();
+    return 'test-nonce-12345';
   }
 }
 
