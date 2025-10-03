@@ -63,7 +63,10 @@ class SiteConfigServiceImpl implements SiteConfigService {
             this.isLoading = true;
 
             // Verifică cache-ul din localStorage pentru performanță
-            if (typeof window !== 'undefined') {
+            // În localhost, forțează încărcarea din API pentru a obține plans-config actualizat
+            const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+            
+            if (typeof window !== 'undefined' && !isLocalhost) {
                 const localConfig = localStorage.getItem('site-config');
                 if (localConfig) {
                     const config = JSON.parse(localConfig);
@@ -71,6 +74,8 @@ class SiteConfigServiceImpl implements SiteConfigService {
                     console.log('Site-config încărcat din cache (localStorage)');
                     return config;
                 }
+            } else if (isLocalhost) {
+                console.log('🌐 Localhost detectat - forțez încărcarea din API pentru plans-config actualizat');
             }
 
             // Prima încărcare sau cache gol - încarcă din API
@@ -112,6 +117,14 @@ class SiteConfigServiceImpl implements SiteConfigService {
                 if (response.ok) {
                     const config = await response.json();
                     this.cachedConfig = config;
+
+                    // Debug: verifică dacă plans-config este prezent
+                    console.log('🔍 Configurația încărcată din API:', config);
+                    console.log('🔍 Plans-config prezent:', config['plans-config'] ? 'DA' : 'NU');
+                    if (config['plans-config']) {
+                        console.log('🔍 Plans-config conținut:', config['plans-config']);
+                        console.log('🔍 show_save_button:', config['plans-config'].show_save_button);
+                    }
 
                     // Salvează automat în localStorage după încărcarea cu succes din API
                     if (typeof window !== 'undefined') {

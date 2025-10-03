@@ -21,12 +21,16 @@ const loadPlansConfig = async (): Promise<any> => {
         if (siteConfig && siteConfig['plans-config']) {
             plansConfig = siteConfig['plans-config'];
             isPlansConfigLoaded = true;
-            console.log('Plans config încărcat din API:', plansConfig);
-            
+            console.log('✅ Plans config încărcat din API:', plansConfig);
+            console.log('✅ show_save_button:', plansConfig?.show_save_button);
+
             // Notifică toate listener-ele că plansConfig a fost încărcat
             plansConfigListeners.forEach(listener => listener());
-            
+
             return plansConfig;
+        } else {
+            console.warn('❌ Plans config NU a fost găsit în siteConfig:', siteConfig);
+            console.warn('❌ Keys disponibile:', siteConfig ? Object.keys(siteConfig) : 'siteConfig este null');
         }
     } catch (error) {
         console.warn('Nu s-a putut încărca plans-config din API:', error);
@@ -249,7 +253,7 @@ export const isSiteEditable = (): boolean => {
     if (!isPlansConfigLoaded) {
         return false;
     }
-    
+
     return plansConfig?.isEditable || false;
 };
 
@@ -284,20 +288,20 @@ export const initializePlansConfig = async (): Promise<void> => {
 // Hook pentru a aștepta încărcarea plansConfig
 export const usePlansConfig = () => {
     const [isLoaded, setIsLoaded] = React.useState(isPlansConfigLoaded);
-    
+
     React.useEffect(() => {
         if (isPlansConfigLoaded) {
             setIsLoaded(true);
             return;
         }
-        
+
         // Adaugă listener pentru notificarea când plansConfig este încărcat
         const listener = () => setIsLoaded(true);
         plansConfigListeners.push(listener);
-        
+
         // Încarcă plansConfig dacă nu este deja încărcat
         loadPlansConfig();
-        
+
         return () => {
             // Elimină listener-ul când componenta se dezactivează
             const index = plansConfigListeners.indexOf(listener);
@@ -306,8 +310,8 @@ export const usePlansConfig = () => {
             }
         };
     }, []);
-    
-    return {
+
+    const result = {
         isLoaded,
         plansConfig,
         showSaveButton: plansConfig?.show_save_button || false,
@@ -315,4 +319,8 @@ export const usePlansConfig = () => {
         isSiteEditable: plansConfig?.isEditable || false,
         useLocalSiteConfig: plansConfig?.['useLocal_site-config'] === true
     };
+
+    console.log('🔍 usePlansConfig hook result:', result);
+
+    return result;
 };

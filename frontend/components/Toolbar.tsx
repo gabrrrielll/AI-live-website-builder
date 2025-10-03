@@ -24,7 +24,14 @@ const Toolbar: React.FC = () => {
   } = useSite();
   const { isEditMode, switchToEditMode, switchToViewMode } = useSiteMode();
   const { isTestMode, canUseRebuild, showLimitModal } = useTestMode();
-  const { showSaveButton, showImportExportConfig } = usePlansConfig();
+  const { showSaveButton, showImportExportConfig, isLoaded, plansConfig } = usePlansConfig();
+
+  // Debug logging pentru butonul de salvare
+  React.useEffect(() => {
+    console.log('🔧 Toolbar - showSaveButton:', showSaveButton);
+    console.log('🔧 Toolbar - isLoaded:', isLoaded);
+    console.log('🔧 Toolbar - plansConfig:', plansConfig);
+  }, [showSaveButton, isLoaded, plansConfig]);
   const [showHelp, setShowHelp] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const importInputRef = useRef<HTMLInputElement>(null);
