@@ -32,7 +32,7 @@ export const useSync = ({ siteConfig, setIsSyncing, t }: useSyncProps) => {
 
         try {
             // Verifică dacă trebuie să salvez local sau pe server
-            if (useLocalSiteConfig()) {
+            if (useLocalSiteConfig) {
                 // Salvare locală cu download automat
                 await saveConfigLocally(siteConfig);
                 toast.success(t.toolbar.syncSuccessLocal, { id: syncToast });
