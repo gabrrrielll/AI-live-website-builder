@@ -166,7 +166,7 @@ class AI_Web_Site_Website_Manager
         // 2. Verificare nonce pentru protecție CSRF
         $headers = getallheaders();
         $nonce = $headers['X-WP-Nonce'] ?? $headers['x-wp-nonce'] ?? '';
-        
+
         if (empty($nonce) || !wp_verify_nonce($nonce, 'save_site_config')) {
             return new WP_Error('invalid_nonce', 'Invalid security token', array('status' => 403));
         }
@@ -180,7 +180,7 @@ class AI_Web_Site_Website_Manager
     public function rest_save_website_config($request)
     {
         $this->set_cors_headers();
-        
+
         $logger = AI_Web_Site_Debug_Logger::get_instance();
         $logger->info('WEBSITE_MANAGER', 'REST_SAVE', 'REST API POST request received', array(
             'user_id' => get_current_user_id(),

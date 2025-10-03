@@ -7,11 +7,14 @@ import { getCurrentSubdomain } from '@/constants.js';
 // Funcție pentru obținerea nonce-ului WordPress (ETAPA 1)
 async function getWordPressNonce(): Promise<string> {
   try {
+    // Import constants pentru URL-uri
+    const { API_CONFIG } = await import('@/constants.js');
+    
     // Încearcă să obțină nonce-ul din WordPress REST API
-    const response = await fetch('https://ai-web.site/wp-json/wp/v2/users/me', {
+    const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.WORDPRESS_NONCE}`, {
       credentials: 'include', // Include cookies pentru autentificare
     });
-    
+
     if (response.ok) {
       // Dacă utilizatorul este logat, obține nonce-ul din header-ele
       const nonce = response.headers.get('X-WP-Nonce');
@@ -19,12 +22,12 @@ async function getWordPressNonce(): Promise<string> {
         return nonce;
       }
     }
-    
+
     // Fallback: generează nonce-ul din JavaScript (pentru testare)
     // În producție, acest nonce ar trebui să vină de la WordPress
     console.warn('Nu s-a putut obține nonce-ul din WordPress, folosind fallback');
     return 'fallback-nonce-' + Date.now();
-    
+
   } catch (error) {
     console.error('Eroare la obținerea nonce-ului:', error);
     // Fallback pentru testare
@@ -76,7 +79,8 @@ export const uploadConfig = async (config: SiteConfig): Promise<{ success: boole
 
     // Adaugă informații despre subdomain și domain pentru identificare
     const currentSubdomain = getCurrentSubdomain();
-    const domain = currentSubdomain ? `${currentSubdomain}.ai-web.site` : 'ai-web.site';
+    const baseDomain = API_CONFIG.BASE_URL.replace('https://', '');
+    const domain = currentSubdomain ? `${currentSubdomain}.${baseDomain}` : baseDomain;
 
     const requestData = {
       config,
@@ -86,7 +90,7 @@ export const uploadConfig = async (config: SiteConfig): Promise<{ success: boole
 
     // Obține nonce-ul pentru securitate (ETAPA 1)
     const nonce = await getWordPressNonce();
-    
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {

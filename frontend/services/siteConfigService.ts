@@ -1,4 +1,4 @@
-import { SITE_CONFIG_API_URL } from '@/constants.js';
+import { SITE_CONFIG_API_URL, API_CONFIG } from '@/constants.js';
 import { toast } from 'sonner';
 import type { SiteConfig } from '@/types';
 
@@ -38,7 +38,7 @@ class SiteConfigServiceImpl implements SiteConfigService {
     private async getSiteConfigUrl(): Promise<string> {
         // În development (localhost), folosește configurația editorului
         if (import.meta.env.MODE === 'development') {
-            const editorUrl = import.meta.env.VITE_EDITOR_URL || 'https://editor.ai-web.site';
+            const editorUrl = import.meta.env.VITE_EDITOR_URL || `${API_CONFIG.BASE_URL.replace('ai-web.site', 'editor.ai-web.site')}`;
             const editorDomain = new URL(editorUrl).hostname;
             const apiUrl = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.WORDPRESS_REST}/${editorDomain}`;
             console.log('Development mode - folosind configurația editorului:', apiUrl);

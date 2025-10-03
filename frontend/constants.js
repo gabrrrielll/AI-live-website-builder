@@ -7,6 +7,7 @@ const API_CONFIG = {
     ENDPOINTS: {
         SITE_CONFIG: '/api-site-config.php',
         WORDPRESS_REST: '/wp-json/ai-web-site/v1/website-config',
+        WORDPRESS_NONCE: '/wp-json/wp/v2/users/me', // Pentru obținerea nonce-ului
     }
 };
 
@@ -16,7 +17,7 @@ function getSiteConfigUrl() {
     if (typeof window !== 'undefined' && typeof import.meta !== 'undefined' && import.meta.env) {
         // În development (localhost), folosește configurația editorului
         if (import.meta.env.MODE === 'development') {
-            const editorUrl = import.meta.env.VITE_EDITOR_URL || 'https://editor.ai-web.site';
+            const editorUrl = import.meta.env.VITE_EDITOR_URL || `${API_CONFIG.BASE_URL.replace('ai-web.site', 'editor.ai-web.site')}`;
             const editorDomain = new URL(editorUrl).hostname;
             return `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.WORDPRESS_REST}/${editorDomain}`;
         }
