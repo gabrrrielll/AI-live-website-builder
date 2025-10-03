@@ -3,7 +3,7 @@
 import { useCallback } from 'react';
 import { toast } from 'sonner';
 import { uploadConfig, saveConfigLocally } from '@/utils/api';
-import { showSaveButton, useLocalSiteConfig } from '@/services/plansService';
+import { usePlansConfig } from '@/services/plansService';
 import type { SiteConfig } from '@/types';
 import type { Translations } from '@/utils/translations';
 
@@ -14,13 +14,15 @@ interface useSyncProps {
 }
 
 export const useSync = ({ siteConfig, setIsSyncing, t }: useSyncProps) => {
+    const { showSaveButton, isSiteEditable, useLocalSiteConfig } = usePlansConfig();
+    
     const syncConfig = useCallback(async () => {
         if (!siteConfig) {
             toast.error(t.toolbar.noConfigToSync);
             return;
         }
         // Verifică dacă sincronizarea este activată în plans-config
-        if (!showSaveButton()) {
+        if (!showSaveButton) {
             toast.error(t.toolbar.syncIsPremium);
             return;
         }

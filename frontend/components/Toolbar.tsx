@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import { useTestMode } from '@/context/TestModeContext';
-import { showImportExportConfig, showSaveButton } from '@/services/plansService';
+import { usePlansConfig } from '@/services/plansService';
 import { useSync } from '@/hooks/useSync';
 
 const Toolbar: React.FC = () => {
@@ -24,6 +24,7 @@ const Toolbar: React.FC = () => {
   } = useSite();
   const { isEditMode, switchToEditMode, switchToViewMode } = useSiteMode();
   const { isTestMode, canUseRebuild, showLimitModal } = useTestMode();
+  const { showSaveButton, showImportExportConfig } = usePlansConfig();
   const [showHelp, setShowHelp] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const importInputRef = useRef<HTMLInputElement>(null);
@@ -116,7 +117,7 @@ const Toolbar: React.FC = () => {
 
           <div className="w-px h-2 sm:h-6 bg-gray-300 mx-0.5 sm:mx-2"></div>
 
-          {showSaveButton() && (
+          {showSaveButton && (
             <button
               onClick={syncConfig}
               disabled={isSyncing}
@@ -126,7 +127,7 @@ const Toolbar: React.FC = () => {
               {isSyncing ? <Loader size={16} className="animate-spin sm:w-5 sm:h-5" /> : <Cloud size={16} className="sm:w-5 sm:h-5" />}
             </button>
           )}
-          {!isTestMode && showImportExportConfig() && (
+          {!isTestMode && showImportExportConfig && (
             <>
               <button onClick={exportConfig} className={`${buttonClass} ${enabledClass}`} title={t.toolbar.exportConfig}>
                 <Download size={16} className="sm:w-5 sm:h-5" />

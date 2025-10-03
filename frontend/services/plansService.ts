@@ -1,7 +1,11 @@
 "use client";
 
+import React from 'react';
+
 // plansConfig va fi încărcat din API
 let plansConfig: any = null;
+let isPlansConfigLoaded: boolean = false;
+let plansConfigListeners: (() => void)[] = [];
 
 // Funcție pentru a încărca plansConfig din API
 const loadPlansConfig = async (): Promise<any> => {
@@ -16,7 +20,12 @@ const loadPlansConfig = async (): Promise<any> => {
 
         if (siteConfig && siteConfig['plans-config']) {
             plansConfig = siteConfig['plans-config'];
+            isPlansConfigLoaded = true;
             console.log('Plans config încărcat din API:', plansConfig);
+            
+            // Notifică toate listener-ele că plansConfig a fost încărcat
+            plansConfigListeners.forEach(listener => listener());
+            
             return plansConfig;
         }
     } catch (error) {
@@ -236,16 +245,29 @@ export const isSiteEditable = (): boolean => {
     }
 
     // Pentru alte domenii, verifică configurația
+    // Dacă plansConfig nu este încă încărcat, returnează false
+    if (!isPlansConfigLoaded) {
+        return false;
+    }
+    
     return plansConfig?.isEditable || false;
 };
 
 // Verifică dacă butoanele de import/export configurație trebuie afișate
 export const showImportExportConfig = (): boolean => {
+    // Dacă plansConfig nu este încă încărcat, returnează false
+    if (!isPlansConfigLoaded) {
+        return false;
+    }
     return plansConfig?.show_import_export_config || false;
 };
 
 // Verifică dacă butonul de salvare (sync) trebuie afișat
 export const showSaveButton = (): boolean => {
+    // Dacă plansConfig nu este încă încărcat, returnează false
+    if (!isPlansConfigLoaded) {
+        return false;
+    }
     return plansConfig?.show_save_button || false;
 };
 
@@ -257,4 +279,40 @@ export const useLocalSiteConfig = (): boolean => {
 // Funcție pentru a inițializa plansConfig (trebuie apelată la începutul aplicației)
 export const initializePlansConfig = async (): Promise<void> => {
     await loadPlansConfig();
+};
+
+// Hook pentru a aștepta încărcarea plansConfig
+export const usePlansConfig = () => {
+    const [isLoaded, setIsLoaded] = React.useState(isPlansConfigLoaded);
+    
+    React.useEffect(() => {
+        if (isPlansConfigLoaded) {
+            setIsLoaded(true);
+            return;
+        }
+        
+        // Adaugă listener pentru notificarea când plansConfig este încărcat
+        const listener = () => setIsLoaded(true);
+        plansConfigListeners.push(listener);
+        
+        // Încarcă plansConfig dacă nu este deja încărcat
+        loadPlansConfig();
+        
+        return () => {
+            // Elimină listener-ul când componenta se dezactivează
+            const index = plansConfigListeners.indexOf(listener);
+            if (index > -1) {
+                plansConfigListeners.splice(index, 1);
+            }
+        };
+    }, []);
+    
+    return {
+        isLoaded,
+        plansConfig,
+        showSaveButton: plansConfig?.show_save_button || false,
+        showImportExportConfig: plansConfig?.show_import_export_config || false,
+        isSiteEditable: plansConfig?.isEditable || false,
+        useLocalSiteConfig: plansConfig?.['useLocal_site-config'] === true
+    };
 };
