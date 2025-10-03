@@ -129,7 +129,7 @@ DELETE /wp-json/ai-web-site/v1/site-config/{id}
 ### PHP API Services
 ```
 POST /api/ai-service.php          # AI text/image generation
-GET  /api/api-site-config.php     # Site config by subdomain
+GET  /wp-json/ai-web-site/v1/website-config/{domain}  # Site config by domain
 ```
 
 ## 🚀 Deployment Strategy

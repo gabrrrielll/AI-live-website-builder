@@ -9,7 +9,7 @@ async function getWordPressNonce(): Promise<string> {
   try {
     // Import constants pentru URL-uri
     const { API_CONFIG } = await import('@/constants.js');
-    
+
     // Încearcă să obțină nonce-ul din WordPress REST API
     const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.WORDPRESS_NONCE}`, {
       credentials: 'include', // Include cookies pentru autentificare

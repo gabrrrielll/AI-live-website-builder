@@ -12,7 +12,7 @@ backend/
 │   │       └── ai-web-site/   # Plugin custom pentru subdomenii
 ├── api/                       # API services PHP
 │   ├── ai-service.php        # AI integration (Gemini, Unsplash)
-│   └── api-site-config.php   # Site config API
+│   └── (removed - now using WordPress REST API)
 └── config/
     └── constants.php         # API keys și configurări
 ```
@@ -148,7 +148,7 @@ POST /api/ai-service.php
 Body: { "action": "generate_text", "prompt": "..." }
 
 # Site config by subdomain
-GET /api/api-site-config.php?subdomain=xxx
+GET /wp-json/ai-web-site/v1/website-config/{domain}
 ```
 
 ## 🗄️ Structura Baza de Date

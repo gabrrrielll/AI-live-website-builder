@@ -5,7 +5,6 @@ const API_CONFIG = {
 
     // Endpoint-uri specifice
     ENDPOINTS: {
-        SITE_CONFIG: '/api-site-config.php',
         WORDPRESS_REST: '/wp-json/ai-web-site/v1/website-config',
         WORDPRESS_NONCE: '/wp-json/wp/v2/users/me', // Pentru obținerea nonce-ului
     }

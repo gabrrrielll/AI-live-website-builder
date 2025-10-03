@@ -9,7 +9,7 @@ AI-live-website-builder/
 ├── backend/                    # WordPress + API-uri PHP
 │   ├── api/                   # API-uri pentru AI și configurări
 │   │   ├── ai-service.php     # Servicii AI (Gemini, Unsplash)
-│   │   └── api-site-config.php # API pentru configurații site
+│   │   └── (WordPress REST API) # API pentru configurații site
 │   ├── config/                # Configurații backend
 │   │   └── constants.php      # Chei API și configurări
 │   └── wordpress/             # WordPress cu plugin
