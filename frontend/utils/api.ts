@@ -4,6 +4,34 @@ import type { SiteConfig } from '@/types';
 import { getCurrentSubdomain } from '@/constants.js';
 // EmailJS now handled by backend service
 
+// Funcție pentru obținerea nonce-ului WordPress (ETAPA 1)
+async function getWordPressNonce(): Promise<string> {
+  try {
+    // Încearcă să obțină nonce-ul din WordPress REST API
+    const response = await fetch('https://ai-web.site/wp-json/wp/v2/users/me', {
+      credentials: 'include', // Include cookies pentru autentificare
+    });
+    
+    if (response.ok) {
+      // Dacă utilizatorul este logat, obține nonce-ul din header-ele
+      const nonce = response.headers.get('X-WP-Nonce');
+      if (nonce) {
+        return nonce;
+      }
+    }
+    
+    // Fallback: generează nonce-ul din JavaScript (pentru testare)
+    // În producție, acest nonce ar trebui să vină de la WordPress
+    console.warn('Nu s-a putut obține nonce-ul din WordPress, folosind fallback');
+    return 'fallback-nonce-' + Date.now();
+    
+  } catch (error) {
+    console.error('Eroare la obținerea nonce-ului:', error);
+    // Fallback pentru testare
+    return 'fallback-nonce-' + Date.now();
+  }
+}
+
 // Save site configuration locally to public folder
 export const saveConfigLocally = async (config: SiteConfig): Promise<{ success: boolean }> => {
   try {
@@ -56,10 +84,14 @@ export const uploadConfig = async (config: SiteConfig): Promise<{ success: boole
       subdomain: currentSubdomain || 'my-site'
     };
 
+    // Obține nonce-ul pentru securitate (ETAPA 1)
+    const nonce = await getWordPressNonce();
+    
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-WP-Nonce': nonce, // Nonce pentru protecție CSRF
       },
       body: JSON.stringify(requestData),
     });
