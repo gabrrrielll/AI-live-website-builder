@@ -47,8 +47,7 @@ class ConfigService {
     };
 
     private listeners: ConfigEventListener[] = [];
-    private isLoading: boolean = false;
-    private retryCount: number = 0;
+    // retryCount nu mai este folosit - eliminat
     private readonly maxRetries: number = 5;
     private readonly baseDelay: number = 1000;
 
@@ -87,7 +86,7 @@ class ConfigService {
         try {
             const cacheData = {
                 siteConfig,
-                plansConfig: siteConfig['plans-config'] || null,
+                plansConfig: (siteConfig as any)['plans-config'] || null,
                 timestamp: Date.now()
             };
             localStorage.setItem(this.getCacheKey(), JSON.stringify(cacheData));
@@ -104,7 +103,7 @@ class ConfigService {
             const cached = localStorage.getItem(this.getCacheKey());
             if (!cached) return null;
 
-            const { siteConfig, plansConfig, timestamp } = JSON.parse(cached);
+            const { siteConfig, plansConfig, timestamp } = JSON.parse(cached) as { siteConfig: SiteConfig; plansConfig: PlansConfig | null; timestamp: number };
             
             // Verifică dacă cache-ul nu este prea vechi (24 ore)
             const maxAge = 24 * 60 * 60 * 1000; // 24 ore
@@ -130,8 +129,8 @@ class ConfigService {
     // URL management
     private getConfigUrl(): string {
         // În development (localhost), folosește configurația editorului
-        if (import.meta.env.MODE === 'development') {
-            const editorUrl = import.meta.env.VITE_EDITOR_URL || `${API_CONFIG.BASE_URL.replace('ai-web.site', 'editor.ai-web.site')}`;
+        if (typeof import.meta !== 'undefined' && (import.meta as any).env?.MODE === 'development') {
+            const editorUrl = (import.meta as any).env?.VITE_EDITOR_URL || `${API_CONFIG.BASE_URL.replace('ai-web.site', 'editor.ai-web.site')}`;
             const editorDomain = new URL(editorUrl).hostname;
             const apiUrl = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.WORDPRESS_REST}/${editorDomain}`;
             console.log('🔧 Development mode - URL:', apiUrl);
@@ -171,8 +170,7 @@ class ConfigService {
                     const siteConfig = await response.json();
                     console.log('✅ Configurație încărcată din API');
                     
-                    // Extrage plans-config din site-config
-                    const plansConfig = siteConfig['plans-config'] || null;
+            // plansConfig este extras din site-config în loadConfig()
                     
                     // Salvează în cache
                     this.saveToCache(siteConfig);
@@ -204,12 +202,13 @@ class ConfigService {
                     console.log(`⏳ Aștept ${delay}ms...`);
                     await new Promise(resolve => setTimeout(resolve, delay));
                 } else {
-                    if (error.name === 'AbortError') {
+                    if (error instanceof Error && error.name === 'AbortError') {
                         console.error('⏰ Timeout la încărcarea din API');
                         this.emit({ type: 'error', error: 'Timeout la încărcarea configurației' });
                     } else {
                         console.error('💥 Eroare la încărcarea din API:', error);
-                        this.emit({ type: 'error', error: error.message || 'Eroare necunoscută' });
+                        const errorMessage = error instanceof Error ? error.message : 'Eroare necunoscută';
+                        this.emit({ type: 'error', error: errorMessage });
                     }
                     return null;
                 }
@@ -221,12 +220,11 @@ class ConfigService {
 
     // Public methods
     public async loadConfig(): Promise<void> {
-        if (this.isLoading) {
+        if (this.state.isLoading) {
             console.log('⏳ Încărcare deja în desfășurare...');
             return;
         }
 
-        this.isLoading = true;
         this.updateState({ isLoading: true, error: null });
         this.emit({ type: 'loading' });
 
@@ -251,7 +249,7 @@ class ConfigService {
             const siteConfig = await this.loadFromAPI();
             
             if (siteConfig) {
-                const plansConfig = siteConfig['plans-config'] || null;
+                const plansConfig = (siteConfig as any)['plans-config'] || null;
                 
                 this.updateState({
                     siteConfig,
@@ -271,13 +269,14 @@ class ConfigService {
             }
         } catch (error) {
             console.error('💥 Eroare la încărcarea configurației:', error);
+            const errorMessage = error instanceof Error ? error.message : 'Eroare necunoscută';
             this.updateState({
                 isLoading: false,
-                error: error.message || 'Eroare necunoscută'
+                error: errorMessage
             });
-            this.emit({ type: 'error', error: error.message || 'Eroare necunoscută' });
+            this.emit({ type: 'error', error: errorMessage });
         } finally {
-            this.isLoading = false;
+            // isLoading este actualizat prin updateState în fiecare caz
         }
     }
 
@@ -288,7 +287,7 @@ class ConfigService {
     }
 
     public updateSiteConfig(siteConfig: SiteConfig): void {
-        const plansConfig = siteConfig['plans-config'] || null;
+        const plansConfig = (siteConfig as any)['plans-config'] || null;
         
         this.updateState({
             siteConfig,
