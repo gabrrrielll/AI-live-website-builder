@@ -54,7 +54,7 @@ class SiteConfigServiceImpl implements SiteConfigService {
 
     async loadSiteConfig(): Promise<SiteConfig | null> {
         console.log('🚀 loadSiteConfig() apelat');
-        
+
         // Previne multiple încărcări simultane
         if (this.isLoading) {
             console.log('⏳ Încărcare deja în desfășurare, aștept...');
@@ -66,19 +66,32 @@ class SiteConfigServiceImpl implements SiteConfigService {
             console.log('🔄 Începe încărcarea site-config...');
 
             // Verifică cache-ul din localStorage pentru performanță
-            // În localhost, forțează încărcarea din API pentru a obține plans-config actualizat
+            // În localhost, verifică mai întâi localStorage, apoi API pentru actualizare
             const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-
-            if (typeof window !== 'undefined' && !isLocalhost) {
+            
+            if (typeof window !== 'undefined') {
                 const localConfig = localStorage.getItem('site-config');
                 if (localConfig) {
-                    const config = JSON.parse(localConfig);
-                    this.cachedConfig = config;
-                    console.log('Site-config încărcat din cache (localStorage)');
-                    return config;
+                    try {
+                        const config = JSON.parse(localConfig);
+                        this.cachedConfig = config;
+                        console.log('✅ Site-config încărcat din cache (localStorage)');
+                        console.log('✅ Plans-config în localStorage:', config['plans-config'] ? 'DA' : 'NU');
+                        if (config['plans-config']) {
+                            console.log('✅ show_save_button în localStorage:', config['plans-config'].show_save_button);
+                        }
+                        return config;
+                    } catch (error) {
+                        console.warn('❌ Eroare la parsarea configuratiei din localStorage:', error);
+                        // Continuă cu încărcarea din API dacă localStorage este corupt
+                    }
+                } else {
+                    console.log('📝 Nu există configurație în localStorage');
                 }
-            } else if (isLocalhost) {
-                console.log('🌐 Localhost detectat - forțez încărcarea din API pentru plans-config actualizat');
+            }
+            
+            if (isLocalhost) {
+                console.log('🌐 Localhost detectat - încarcă din API pentru actualizare');
             }
 
             // Prima încărcare sau cache gol - încarcă din API

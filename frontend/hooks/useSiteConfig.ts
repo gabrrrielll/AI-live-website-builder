@@ -14,7 +14,7 @@ export function useSiteConfig() {
 
     useEffect(() => {
         console.log('🔄 useSiteConfig useEffect apelat, retryCount:', retryCount);
-        
+
         const loadSiteConfig = async () => {
             try {
                 console.log('🔄 useSiteConfig: Începe încărcarea...');
