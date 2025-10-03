@@ -80,8 +80,14 @@ class SiteConfigServiceImpl implements SiteConfigService {
 
             // Prima încărcare sau cache gol - încarcă din API
             const configUrl = await this.getSiteConfigUrl();
-            console.log('Încărcare din API (fără fallback pe fișiere locale):', configUrl);
-            return await this.loadFromUrlWithRetry(configUrl);
+            console.log('🌐 Încărcare din API (fără fallback pe fișiere locale):', configUrl);
+            console.log('🌐 isLocalhost:', isLocalhost);
+            console.log('🌐 import.meta.env.MODE:', import.meta.env.MODE);
+            console.log('🌐 import.meta.env.VITE_EDITOR_URL:', import.meta.env.VITE_EDITOR_URL);
+            
+            const result = await this.loadFromUrlWithRetry(configUrl);
+            console.log('🌐 Rezultat încărcare din API:', result ? 'SUCCESS' : 'FAILED');
+            return result;
         } catch (error) {
             console.error('Eroare la încărcarea site-config din API:', error);
         } finally {
@@ -152,17 +158,20 @@ class SiteConfigServiceImpl implements SiteConfigService {
                     }
                 }
             } catch (error) {
-                console.warn(`Eroare la încercarea ${attempt}/${maxRetries}:`, error);
+                console.warn(`❌ Eroare la încercarea ${attempt}/${maxRetries}:`, error);
+                console.warn(`❌ Error name:`, error.name);
+                console.warn(`❌ Error message:`, error.message);
+                console.warn(`❌ Error stack:`, error.stack);
 
                 if (attempt < maxRetries) {
                     const delay = baseDelay * Math.pow(2, attempt - 1); // Exponential backoff
-                    console.log(`Aștept ${delay}ms înainte de următoarea încercare...`);
+                    console.log(`⏳ Aștept ${delay}ms înainte de următoarea încercare...`);
                     await new Promise(resolve => setTimeout(resolve, delay));
                 } else {
                     if (error.name === 'AbortError') {
-                        console.error(`Timeout la încărcarea din API (30s) după ${maxRetries} încercări`);
+                        console.error(`⏰ Timeout la încărcarea din API (30s) după ${maxRetries} încercări`);
                     } else {
-                        console.error(`Toate încercările au eșuat - eroare:`, error);
+                        console.error(`💥 Toate încercările au eșuat - eroare:`, error);
                     }
                     return null;
                 }
