@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { configService, type ConfigState, type ConfigEvent } from '@/services/ConfigService';
 import type { SiteConfig } from '@/types';
 
@@ -11,7 +11,7 @@ interface ConfigContextType {
     isLoading: boolean;
     error: string | null;
     lastUpdated: number | null;
-    
+
     // Actions
     loadConfig: () => Promise<void>;
     refreshConfig: () => Promise<void>;
@@ -33,24 +33,42 @@ interface ConfigProviderProps {
  */
 export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
     const [state, setState] = useState<ConfigState>(configService.getState());
+    const initializedRef = useRef(false);
 
-    // Încarcă configurația la inițializare
-    useEffect(() => {
-        console.log('🚀 ConfigProvider: Inițializare...');
-        loadConfig();
-    }, []);
-
+    // IMPORTANT: Setăm listener-ul ÎNAINTE de a încărca configurația
     // Ascultă evenimentele de la configService
     useEffect(() => {
+        console.log('🎧 ConfigProvider: Setup event listener (PRIMUL)');
         const removeListener = configService.addEventListener((event: ConfigEvent) => {
-            console.log('📡 ConfigProvider: Eveniment primit:', event.type);
-            
+            console.log('📡 ConfigProvider: Eveniment primit:', event.type, event);
+
             // Actualizează state-ul local cu cel din serviciu
-            setState(configService.getState());
+            const newState = configService.getState();
+            console.log('📡 ConfigProvider: New state:', {
+                hasSiteConfig: !!newState.siteConfig,
+                hasPlansConfig: !!newState.plansConfig,
+                isLoading: newState.isLoading,
+                error: newState.error
+            });
+            setState(newState);
         });
 
+        // După ce listener-ul este setat, încarcă configurația
+        if (!initializedRef.current) {
+            console.log('🚀 ConfigProvider: Inițializare (după setup listener)...');
+            initializedRef.current = true;
+
+            // Apelează loadConfig asincron
+            (async () => {
+                await loadConfig();
+                // După încărcare, forțează o actualizare a state-ului
+                console.log('🔄 ConfigProvider: Actualizare state după loadConfig');
+                setState(configService.getState());
+            })();
+        }
+
         return removeListener;
-    }, []);
+    }, []); // Empty dependency array - rulează doar o dată la mount
 
     const loadConfig = useCallback(async () => {
         console.log('🔄 ConfigProvider: Încarcă configurația...');
@@ -79,7 +97,7 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
         isLoading: state.isLoading,
         error: state.error,
         lastUpdated: state.lastUpdated,
-        
+
         // Actions
         loadConfig,
         refreshConfig,
@@ -99,11 +117,11 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
  */
 export const useConfig = (): ConfigContextType => {
     const context = useContext(ConfigContext);
-    
+
     if (context === undefined) {
         throw new Error('useConfig must be used within a ConfigProvider');
     }
-    
+
     return context;
 };
 
@@ -112,7 +130,7 @@ export const useConfig = (): ConfigContextType => {
  */
 export const useSiteConfig = () => {
     const { siteConfig, isLoading, error, loadConfig, retryLoad } = useConfig();
-    
+
     return {
         siteConfig,
         isLoading,
@@ -127,7 +145,7 @@ export const useSiteConfig = () => {
  */
 export const usePlansConfig = () => {
     const { plansConfig, isLoading, error, loadConfig } = useConfig();
-    
+
     return {
         plansConfig,
         isLoading,

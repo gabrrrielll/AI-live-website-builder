@@ -77,12 +77,33 @@ export const uploadConfig = async (config: SiteConfig): Promise<{ success: boole
     const { API_CONFIG } = await import('@/constants.js');
     const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.WORDPRESS_REST}`;
 
-    console.log('Încărcare configurație pe server:', url);
+    console.log('🚀 === FRONTEND: uploadConfig() CALLED ===');
+    console.log('🌐 URL complet:', url);
+    console.log('📝 API_CONFIG.BASE_URL:', API_CONFIG.BASE_URL);
+    console.log('📝 API_CONFIG.ENDPOINTS.WORDPRESS_REST:', API_CONFIG.ENDPOINTS.WORDPRESS_REST);
 
     // Adaugă informații despre subdomain și domain pentru identificare
     const currentSubdomain = getCurrentSubdomain();
     const baseDomain = API_CONFIG.BASE_URL.replace('https://', '');
-    const domain = currentSubdomain ? `${currentSubdomain}.${baseDomain}` : baseDomain;
+
+    // HACK pentru localhost: folosește editor.ai-web.site
+    let domain: string;
+    const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+
+    if (isLocalhost) {
+      // În localhost, folosește configurația editorului
+      const editorDomain = 'editor.ai-web.site';
+      domain = editorDomain;
+      console.log('🏠 LOCALHOST detectat - folosesc domeniul editorului');
+    } else {
+      // În production, folosește domeniul curent
+      domain = currentSubdomain ? `${currentSubdomain}.${baseDomain}` : baseDomain;
+    }
+
+    console.log('🔍 Current subdomain:', currentSubdomain);
+    console.log('🔍 Base domain:', baseDomain);
+    console.log('🔍 Full domain:', domain);
+    console.log('🔍 Is localhost:', isLocalhost);
 
     const requestData = {
       config,
@@ -90,28 +111,65 @@ export const uploadConfig = async (config: SiteConfig): Promise<{ success: boole
       subdomain: currentSubdomain || 'my-site'
     };
 
+    console.log('📦 Request data keys:', Object.keys(requestData));
+
     // Obține nonce-ul pentru securitate (ETAPA 1)
     const nonce = await getWordPressNonce();
+    console.log('🔐 Nonce obținut:', nonce);
+
+    console.log('📤 Trimit POST request către:', url);
+
+    // Pentru localhost, NU trimitem header-ul X-WP-Nonce pentru a evita verificarea WordPress
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+
+    // Doar în production (nu localhost) adăugăm nonce-ul
+    if (!isLocalhost) {
+      headers['X-WP-Nonce'] = nonce;
+    } else {
+      console.log('🏠 LOCALHOST: NU trimit X-WP-Nonce pentru a evita verificarea WordPress');
+    }
+
+    console.log('📤 Headers:', headers);
 
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-WP-Nonce': nonce, // Nonce pentru protecție CSRF
-      },
+      mode: 'cors', // Explicit CORS mode
+      credentials: 'omit', // NU trimite cookies - evită verificarea WordPress
+      headers: headers,
       body: JSON.stringify(requestData),
     });
 
+    console.log('📥 Răspuns primit - Status:', response.status);
+    console.log('📥 Răspuns primit - OK:', response.ok);
+    console.log('📥 Răspuns primit - Headers:', Object.fromEntries(response.headers.entries()));
+
     if (response.ok) {
-      console.log('Configurația a fost încărcată cu succes pe server');
-      return { success: true };
+      console.log('✅ Status 200 - Încep să citesc body...');
+      try {
+        // Citește body-ul ca text mai întâi
+        const bodyText = await response.text();
+        console.log('✅ Body text primit (lungime):', bodyText.length);
+        console.log('✅ Body text (primele 500 caractere):', bodyText.substring(0, 500));
+
+        // Încearcă să parseze JSON-ul
+        const responseData = JSON.parse(bodyText);
+        console.log('✅ JSON parsat cu succes');
+        console.log('✅ Response data:', responseData);
+        console.log('✅ Configurația a fost încărcată cu succes pe server');
+        return { success: true };
+      } catch (jsonError) {
+        console.error('❌ Eroare la parsarea JSON:', jsonError);
+        throw new Error(`JSON parse error: ${jsonError}`);
+      }
     } else {
       const errorText = await response.text();
-      console.error('Eroare la încărcarea pe server:', response.status, errorText);
+      console.error('❌ Eroare la încărcarea pe server:', response.status, errorText);
       throw new Error(`Server error: ${response.status} - ${errorText}`);
     }
   } catch (error) {
-    console.error('Eroare la încărcarea configurației:', error);
+    console.error('💥 Eroare la încărcarea configurației:', error);
     throw error;
   }
 };

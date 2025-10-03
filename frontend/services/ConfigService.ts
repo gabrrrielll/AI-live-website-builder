@@ -47,6 +47,7 @@ class ConfigService {
     };
 
     private listeners: ConfigEventListener[] = [];
+    private isInitialized: boolean = false; // Flag pentru a preveni încărcări multiple
     // retryCount nu mai este folosit - eliminat
     private readonly maxRetries: number = 5;
     private readonly baseDelay: number = 1000;
@@ -100,22 +101,41 @@ class ConfigService {
         if (typeof window === 'undefined') return null;
 
         try {
+            console.log('🔍 loadFromCache: Citesc din localStorage...');
             const cached = localStorage.getItem(this.getCacheKey());
-            if (!cached) return null;
 
-            const { siteConfig, plansConfig, timestamp } = JSON.parse(cached) as { siteConfig: SiteConfig; plansConfig: PlansConfig | null; timestamp: number };
+            if (!cached) {
+                console.log('ℹ️ loadFromCache: Nu există cache');
+                return null;
+            }
+
+            console.log('📦 loadFromCache: Cache găsit, lungime:', cached.length);
+            console.log('📦 loadFromCache: Primele 200 caractere:', cached.substring(0, 200));
+
+            const parsed = JSON.parse(cached) as { siteConfig: SiteConfig; plansConfig: PlansConfig | null; timestamp: number };
+            console.log('✅ loadFromCache: JSON parsat cu succes');
+
+            const { siteConfig, plansConfig, timestamp } = parsed;
+
+            console.log('🔍 loadFromCache: siteConfig exists:', !!siteConfig);
+            console.log('🔍 loadFromCache: plansConfig exists:', !!plansConfig);
+            console.log('🔍 loadFromCache: timestamp:', new Date(timestamp).toISOString());
 
             // Verifică dacă cache-ul nu este prea vechi (24 ore)
             const maxAge = 24 * 60 * 60 * 1000; // 24 ore
-            if (Date.now() - timestamp > maxAge) {
+            const age = Date.now() - timestamp;
+            console.log('🔍 loadFromCache: Cache age (hours):', (age / (60 * 60 * 1000)).toFixed(2));
+
+            if (age > maxAge) {
                 console.log('⏰ Cache expirat, va fi încărcat din API');
                 return null;
             }
 
-            console.log('✅ Configurație încărcată din cache');
+            console.log('✅ Configurație încărcată din cache (valid)');
             return { siteConfig, plansConfig };
         } catch (error) {
-            console.warn('❌ Eroare la încărcarea din cache:', error);
+            console.error('❌ Eroare la încărcarea din cache:', error);
+            console.error('❌ Tip eroare:', error instanceof Error ? error.message : String(error));
             return null;
         }
     }
@@ -220,31 +240,52 @@ class ConfigService {
 
     // Public methods
     public async loadConfig(): Promise<void> {
+        // Dacă deja este inițializat, returnează imediat
+        if (this.isInitialized && this.state.siteConfig) {
+            console.log('✅ ConfigService: Deja inițializat, folosesc configurația existentă');
+            return;
+        }
+
         if (this.state.isLoading) {
             console.log('⏳ Încărcare deja în desfășurare...');
             return;
         }
 
+        console.log('🚀 ConfigService.loadConfig() START');
         this.updateState({ isLoading: true, error: null });
         this.emit({ type: 'loading' });
 
         try {
             // Încearcă să încarce din cache mai întâi
+            console.log('🔍 Verific cache-ul...');
             const cached = this.loadFromCache();
 
             if (cached) {
-                this.updateState({
-                    siteConfig: cached.siteConfig,
-                    plansConfig: cached.plansConfig,
-                    isLoading: false,
-                    lastUpdated: Date.now()
-                });
-                this.emit({ type: 'loaded', data: cached });
-                console.log('✅ Configurație încărcată din cache');
-                return;
+                console.log('✅ Cache găsit - verific validitatea...');
+                console.log('📦 Cache siteConfig există:', !!cached.siteConfig);
+                console.log('📦 Cache plansConfig există:', !!cached.plansConfig);
+
+                // Verifică dacă configurația din cache este validă
+                if (!cached.siteConfig || !cached.plansConfig) {
+                    console.warn('⚠️ Cache incomplet - încarcă din API');
+                    this.clearCache();
+                } else {
+                    this.updateState({
+                        siteConfig: cached.siteConfig,
+                        plansConfig: cached.plansConfig,
+                        isLoading: false,
+                        lastUpdated: Date.now()
+                    });
+                    this.isInitialized = true; // Marchează ca inițializat
+                    this.emit({ type: 'loaded', data: cached });
+                    console.log('✅ Configurație încărcată din cache + INITIALIZED');
+                    return;
+                }
+            } else {
+                console.log('ℹ️ Nu există cache');
             }
 
-            // Dacă nu există cache, încarcă din API
+            // Dacă nu există cache sau este invalid, încarcă din API
             console.log('🌐 Încarcă din API...');
             const siteConfig = await this.loadFromAPI();
 
@@ -258,8 +299,9 @@ class ConfigService {
                     error: null,
                     lastUpdated: Date.now()
                 });
+                this.isInitialized = true; // Marchează ca inițializat
                 this.emit({ type: 'loaded', data: { siteConfig, plansConfig } });
-                console.log('✅ Configurație încărcată din API');
+                console.log('✅ Configurație încărcată din API + INITIALIZED');
             } else {
                 this.updateState({
                     isLoading: false,
@@ -287,7 +329,12 @@ class ConfigService {
     }
 
     public updateSiteConfig(siteConfig: SiteConfig): void {
+        console.log('📝 updateSiteConfig() called');
+        console.log('📝 Config type:', typeof siteConfig);
+        console.log('📝 Config keys:', siteConfig ? Object.keys(siteConfig).slice(0, 10) : 'null'); // Primele 10 chei
+
         const plansConfig = (siteConfig as any)['plans-config'] || null;
+        console.log('📝 PlansConfig exists:', !!plansConfig);
 
         this.updateState({
             siteConfig,
@@ -295,7 +342,10 @@ class ConfigService {
             lastUpdated: Date.now()
         });
 
+        console.log('💾 Salvez în cache...');
         this.saveToCache(siteConfig);
+        console.log('✅ Cache salvat');
+
         this.emit({ type: 'updated', data: { siteConfig, plansConfig } });
         console.log('✅ Configurație actualizată');
     }

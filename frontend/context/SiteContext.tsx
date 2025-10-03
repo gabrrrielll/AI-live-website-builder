@@ -91,12 +91,22 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Actualizează siteConfig când se încarcă configurația inițială
     useEffect(() => {
+        console.log('🔄 SiteContext: initialConfig changed', {
+            hasConfig: !!initialConfig,
+            isLoading,
+            error,
+            configKeys: initialConfig ? Object.keys(initialConfig).slice(0, 5) : 'none'
+        });
+
         if (initialConfig) {
+            console.log('✅ SiteContext: Setting siteConfig from initialConfig');
             setSiteConfig(initialConfig);
             // Inițializează istoricul cu configurația inițială
             initializeHistory(initialConfig);
+        } else {
+            console.log('⚠️ SiteContext: initialConfig is null/undefined');
         }
-    }, [initialConfig, initializeHistory]);
+    }, [initialConfig, initializeHistory, isLoading, error]);
 
     // Salvează configurația în localStorage când se trece în mod editare
     useEffect(() => {
