@@ -36,7 +36,7 @@ import NotFoundPage from './pages/NotFoundPage';
 // Componentă pentru UI-ul global care folosește configurația
 const AppUIComponents: React.FC = () => {
     const { isSiteEditable } = usePlansConfig();
-    
+
     return (
         <>
             {isSiteEditable && <ModeToggle />}
@@ -53,43 +53,43 @@ function App() {
                     <ConfigProvider>
                         <SiteModeProvider>
                             <SiteProvider>
-                            <Routes>
-                                {/* Home page */}
-                                <Route path="/" element={<HomePage />} />
+                                <Routes>
+                                    {/* Home page */}
+                                    <Route path="/" element={<HomePage />} />
 
-                                {/* Blog pages */}
-                                <Route path="/blog" element={<BlogPage />} />
-                                <Route path="/blog/:slug/*" element={<ArticlePage />} />
+                                    {/* Blog pages */}
+                                    <Route path="/blog" element={<BlogPage />} />
+                                    <Route path="/blog/:slug/*" element={<ArticlePage />} />
 
-                                {/* Legal pages - Romanian */}
-                                <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-                                <Route path="/terms-and-conditions" element={<TermsAndConditionsPage />} />
-                                <Route path="/cookie-policy" element={<CookiePolicyPage />} />
-                                <Route path="/cookie-settings" element={<CookieSettingsPage />} />
+                                    {/* Legal pages - Romanian */}
+                                    <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                                    <Route path="/terms-and-conditions" element={<TermsAndConditionsPage />} />
+                                    <Route path="/cookie-policy" element={<CookiePolicyPage />} />
+                                    <Route path="/cookie-settings" element={<CookieSettingsPage />} />
 
-                                {/* Legal pages - English */}
-                                <Route path="/en/privacy-policy" element={<EnglishPrivacyPolicyPage />} />
-                                <Route path="/en/terms-and-conditions" element={<EnglishTermsAndConditionsPage />} />
-                                <Route path="/en/cookie-policy" element={<EnglishCookiePolicyPage />} />
-                                <Route path="/en/cookie-settings" element={<EnglishCookieSettingsPage />} />
+                                    {/* Legal pages - English */}
+                                    <Route path="/en/privacy-policy" element={<EnglishPrivacyPolicyPage />} />
+                                    <Route path="/en/terms-and-conditions" element={<EnglishTermsAndConditionsPage />} />
+                                    <Route path="/en/cookie-policy" element={<EnglishCookiePolicyPage />} />
+                                    <Route path="/en/cookie-settings" element={<EnglishCookieSettingsPage />} />
 
-                                {/* 404 page */}
-                                <Route path="*" element={<NotFoundPage />} />
-                            </Routes>
+                                    {/* 404 page */}
+                                    <Route path="*" element={<NotFoundPage />} />
+                                </Routes>
 
-                            {/* Global UI Components */}
-                            <AppUIComponents />
-                            <GDPRBanner />
+                                {/* Global UI Components */}
+                                <AppUIComponents />
+                                <GDPRBanner />
 
-                            {/* Editor Modals */}
-                            <EditorModal />
-                            <SectionStyleEditorModal />
-                            <CardLayoutModal />
-                            <SlideStyleEditorModal />
-                            <AIRebuildModal />
+                                {/* Editor Modals */}
+                                <EditorModal />
+                                <SectionStyleEditorModal />
+                                <CardLayoutModal />
+                                <SlideStyleEditorModal />
+                                <AIRebuildModal />
 
-                            <Toaster richColors position="top-right" closeButton />
-                        </SiteProvider>
+                                <Toaster richColors position="top-right" closeButton />
+                            </SiteProvider>
                         </SiteModeProvider>
                     </ConfigProvider>
                 </TestModeProvider>

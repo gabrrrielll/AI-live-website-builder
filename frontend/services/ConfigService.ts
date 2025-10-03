@@ -82,7 +82,7 @@ class ConfigService {
 
     private saveToCache(siteConfig: SiteConfig): void {
         if (typeof window === 'undefined') return;
-        
+
         try {
             const cacheData = {
                 siteConfig,
@@ -104,7 +104,7 @@ class ConfigService {
             if (!cached) return null;
 
             const { siteConfig, plansConfig, timestamp } = JSON.parse(cached) as { siteConfig: SiteConfig; plansConfig: PlansConfig | null; timestamp: number };
-            
+
             // Verifică dacă cache-ul nu este prea vechi (24 ore)
             const maxAge = 24 * 60 * 60 * 1000; // 24 ore
             if (Date.now() - timestamp > maxAge) {
@@ -147,7 +147,7 @@ class ConfigService {
     // API calls
     private async loadFromAPI(): Promise<SiteConfig | null> {
         const configUrl = this.getConfigUrl();
-        
+
         for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
             try {
                 console.log(`🔄 Încercare ${attempt}/${this.maxRetries}: ${configUrl}`);
@@ -169,12 +169,12 @@ class ConfigService {
                 if (response.ok) {
                     const siteConfig = await response.json();
                     console.log('✅ Configurație încărcată din API');
-                    
-            // plansConfig este extras din site-config în loadConfig()
-                    
+
+                    // plansConfig este extras din site-config în loadConfig()
+
                     // Salvează în cache
                     this.saveToCache(siteConfig);
-                    
+
                     return siteConfig;
                 } else if (response.status === 404) {
                     console.error('❌ Configurația nu există (404)');
@@ -182,7 +182,7 @@ class ConfigService {
                     return null;
                 } else {
                     console.warn(`⚠️ HTTP ${response.status} pentru ${configUrl}`);
-                    
+
                     if (attempt < this.maxRetries) {
                         const delay = this.baseDelay * Math.pow(2, attempt - 1);
                         console.log(`⏳ Aștept ${delay}ms...`);
@@ -231,7 +231,7 @@ class ConfigService {
         try {
             // Încearcă să încarce din cache mai întâi
             const cached = this.loadFromCache();
-            
+
             if (cached) {
                 this.updateState({
                     siteConfig: cached.siteConfig,
@@ -247,10 +247,10 @@ class ConfigService {
             // Dacă nu există cache, încarcă din API
             console.log('🌐 Încarcă din API...');
             const siteConfig = await this.loadFromAPI();
-            
+
             if (siteConfig) {
                 const plansConfig = (siteConfig as any)['plans-config'] || null;
-                
+
                 this.updateState({
                     siteConfig,
                     plansConfig,
@@ -288,13 +288,13 @@ class ConfigService {
 
     public updateSiteConfig(siteConfig: SiteConfig): void {
         const plansConfig = (siteConfig as any)['plans-config'] || null;
-        
+
         this.updateState({
             siteConfig,
             plansConfig,
             lastUpdated: Date.now()
         });
-        
+
         this.saveToCache(siteConfig);
         this.emit({ type: 'updated', data: { siteConfig, plansConfig } });
         console.log('✅ Configurație actualizată');
