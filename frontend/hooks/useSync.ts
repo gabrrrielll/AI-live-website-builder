@@ -3,7 +3,7 @@
 import { useCallback } from 'react';
 import { toast } from 'sonner';
 import { uploadConfig, saveConfigLocally } from '@/utils/api';
-import { usePlansConfig } from '@/services/plansService';
+import { usePlansConfig } from '@/context/ConfigProvider';
 import type { SiteConfig } from '@/types';
 import type { Translations } from '@/utils/translations';
 

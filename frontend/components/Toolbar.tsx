@@ -9,14 +9,13 @@ import { toast } from 'sonner';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import { useTestMode } from '@/context/TestModeContext';
-import { usePlansConfig } from '@/services/plansService';
+import { usePlansConfig } from '@/context/ConfigProvider';
 import { useSync } from '@/hooks/useSync';
 
 const Toolbar: React.FC = () => {
   const {
     siteConfig,
     openRebuildModal,
-    saveConfig,
     undo,
     redo,
     canUndo,
@@ -24,14 +23,14 @@ const Toolbar: React.FC = () => {
   } = useSite();
   const { isEditMode, switchToEditMode, switchToViewMode } = useSiteMode();
   const { isTestMode, canUseRebuild, showLimitModal } = useTestMode();
-  const { showSaveButton, showImportExportConfig, isLoaded, plansConfig } = usePlansConfig();
+  const { showSaveButton, showImportExportConfig, isLoading, plansConfig } = usePlansConfig();
 
   // Debug logging pentru butonul de salvare
   React.useEffect(() => {
     console.log('🔧 Toolbar - showSaveButton:', showSaveButton);
-    console.log('🔧 Toolbar - isLoaded:', isLoaded);
+    console.log('🔧 Toolbar - isLoading:', isLoading);
     console.log('🔧 Toolbar - plansConfig:', plansConfig);
-  }, [showSaveButton, isLoaded, plansConfig]);
+  }, [showSaveButton, isLoading, plansConfig]);
   const [showHelp, setShowHelp] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const importInputRef = useRef<HTMLInputElement>(null);
@@ -90,8 +89,6 @@ const Toolbar: React.FC = () => {
   }, [siteConfig]);
 
   const resetToDefaults = () => toast.info('Reset funcționalitate în dezvoltare');
-
-  const isFreeUser = siteConfig?.metadata.userType === 'free';
 
   return (
     <>

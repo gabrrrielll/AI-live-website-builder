@@ -4,7 +4,8 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import type { SiteConfig, SiteElement, Section, Article } from '@/types';
-import { useSiteConfig, useSiteConfigSaver } from '@/hooks/useSiteConfig';
+import { useSiteConfig, useConfig } from '@/context/ConfigProvider';
+import { useSiteConfigSaver } from '@/hooks/useSiteConfig';
 import { useSiteMode } from './SiteModeContext';
 import { useLanguage } from './LanguageContext';
 import { useAI } from '@/hooks/useAI';
@@ -72,6 +73,7 @@ const SiteContext = createContext<SiteContextType | undefined>(undefined);
 
 export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { siteConfig: initialConfig, isLoading, error, retryLoad } = useSiteConfig();
+    const { updateSiteConfig: updateGlobalConfig } = useConfig();
     const { saveToLocalStorage, saveToServer } = useSiteConfigSaver();
     const { isEditMode, currentDomain } = useSiteMode();
     const { language } = useLanguage();
@@ -115,6 +117,9 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log('updateSiteConfig: new sections:', newConfig.sections);
         setSiteConfig(newConfig);
 
+        // Actualizează configurația globală
+        updateGlobalConfig(newConfig);
+
         // Actualizează istoricul doar dacă nu este o operație de undo/redo
         if (!skipHistory) {
             updateHistory(newConfig);
@@ -122,7 +127,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         // Salvează automat în localStorage ÎNTOTDEAUNA pentru persistență
         saveToLocalStorage(newConfig);
-    }, [saveToLocalStorage, updateHistory]);
+    }, [saveToLocalStorage, updateHistory, updateGlobalConfig]);
 
     // Funcție pentru salvarea configurației pe server
     const saveConfig = useCallback(async () => {

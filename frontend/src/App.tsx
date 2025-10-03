@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { ConfigProvider, usePlansConfig } from '@/context/ConfigProvider';
 import { SiteProvider } from '@/context/SiteContext';
 import { SiteModeProvider } from '@/context/SiteModeContext';
 import { LanguageProvider } from '@/context/LanguageContext';
@@ -32,16 +33,26 @@ import EnglishCookiePolicyPage from './pages/en/CookiePolicyPage';
 import EnglishCookieSettingsPage from './pages/en/CookieSettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
 
-// Import utility functions
-import { isSiteEditable } from '@/services/plansService';
+// Componentă pentru UI-ul global care folosește configurația
+const AppUIComponents: React.FC = () => {
+    const { isSiteEditable } = usePlansConfig();
+    
+    return (
+        <>
+            {isSiteEditable && <ModeToggle />}
+            {isSiteEditable && <Toolbar />}
+        </>
+    );
+};
 
 function App() {
     return (
         <ErrorBoundary>
             <LanguageProvider>
                 <TestModeProvider>
-                    <SiteModeProvider>
-                        <SiteProvider>
+                    <ConfigProvider>
+                        <SiteModeProvider>
+                            <SiteProvider>
                             <Routes>
                                 {/* Home page */}
                                 <Route path="/" element={<HomePage />} />
@@ -67,8 +78,7 @@ function App() {
                             </Routes>
 
                             {/* Global UI Components */}
-                            {isSiteEditable() && <ModeToggle />}
-                            {isSiteEditable() && <Toolbar />}
+                            <AppUIComponents />
                             <GDPRBanner />
 
                             {/* Editor Modals */}
@@ -80,7 +90,8 @@ function App() {
 
                             <Toaster richColors position="top-right" closeButton />
                         </SiteProvider>
-                    </SiteModeProvider>
+                        </SiteModeProvider>
+                    </ConfigProvider>
                 </TestModeProvider>
             </LanguageProvider>
             <ServiceWorkerRegistrar />

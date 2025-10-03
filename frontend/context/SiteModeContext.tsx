@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { isSiteEditable, initializePlansConfig } from '@/services/plansService';
+import { usePlansConfig } from '@/context/ConfigProvider';
 
 type SiteMode = 'edit' | 'view';
 
@@ -22,18 +22,18 @@ export function SiteModeProvider({ children }: { children: React.ReactNode }) {
     const [currentDomain, setCurrentDomain] = useState<string>('');
     const location = useLocation();
     const navigate = useNavigate();
+    const { isSiteEditable, loadConfig } = usePlansConfig();
 
     useEffect(() => {
         // Detectează domeniul curent
         const domain = window.location.hostname;
         setCurrentDomain(domain);
 
-        // Inițializează plansConfig și verifică dacă site-ul poate fi editat
+        // Încarcă configurația și verifică dacă site-ul poate fi editat
         const initializeAndCheck = async () => {
-            await initializePlansConfig();
-            const editable = isSiteEditable();
-
-            if (!editable) {
+            await loadConfig();
+            
+            if (!isSiteEditable) {
                 // Dacă site-ul nu este editabil, forțează modul view
                 setMode('view');
                 return;
@@ -56,7 +56,7 @@ export function SiteModeProvider({ children }: { children: React.ReactNode }) {
 
     const switchToEditMode = () => {
         // Verifică dacă site-ul poate fi editat
-        if (!isSiteEditable()) {
+        if (!isSiteEditable) {
             return; // Nu permite trecerea în modul edit dacă site-ul nu este editabil
         }
 
