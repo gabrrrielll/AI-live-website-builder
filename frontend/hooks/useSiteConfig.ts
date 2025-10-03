@@ -13,25 +13,31 @@ export function useSiteConfig() {
     const [retryCount, setRetryCount] = useState(0);
 
     useEffect(() => {
+        console.log('🔄 useSiteConfig useEffect apelat, retryCount:', retryCount);
+        
         const loadSiteConfig = async () => {
             try {
+                console.log('🔄 useSiteConfig: Începe încărcarea...');
                 setIsLoading(true);
                 setError(null);
 
                 // Folosește serviciul pentru încărcarea configurației
                 const config = await siteConfigService.loadSiteConfig();
+                console.log('🔄 useSiteConfig: Rezultat din siteConfigService:', config ? 'SUCCESS' : 'NULL');
 
                 if (config) {
                     setSiteConfig(config);
-                    console.log('Configurația încărcată cu succes prin serviciu');
+                    console.log('✅ Configurația încărcată cu succes prin serviciu');
                 } else {
+                    console.log('❌ Configurația este null, setează eroarea');
                     setError('Failed to load site configuration');
                 }
             } catch (err) {
-                console.error('Error loading site config:', err);
+                console.error('💥 Error loading site config:', err);
                 setError('Failed to load site configuration');
             } finally {
                 setIsLoading(false);
+                console.log('🏁 useSiteConfig: isLoading setat pe false');
             }
         };
 

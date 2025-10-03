@@ -53,19 +53,22 @@ class SiteConfigServiceImpl implements SiteConfigService {
     }
 
     async loadSiteConfig(): Promise<SiteConfig | null> {
+        console.log('🚀 loadSiteConfig() apelat');
+        
         // Previne multiple încărcări simultane
         if (this.isLoading) {
-            console.log('Încărcare deja în desfășurare, aștept...');
+            console.log('⏳ Încărcare deja în desfășurare, aștept...');
             return this.cachedConfig;
         }
 
         try {
             this.isLoading = true;
+            console.log('🔄 Începe încărcarea site-config...');
 
             // Verifică cache-ul din localStorage pentru performanță
             // În localhost, forțează încărcarea din API pentru a obține plans-config actualizat
             const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-            
+
             if (typeof window !== 'undefined' && !isLocalhost) {
                 const localConfig = localStorage.getItem('site-config');
                 if (localConfig) {
@@ -84,16 +87,21 @@ class SiteConfigServiceImpl implements SiteConfigService {
             console.log('🌐 isLocalhost:', isLocalhost);
             console.log('🌐 import.meta.env.MODE:', import.meta.env.MODE);
             console.log('🌐 import.meta.env.VITE_EDITOR_URL:', import.meta.env.VITE_EDITOR_URL);
-            
+
             const result = await this.loadFromUrlWithRetry(configUrl);
             console.log('🌐 Rezultat încărcare din API:', result ? 'SUCCESS' : 'FAILED');
             return result;
         } catch (error) {
-            console.error('Eroare la încărcarea site-config din API:', error);
+            console.error('💥 Eroare la încărcarea site-config din API:', error);
+            console.error('💥 Error type:', typeof error);
+            console.error('💥 Error message:', error.message);
+            console.error('💥 Error stack:', error.stack);
         } finally {
             this.isLoading = false;
+            console.log('🏁 loadSiteConfig() finalizat, isLoading = false');
         }
 
+        console.log('❌ loadSiteConfig() returnează null');
         return null;
     }
 
