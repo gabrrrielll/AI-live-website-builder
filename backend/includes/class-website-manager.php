@@ -183,11 +183,22 @@ class AI_Web_Site_Website_Manager
         $nonce = $headers['X-WP-Nonce'] ?? $headers['x-wp-nonce'] ?? '';
         error_log('AI-WEB-SITE: Nonce received: ' . $nonce);
 
-        // Pentru localhost/testare cu nonce de testare, sărim verificarea de autentificare
+        // SECURITATE: Verificare test-nonce DOAR pentru localhost
         if ($nonce === 'test-nonce-12345') {
-            // Log pentru debugging
-            error_log('AI-WEB-SITE: ✅ TEST NONCE ACCEPTED - Skipping authentication');
-            return true;
+            // Obține Origin header pentru verificare
+            $origin = $headers['Origin'] ?? $headers['origin'] ?? '';
+            error_log('AI-WEB-SITE: Test nonce detected - checking Origin: ' . $origin);
+            
+            // ✅ Acceptă test-nonce DOAR dacă vine din localhost
+            if (strpos($origin, 'localhost') !== false || strpos($origin, '127.0.0.1') !== false) {
+                error_log('AI-WEB-SITE: ✅ LOCALHOST REQUEST - Test nonce accepted for development');
+                return true;
+            } else {
+                // ❌ În production, test-nonce este INVALID - securitate breach attempt!
+                error_log('AI-WEB-SITE: ❌ SECURITY ALERT - Test nonce from non-localhost origin rejected!');
+                error_log('AI-WEB-SITE: ❌ Suspicious origin: ' . $origin);
+                return new WP_Error('invalid_nonce', 'Invalid security token - development nonce not allowed in production', array('status' => 403));
+            }
         }
 
         if (!is_user_logged_in()) {
