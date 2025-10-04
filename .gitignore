@@ -59,3 +59,8 @@ coverage/
 
 # TypeScript
 *.tsbuildinfo
+
+# Deprecated folders (removed from project structure)
+# These folders should NOT exist - if recreated accidentally, Git will ignore them
+backend/
+wordpress/
