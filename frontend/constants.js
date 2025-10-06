@@ -71,13 +71,36 @@ function getCurrentSubdomain() {
 }
 
 // Funcție pentru a determina dacă site-ul este editabil
-// Site-ul este editabil DOAR pe editor.ai-web.site
+// Site-ul este editabil DOAR pe localhost și editor.ai-web.site
 function isSiteEditable() {
     // Verifică dacă suntem în browser
     if (typeof window === 'undefined') {
         return false;
     }
+    
+    return getAppMode() === 'EDITOR';
+}
 
+// Funcție pentru a determina dacă butoanele Import/Export trebuie afișate
+// Acestea sunt disponibile DOAR pe localhost pentru development
+function showImportExport() {
+    // Verifică dacă suntem în browser
+    if (typeof window === 'undefined') {
+        return false;
+    }
+    
+    const hostname = window.location.hostname;
+    return hostname === 'localhost';
+}
+
+// Funcție pentru a determina dacă trebuie folosit localStorage
+// localStorage se folosește DOAR în modul EDITOR (localhost + editor.ai-web.site)
+function useLocalStorage() {
+    // Verifică dacă suntem în browser
+    if (typeof window === 'undefined') {
+        return false;
+    }
+    
     return getAppMode() === 'EDITOR';
 }
 
@@ -89,7 +112,9 @@ if (typeof module !== 'undefined' && module.exports) {
         APP_CONFIG,
         getAppMode,
         getCurrentSubdomain,
-        isSiteEditable
+        isSiteEditable,
+        showImportExport,
+        useLocalStorage
     };
 }
 
@@ -107,7 +132,9 @@ if (typeof window !== 'undefined' || typeof global !== 'undefined') {
     globalThis.getAppMode = getAppMode;
     globalThis.getCurrentSubdomain = getCurrentSubdomain;
     globalThis.isSiteEditable = isSiteEditable;
+    globalThis.showImportExport = showImportExport;
+    globalThis.useLocalStorage = useLocalStorage;
 }
 
 // Pentru compatibilitate cu import ES6
-export { API_CONFIG, SITE_CONFIG_API_URL, APP_CONFIG, getAppMode, getCurrentSubdomain, isSiteEditable };
+export { API_CONFIG, SITE_CONFIG_API_URL, APP_CONFIG, getAppMode, getCurrentSubdomain, isSiteEditable, showImportExport, useLocalStorage };

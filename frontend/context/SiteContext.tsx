@@ -13,6 +13,7 @@ import { translations } from '@/utils/translations';
 import { toast } from 'sonner';
 import { useHistory } from '@/hooks/useHistory';
 import { slugify } from '@/utils/slugify';
+import { useLocalStorage as shouldUseLocalStorage } from '@/constants.js';
 
 interface SiteContextType {
     siteConfig: SiteConfig | null;
@@ -108,8 +109,13 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, [initialConfig, initializeHistory, isLoading, error]);
 
-    // Salvează configurația în localStorage când se trece în mod editare
+    // Salvează configurația în localStorage când se trece în mod editare (doar în modul EDITOR)
     useEffect(() => {
+        // Verifică dacă trebuie să folosim localStorage (doar pentru EDITOR mode)
+        if (!shouldUseLocalStorage()) {
+            return; // Skip localStorage pentru VIEWER/ADMIN mode
+        }
+
         // Așteptăm ca configurația să se încarce complet și să fim în mod editare
         if (siteConfig && isEditMode && !isLoading) {
             const hasLocalConfig = localStorage.getItem('site-config') !== null;
@@ -135,8 +141,10 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
             updateHistory(newConfig);
         }
 
-        // Salvează automat în localStorage ÎNTOTDEAUNA pentru persistență
-        saveToLocalStorage(newConfig);
+        // Salvează automat în localStorage DOAR în modul EDITOR
+        if (shouldUseLocalStorage()) {
+            saveToLocalStorage(newConfig);
+        }
     }, [saveToLocalStorage, updateHistory, updateGlobalConfig]);
 
     // Funcție pentru salvarea configurației pe server

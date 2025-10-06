@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import type { SiteConfig } from '@/types';
 import { siteConfigService } from '@/services/siteConfigService';
-import { SITE_CONFIG_API_URL } from '@/constants.js';
+import { SITE_CONFIG_API_URL, useLocalStorage as shouldUseLocalStorage } from '@/constants.js';
 
 // Hook pentru încărcarea configurației site-ului
 export function useSiteConfig() {
@@ -55,6 +55,12 @@ export function useSiteConfig() {
 // Hook pentru salvarea configurației site-ului
 export function useSiteConfigSaver() {
     const saveToLocalStorage = useCallback((config: SiteConfig): boolean => {
+        // Salvează în localStorage DOAR în modul EDITOR
+        if (!shouldUseLocalStorage()) {
+            console.log('localStorage disabled for VIEWER/ADMIN mode');
+            return false;
+        }
+
         try {
             localStorage.setItem('site-config', JSON.stringify(config));
             console.log('Configurația salvată în localStorage');

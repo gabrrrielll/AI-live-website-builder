@@ -2,7 +2,6 @@ import { API_CONFIG } from '@/constants.js';
 import type { SiteConfig } from '@/types';
 
 export interface PlansConfig {
-    show_import_export_config: boolean;
     useLocal_site_config: boolean;
     show_save_button: boolean;
     services: Record<string, any>;

@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { usePlansConfig } from '@/context/ConfigProvider';
+import { useLocalStorage as shouldUseLocalStorage } from '@/constants.js';
 
 type SiteMode = 'edit' | 'view';
 
@@ -42,10 +43,12 @@ export function SiteModeProvider({ children }: { children: React.ReactNode }) {
 
         initializeAndCheck().catch(console.error);
 
-        // Detectează modul bazat pe URL sau localStorage
+        // Detectează modul bazat pe URL sau localStorage (doar în modul EDITOR)
         const urlParams = new URLSearchParams(location.search);
         const editMode = urlParams.get('edit') === 'true';
-        const hasLocalConfig = localStorage.getItem('site-config') !== null;
+        
+        // Verifică localStorage DOAR dacă suntem în modul EDITOR
+        const hasLocalConfig = shouldUseLocalStorage() && localStorage.getItem('site-config') !== null;
 
         if (editMode || hasLocalConfig) {
             setMode('edit');

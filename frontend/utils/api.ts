@@ -1,7 +1,7 @@
 "use client";
 
 import type { SiteConfig } from '@/types';
-import { getCurrentSubdomain } from '@/constants.js';
+import { getCurrentSubdomain, useLocalStorage as shouldUseLocalStorage } from '@/constants.js';
 // EmailJS now handled by backend service
 
 // Funcție pentru obținerea nonce-ului WordPress (ETAPA 1)
@@ -40,8 +40,10 @@ async function getWordPressNonce(): Promise<string> {
 // Save site configuration locally to public folder
 export const saveConfigLocally = async (config: SiteConfig): Promise<{ success: boolean }> => {
   try {
-    // Save to localStorage first (this is what the app uses)
-    localStorage.setItem('site-config', JSON.stringify(config));
+    // Save to localStorage first (this is what the app uses) - DOAR în modul EDITOR
+    if (shouldUseLocalStorage()) {
+      localStorage.setItem('site-config', JSON.stringify(config));
+    }
 
     // Create a downloadable file with the site configuration
     const configJson = JSON.stringify(config, null, 2);
@@ -63,9 +65,11 @@ export const saveConfigLocally = async (config: SiteConfig): Promise<{ success: 
     return { success: true };
   } catch (error) {
     console.error('Eroare la salvarea locală:', error);
-    // Fallback: save to localStorage even if download fails
-    localStorage.setItem('site-config', JSON.stringify(config));
-    console.log('Configurația a fost salvată în localStorage ca fallback');
+    // Fallback: save to localStorage even if download fails - DOAR în modul EDITOR
+    if (shouldUseLocalStorage()) {
+      localStorage.setItem('site-config', JSON.stringify(config));
+      console.log('Configurația a fost salvată în localStorage ca fallback');
+    }
     return { success: true };
   }
 };
