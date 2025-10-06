@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { configService, type ConfigState, type ConfigEvent } from '@/services/ConfigService';
 import type { SiteConfig } from '@/types';
+import { isSiteEditable } from '@/constants.js';
 
 interface ConfigContextType {
     // State
@@ -154,7 +155,7 @@ export const usePlansConfig = () => {
         // Convenience getters
         showSaveButton: plansConfig?.show_save_button || false,
         showImportExportConfig: plansConfig?.show_import_export_config || false,
-        isSiteEditable: plansConfig?.isEditable || false,
+        isSiteEditable: isSiteEditable(), // Uses hostname check (editor.ai-web.site)
         useLocalSiteConfig: plansConfig?.['useLocal_site-config'] === true
     };
 };

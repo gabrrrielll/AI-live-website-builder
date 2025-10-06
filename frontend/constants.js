@@ -70,6 +70,17 @@ function getCurrentSubdomain() {
     return null;
 }
 
+// Funcție pentru a determina dacă site-ul este editabil
+// Site-ul este editabil DOAR pe editor.ai-web.site
+function isSiteEditable() {
+    // Verifică dacă suntem în browser
+    if (typeof window === 'undefined') {
+        return false;
+    }
+    
+    return getAppMode() === 'EDITOR';
+}
+
 // Export pentru Node.js (CommonJS)
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
@@ -77,7 +88,8 @@ if (typeof module !== 'undefined' && module.exports) {
         SITE_CONFIG_API_URL,
         APP_CONFIG,
         getAppMode,
-        getCurrentSubdomain
+        getCurrentSubdomain,
+        isSiteEditable
     };
 }
 
@@ -94,7 +106,8 @@ if (typeof window !== 'undefined' || typeof global !== 'undefined') {
     globalThis.APP_CONFIG = APP_CONFIG;
     globalThis.getAppMode = getAppMode;
     globalThis.getCurrentSubdomain = getCurrentSubdomain;
+    globalThis.isSiteEditable = isSiteEditable;
 }
 
 // Pentru compatibilitate cu import ES6
-export { API_CONFIG, SITE_CONFIG_API_URL, APP_CONFIG, getAppMode, getCurrentSubdomain };
+export { API_CONFIG, SITE_CONFIG_API_URL, APP_CONFIG, getAppMode, getCurrentSubdomain, isSiteEditable };

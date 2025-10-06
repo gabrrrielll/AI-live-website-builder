@@ -240,23 +240,6 @@ export const getUsageStats = (): Record<string, { used: number; left: number; li
     return stats;
 };
 
-// Verifică dacă site-ul poate fi editat
-export const isSiteEditable = (): boolean => {
-    // Pe localhost, implicit este editabil (pentru development)
-    const domainType = getDomainType();
-    if (domainType === 'localhost') {
-        return true;
-    }
-
-    // Pentru alte domenii, verifică configurația
-    // Dacă plansConfig nu este încă încărcat, returnează false
-    if (!isPlansConfigLoaded) {
-        return false;
-    }
-
-    return plansConfig?.isEditable || false;
-};
-
 // Verifică dacă butoanele de import/export configurație trebuie afișate
 export const showImportExportConfig = (): boolean => {
     // Dacă plansConfig nu este încă încărcat, returnează false
@@ -285,42 +268,5 @@ export const initializePlansConfig = async (): Promise<void> => {
     await loadPlansConfig();
 };
 
-// Hook pentru a aștepta încărcarea plansConfig
-export const usePlansConfig = () => {
-    const [isLoaded, setIsLoaded] = React.useState(isPlansConfigLoaded);
-
-    React.useEffect(() => {
-        if (isPlansConfigLoaded) {
-            setIsLoaded(true);
-            return;
-        }
-
-        // Adaugă listener pentru notificarea când plansConfig este încărcat
-        const listener = () => setIsLoaded(true);
-        plansConfigListeners.push(listener);
-
-        // Încarcă plansConfig dacă nu este deja încărcat
-        loadPlansConfig();
-
-        return () => {
-            // Elimină listener-ul când componenta se dezactivează
-            const index = plansConfigListeners.indexOf(listener);
-            if (index > -1) {
-                plansConfigListeners.splice(index, 1);
-            }
-        };
-    }, []);
-
-    const result = {
-        isLoaded,
-        plansConfig,
-        showSaveButton: plansConfig?.show_save_button || false,
-        showImportExportConfig: plansConfig?.show_import_export_config || false,
-        isSiteEditable: plansConfig?.isEditable || false,
-        useLocalSiteConfig: plansConfig?.['useLocal_site-config'] === true
-    };
-
-    console.log('🔍 usePlansConfig hook result:', result);
-
-    return result;
-};
+// NOTE: usePlansConfig hook removed - use ConfigProvider's usePlansConfig instead
+// This avoids code duplication and centralizes configuration management
