@@ -64,3 +64,6 @@ coverage/
 # These folders should NOT exist - if recreated accidentally, Git will ignore them
 backend/
 wordpress/
+
+# Temporary plugins (local development only)
+temp_plugins/indeed-membership-pro/
