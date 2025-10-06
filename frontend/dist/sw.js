@@ -1,1 +1,87 @@
-if(!self.define){let e,s={};const i=(i,n)=>(i=new URL(i+".js",n).href,s[i]||new Promise(s=>{if("document"in self){const e=document.createElement("script");e.src=i,e.onload=s,document.head.appendChild(e)}else e=i,importScripts(i),s()}).then(()=>{let e=s[i];if(!e)throw new Error(`Module ${i} didn’t register its module`);return e}));self.define=(n,r)=>{const l=e||("document"in self?document.currentScript.src:"")||location.href;if(s[l])return;let t={};const o=e=>i(e,l),u={module:{uri:l},exports:t,require:o};s[l]=Promise.all(n.map(e=>u[e]||o(e))).then(e=>(r(...e),t))}}define(["./workbox-1ea6f077"],function(e){"use strict";self.skipWaiting(),e.clientsClaim(),e.precacheAndRoute([{url:"assets/imageGenerationService-B1-kk8vn.js",revision:null},{url:"assets/index-7jR05SId.js",revision:null},{url:"assets/index-BtVZSIJR.css",revision:null},{url:"assets/radix-ui-dMZRe3IE.js",revision:null},{url:"assets/react-vendor-jggwe9L9.js",revision:null},{url:"assets/router-DHJQYTBc.js",revision:null},{url:"assets/seo-CxLpKfYs.js",revision:null},{url:"assets/siteConfigService-C2AI5Mc2.js",revision:null},{url:"assets/ui-components-BAiaw5Su.js",revision:null},{url:"assets/utils-Bhdrgjh4.js",revision:null},{url:"assets/validation-l0sNRNKZ.js",revision:null},{url:"dist/sw.dev.js",revision:"300fdb614025e3487aca4658f827012e"},{url:"dist/sw.min.js",revision:"f5f72e03572e1b4bb06bd9785861f283"},{url:"favicon.svg",revision:"3bc2cf709aa3edeee8019e1bbe8eda29"},{url:"index.html",revision:"931b35e5d7009662c614773afd47bf8e"},{url:"registerSW.js",revision:"1872c500de691dce40960bb85481de07"},{url:"favicon.svg",revision:"3bc2cf709aa3edeee8019e1bbe8eda29"},{url:"manifest.webmanifest",revision:"4c0d5528c1009bf025ba1425b9428908"}],{}),e.cleanupOutdatedCaches(),e.registerRoute(new e.NavigationRoute(e.createHandlerBoundToURL("index.html"))),e.registerRoute(/^https:\/\/bibic\.ro\/api\//,new e.NetworkFirst({cacheName:"api-cache",plugins:[new e.ExpirationPlugin({maxEntries:100,maxAgeSeconds:86400})]}),"GET")});
+const CACHE_NAME = 'ai-website-editor-v1';
+// This list should be expanded with actual bundled assets in a real build process.
+const urlsToCache = [
+  '/',
+  '/index.html'
+  // Removed '/site-config.json' - no longer cached as static file
+];
+
+self.addEventListener('install', event => {
+  self.skipWaiting(); // Activate worker immediately
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        return cache.addAll(urlsToCache);
+      })
+      .catch(error => {
+        console.error('Cache installation failed:', error);
+      })
+  );
+});
+
+self.addEventListener('fetch', event => {
+  // We only want to cache GET requests.
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
+  event.respondWith(
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.match(event.request).then(response => {
+        // Return the cached response if it exists.
+        if (response) {
+          return response;
+        }
+
+        // If the request is not in the cache, fetch it from the network.
+        return fetch(event.request).then(networkResponse => {
+          // Don't cache third-party API requests (e.g., Gemini, Unsplash, Tailwind CDN)
+          if (!event.request.url.startsWith(self.location.origin)) {
+            return networkResponse;
+          }
+
+          // Also, don't cache responses that are not OK.
+          if (networkResponse && networkResponse.status === 200) {
+            // Clone the response because it's a one-time-use stream.
+            cache.put(event.request, networkResponse.clone());
+          }
+
+          return networkResponse;
+        }).catch(error => {
+          console.error('Fetch failed:', error);
+          // Return a fallback response or rethrow
+          throw error;
+        });
+      });
+    }).catch(error => {
+      console.error('Cache operation failed:', error);
+      // Fallback to network request
+      return fetch(event.request);
+    })
+  );
+});
+
+// Clean up old caches on activation
+self.addEventListener('activate', event => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    }).catch(error => {
+      console.error('Cache cleanup failed:', error);
+    })
+  );
+});
+
+// Handle message events properly
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
