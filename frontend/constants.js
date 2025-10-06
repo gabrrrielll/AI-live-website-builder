@@ -77,7 +77,7 @@ function isSiteEditable() {
     if (typeof window === 'undefined') {
         return false;
     }
-    
+
     return getAppMode() === 'EDITOR';
 }
 
@@ -88,7 +88,7 @@ function showImportExport() {
     if (typeof window === 'undefined') {
         return false;
     }
-    
+
     const hostname = window.location.hostname;
     return hostname === 'localhost';
 }
@@ -100,7 +100,7 @@ function useLocalStorage() {
     if (typeof window === 'undefined') {
         return false;
     }
-    
+
     return getAppMode() === 'EDITOR';
 }
 
