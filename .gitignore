@@ -67,3 +67,4 @@ wordpress/
 
 # Temporary plugins (local development only)
 temp_plugins/indeed-membership-pro/
+frontend/dist/

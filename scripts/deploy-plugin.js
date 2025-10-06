@@ -55,7 +55,7 @@ function ensurePluginRepo() {
 
     // Actualizează repository-ul plugin
     log('🔄 Updating plugin repository...', 'blue');
-    runCommand('git pull origin master', PLUGIN_DEPLOY_CONFIG.publicRepoPath);
+    runCommand('git pull origin main', PLUGIN_DEPLOY_CONFIG.publicRepoPath);
 }
 
 function commitAndPushPlugin() {
@@ -81,7 +81,7 @@ function commitAndPushPlugin() {
     runCommand(`git commit -m "${commitMessage}"`, PLUGIN_DEPLOY_CONFIG.publicRepoPath);
 
     log('🚀 Pushing plugin to GitHub...', 'blue');
-    runCommand('git push origin master', PLUGIN_DEPLOY_CONFIG.publicRepoPath);
+    runCommand('git push origin main', PLUGIN_DEPLOY_CONFIG.publicRepoPath);
 
     log('✅ Successfully pushed plugin to public repository!', 'green');
 }

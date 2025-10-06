@@ -87,6 +87,17 @@ function copyBuildFiles() {
 function commitAndPush() {
     log('📝 Committing changes...', 'blue');
 
+    // Verifică dacă sunt modificări
+    try {
+        const status = runCommand('git status --porcelain', DEPLOY_CONFIG.publicRepoPath);
+        if (!status.trim()) {
+            log('ℹ️  No changes to commit', 'yellow');
+            return;
+        }
+    } catch (error) {
+        log('⚠️  Could not check git status, proceeding with commit...', 'yellow');
+    }
+
     // Adaugă toate fișierele
     runCommand('git add .', DEPLOY_CONFIG.publicRepoPath);
 
