@@ -49,8 +49,8 @@ const APP_CONFIG = {
 function getAppMode() {
     const hostname = window.location.hostname;
 
-    if (hostname === 'editor.ai-web.site') {
-        return 'EDITOR'; // Modul editare
+    if (hostname === 'localhost' || hostname === 'editor.ai-web.site') {
+        return 'EDITOR'; // Modul editare (localhost + editor subdomain)
     } else if (hostname === 'admin.ai-web.site') {
         return 'ADMIN'; // Modul administrare
     } else {
@@ -77,7 +77,7 @@ function isSiteEditable() {
     if (typeof window === 'undefined') {
         return false;
     }
-    
+
     return getAppMode() === 'EDITOR';
 }
 
