@@ -1,6 +1,6 @@
-[submodule "ai-web-site-dist/ai-web-site-dist"]
-	path = ai-web-site-dist/ai-web-site-dist
-	url = https://github.com/gabrrrielll/ai-web-site-dist.git
 [submodule "ai-web-site-dist"]
 	path = ai-web-site-dist
 	url = https://github.com/gabrrrielll/ai-web-site-dist.git
+[submodule "ai-web-site-plugin"]
+	path = ai-web-site-plugin
+	url = https://github.com/gabrrrielll/ai-web-site-plugin.git
