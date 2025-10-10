@@ -1,5 +1,6 @@
-import { API_CONFIG } from '@/constants.js';
+import { API_CONFIG, APP_CONFIG } from '@/constants.js';
 import type { SiteConfig } from '@/types';
+import { localStorageService } from './localStorageService';
 
 export interface PlansConfig {
     useLocal_site_config: boolean;
@@ -80,68 +81,40 @@ class ConfigService {
     }
 
     private saveToCache(siteConfig: SiteConfig): void {
-        if (typeof window === 'undefined') return;
-
-        try {
-            const cacheData = {
-                siteConfig,
-                plansConfig: (siteConfig as any)['plans-config'] || null,
-                timestamp: Date.now()
-            };
-            localStorage.setItem(this.getCacheKey(), JSON.stringify(cacheData));
-            console.log('💾 Configurație salvată în cache');
-        } catch (error) {
-            console.warn('❌ Eroare la salvarea în cache:', error);
+        // Folosește noul serviciu localStorage cu restricții de domeniu
+        const success = localStorageService.saveSiteConfig(siteConfig);
+        if (success) {
+            console.log('💾 Configurație salvată în cache prin LocalStorageService');
+        } else {
+            console.log('💾 Configurația nu a fost salvată - domeniu nepermis sau eroare');
         }
     }
 
     private loadFromCache(): { siteConfig: SiteConfig; plansConfig: PlansConfig | null } | null {
-        if (typeof window === 'undefined') return null;
+        // Folosește noul serviciu localStorage cu restricții de domeniu
+        const siteConfig = localStorageService.loadSiteConfig();
 
-        try {
-            console.log('🔍 loadFromCache: Citesc din localStorage...');
-            const cached = localStorage.getItem(this.getCacheKey());
-
-            if (!cached) {
-                console.log('ℹ️ loadFromCache: Nu există cache');
-                return null;
-            }
-
-            console.log('📦 loadFromCache: Cache găsit, lungime:', cached.length);
-            console.log('📦 loadFromCache: Primele 200 caractere:', cached.substring(0, 200));
-
-            const parsed = JSON.parse(cached) as { siteConfig: SiteConfig; plansConfig: PlansConfig | null; timestamp: number };
-            console.log('✅ loadFromCache: JSON parsat cu succes');
-
-            const { siteConfig, plansConfig, timestamp } = parsed;
-
-            console.log('🔍 loadFromCache: siteConfig exists:', !!siteConfig);
-            console.log('🔍 loadFromCache: plansConfig exists:', !!plansConfig);
-            console.log('🔍 loadFromCache: timestamp:', new Date(timestamp).toISOString());
-
-            // Verifică dacă cache-ul nu este prea vechi (24 ore)
-            const maxAge = 24 * 60 * 60 * 1000; // 24 ore
-            const age = Date.now() - timestamp;
-            console.log('🔍 loadFromCache: Cache age (hours):', (age / (60 * 60 * 1000)).toFixed(2));
-
-            if (age > maxAge) {
-                console.log('⏰ Cache expirat, va fi încărcat din API');
-                return null;
-            }
-
-            console.log('✅ Configurație încărcată din cache (valid)');
-            return { siteConfig, plansConfig };
-        } catch (error) {
-            console.error('❌ Eroare la încărcarea din cache:', error);
-            console.error('❌ Tip eroare:', error instanceof Error ? error.message : String(error));
+        if (!siteConfig) {
+            console.log('🔍 loadFromCache: Nu există configurație în localStorage');
             return null;
         }
+
+        const plansConfig = siteConfig['plans-config'] || null;
+        console.log('✅ loadFromCache: Configurație încărcată din localStorage prin LocalStorageService');
+        console.log('🔍 loadFromCache: siteConfig exists:', !!siteConfig);
+        console.log('🔍 loadFromCache: plansConfig exists:', !!plansConfig);
+
+        return { siteConfig, plansConfig };
     }
 
     private clearCache(): void {
-        if (typeof window === 'undefined') return;
-        localStorage.removeItem(this.getCacheKey());
-        console.log('🗑️ Cache șters');
+        // Folosește noul serviciu localStorage cu restricții de domeniu
+        const success = localStorageService.clearSiteConfig();
+        if (success) {
+            console.log('🗑️ Cache șters prin LocalStorageService');
+        } else {
+            console.log('🗑️ Cache-ul nu a fost șters - domeniu nepermis sau eroare');
+        }
     }
 
     // URL management
@@ -160,6 +133,45 @@ class ConfigService {
         const apiUrl = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.WORDPRESS_REST}/${currentDomain}`;
         console.log('🌐 Production mode - URL:', apiUrl);
         return apiUrl;
+    }
+
+    private getLocalConfigUrl(): string {
+        // Construiește calea către fișierul local
+        const localFileUrl = `${(import.meta as any).env.BASE_URL || '/'}site-config.json`;
+        return localFileUrl;
+    }
+
+    // Local file loading
+    private async loadFromLocalFile(): Promise<SiteConfig | null> {
+        try {
+            const localFileUrl = this.getLocalConfigUrl();
+            console.log('📁 URL fișier local:', localFileUrl);
+
+            const response = await fetch(localFileUrl, {
+                cache: 'no-store',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const config = await response.json();
+                console.log('✅ Configurația încărcată din fișier local');
+                console.log('🔍 Plans-config prezent:', config['plans-config'] ? 'DA' : 'NU');
+                if (config['plans-config']) {
+                    console.log('🔍 Plans-config conținut:', config['plans-config']);
+                    console.log('🔍 show_save_button:', config['plans-config'].show_save_button);
+                }
+                return config;
+            } else {
+                console.error(`❌ Eroare la încărcarea fișierului local (${response.status}): ${response.statusText}`);
+                return null;
+            }
+        } catch (error) {
+            console.error('❌ Eroare la încărcarea din fișier local:', error);
+            return null;
+        }
     }
 
     // API calls
@@ -185,12 +197,23 @@ class ConfigService {
                 clearTimeout(timeoutId);
 
                 if (response.ok) {
-                    const siteConfig = await response.json();
+                    console.log('📥 Răspuns OK primit, încerc să parsez JSON...');
+                    const responseText = await response.text();
+                    console.log('📥 Response text length:', responseText.length);
+                    console.log('📥 Response text preview:', responseText.substring(0, 200) + '...');
+
+                    if (!responseText.trim()) {
+                        console.error('❌ Răspunsul este gol!');
+                        return null;
+                    }
+
+                    const siteConfig = JSON.parse(responseText);
                     console.log('✅ Configurație încărcată din API');
+                    console.log('🔍 Config keys:', Object.keys(siteConfig));
 
                     // plansConfig este extras din site-config în loadConfig()
 
-                    // Salvează în cache
+                    // Salvează în cache prin LocalStorageService
                     this.saveToCache(siteConfig);
 
                     return siteConfig;
@@ -283,29 +306,63 @@ class ConfigService {
                 console.log('ℹ️ Nu există cache');
             }
 
-            // Dacă nu există cache sau este invalid, încarcă din API
-            console.log('🌐 Încarcă din API...');
-            const siteConfig = await this.loadFromAPI();
+            // Verifică dacă trebuie să încarce din fișier local sau din API
+            const useLocalConfig = APP_CONFIG.SITE_CONFIG_LOADING.useLocal_site_config;
+            console.log('🔧 useLocal_site_config:', useLocalConfig);
 
-            if (siteConfig) {
-                const plansConfig = (siteConfig as any)['plans-config'] || null;
+            if (useLocalConfig) {
+                // Încarcă din fișierul local public/site-config.json
+                console.log('📁 Încarcă din fișier local...');
+                const siteConfig = await this.loadFromLocalFile();
 
-                this.updateState({
-                    siteConfig,
-                    plansConfig,
-                    isLoading: false,
-                    error: null,
-                    lastUpdated: Date.now()
-                });
-                this.isInitialized = true; // Marchează ca inițializat
-                this.emit({ type: 'loaded', data: { siteConfig, plansConfig } });
-                console.log('✅ Configurație încărcată din API + INITIALIZED');
+                if (siteConfig) {
+                    // Extrage plans-config din site-config
+                    const plansConfig = siteConfig['plans-config'] || null;
+
+                    this.updateState({
+                        siteConfig,
+                        plansConfig,
+                        isLoading: false,
+                        lastUpdated: Date.now()
+                    });
+                    this.isInitialized = true;
+                    this.emit({ type: 'loaded', data: { siteConfig, plansConfig } });
+                    console.log('✅ Configurație încărcată din fișier local + INITIALIZED');
+                    return;
+                } else {
+                    console.error('❌ Nu s-a putut încărca configurația din fișier local');
+                    this.updateState({
+                        isLoading: false,
+                        error: 'Failed to load configuration from local file'
+                    });
+                    this.emit({ type: 'error', error: 'Failed to load configuration from local file' });
+                    return;
+                }
             } else {
-                this.updateState({
-                    isLoading: false,
-                    error: 'Nu s-a putut încărca configurația'
-                });
-                this.emit({ type: 'error', error: 'Nu s-a putut încărca configurația' });
+                // Dacă nu există cache sau este invalid, încarcă din API
+                console.log('🌐 Încarcă din API...');
+                const siteConfig = await this.loadFromAPI();
+
+                if (siteConfig) {
+                    const plansConfig = (siteConfig as any)['plans-config'] || null;
+
+                    this.updateState({
+                        siteConfig,
+                        plansConfig,
+                        isLoading: false,
+                        error: null,
+                        lastUpdated: Date.now()
+                    });
+                    this.isInitialized = true; // Marchează ca inițializat
+                    this.emit({ type: 'loaded', data: { siteConfig, plansConfig } });
+                    console.log('✅ Configurație încărcată din API + INITIALIZED');
+                } else {
+                    this.updateState({
+                        isLoading: false,
+                        error: 'Nu s-a putut încărca configurația'
+                    });
+                    this.emit({ type: 'error', error: 'Nu s-a putut încărca configurația' });
+                }
             }
         } catch (error) {
             console.error('💥 Eroare la încărcarea configurației:', error);

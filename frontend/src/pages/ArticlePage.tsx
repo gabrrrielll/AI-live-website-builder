@@ -12,6 +12,7 @@ import { ChevronRight, Home } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { Article, SiteConfig } from '@/types';
 import { SITE_CONFIG_API_URL } from '@/constants.js';
+import { localStorageService } from '@/services/localStorageService';
 
 const ArticlePage: React.FC = () => {
     const { slug } = useParams<{ slug: string }>();
@@ -33,10 +34,10 @@ const ArticlePage: React.FC = () => {
             }
 
             try {
-                // Try localStorage first
-                const localConfig = localStorage.getItem('site-config');
+                // Try localStorage first prin noul serviciu
+                const localConfig = localStorageService.loadSiteConfig();
                 if (localConfig) {
-                    const config = JSON.parse(localConfig);
+                    const config = localConfig;
                     const foundArticle = config.articles?.find((a: Article) => a.slug === slug);
                     if (foundArticle) {
                         setArticle(foundArticle);
@@ -113,15 +114,15 @@ const ArticlePage: React.FC = () => {
         );
     }
 
-    const siteConfig = currentSiteConfig || JSON.parse(localStorage.getItem('site-config') || '{}');
+    const siteConfig: SiteConfig = currentSiteConfig || localStorageService.loadSiteConfig() || {} as SiteConfig;
 
     const headerSection = siteConfig.sectionOrder
-        .map(id => siteConfig.sections[id])
-        .find(section => section?.component === 'Header');
+        ?.map((id: string) => siteConfig.sections?.[id])
+        .find((section: any) => section?.component === 'Header');
 
     const footerSection = siteConfig.sectionOrder
-        .map(id => siteConfig.sections[id])
-        .find(section => section?.component === 'Footer');
+        ?.map((id: string) => siteConfig.sections?.[id])
+        .find((section: any) => section?.component === 'Footer');
 
     const footerStyles = resolveBackgroundImage(footerSection?.styles, getImageUrl);
 

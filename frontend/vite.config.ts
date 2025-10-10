@@ -34,7 +34,7 @@ export default defineConfig({
                 globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
                 runtimeCaching: [
                     {
-                        urlPattern: /^https:\/\/bibic\.ro\/api\//,
+                        urlPattern: /^https:\/\/bibic\.ro\/api\//, // TODO: change to ai-web.site
                         handler: 'NetworkFirst',
                         options: {
                             cacheName: 'api-cache',

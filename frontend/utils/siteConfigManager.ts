@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { SiteConfig, Article } from '@/types';
-import { siteConfigService } from '@/services/siteConfigService';
+import { configService } from '@/services/ConfigService';
 
 // Funcție pentru actualizarea automată a configurației site-ului
 export async function updateSiteConfig(updatedConfig: SiteConfig): Promise<void> {
@@ -19,7 +19,8 @@ export async function updateSiteConfig(updatedConfig: SiteConfig): Promise<void>
 // Funcție pentru adăugarea unui articol nou
 export async function addNewArticle(article: Article): Promise<void> {
     try {
-        const siteConfig = await siteConfigService.loadSiteConfig();
+        await configService.loadConfig();
+        const siteConfig = configService.getState().siteConfig;
         if (!siteConfig) {
             throw new Error('Site config not found');
         }
@@ -41,7 +42,8 @@ export async function addNewArticle(article: Article): Promise<void> {
 // Funcție pentru actualizarea unui articol existent
 export async function updateArticleById(articleId: string, updatedArticle: Article): Promise<void> {
     try {
-        const siteConfig = await siteConfigService.loadSiteConfig();
+        await configService.loadConfig();
+        const siteConfig = configService.getState().siteConfig;
         if (!siteConfig) {
             throw new Error('Site config not found');
         }
@@ -66,7 +68,8 @@ export async function updateArticleById(articleId: string, updatedArticle: Artic
 // Funcție pentru ștergerea unui articol
 export async function deleteArticle(slug: string): Promise<void> {
     try {
-        const siteConfig = await siteConfigService.loadSiteConfig();
+        await configService.loadConfig();
+        const siteConfig = configService.getState().siteConfig;
         if (!siteConfig) {
             throw new Error('Site config not found');
         }
@@ -87,7 +90,8 @@ export async function deleteArticle(slug: string): Promise<void> {
 // Funcție pentru generarea sitemap-ului
 export async function generateSitemap(): Promise<void> {
     try {
-        const siteConfig = await siteConfigService.loadSiteConfig();
+        await configService.loadConfig();
+        const siteConfig = configService.getState().siteConfig;
         if (!siteConfig) {
             throw new Error('Site config not found');
         }

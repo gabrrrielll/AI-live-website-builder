@@ -42,6 +42,11 @@ const APP_CONFIG = {
     TEST_MODE: {
         REBUILD_LIMIT: 3,
         IMAGE_GEN_LIMIT: 3,
+    },
+
+    // Setare pentru modul de încărcare al configurației site-ului
+    SITE_CONFIG_LOADING: {
+        useLocal_site_config: false  // Switch pentru încărcarea locală vs API
     }
 };
 

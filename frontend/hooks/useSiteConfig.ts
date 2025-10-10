@@ -2,8 +2,9 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import type { SiteConfig } from '@/types';
-import { siteConfigService } from '@/services/siteConfigService';
-import { SITE_CONFIG_API_URL, useLocalStorage as shouldUseLocalStorage } from '@/constants.js';
+import { configService } from '@/services/ConfigService';
+import { SITE_CONFIG_API_URL } from '@/constants.js';
+import { localStorageService } from '@/services/localStorageService';
 
 // Hook pentru încărcarea configurației site-ului
 export function useSiteConfig() {
@@ -22,8 +23,9 @@ export function useSiteConfig() {
                 setError(null);
 
                 // Folosește serviciul pentru încărcarea configurației
-                const config = await siteConfigService.loadSiteConfig();
-                console.log('🔄 useSiteConfig: Rezultat din siteConfigService:', config ? 'SUCCESS' : 'NULL');
+                await configService.loadConfig();
+                const config = configService.getState().siteConfig;
+                console.log('🔄 useSiteConfig: Rezultat din configService:', config ? 'SUCCESS' : 'NULL');
 
                 if (config) {
                     setSiteConfig(config);
@@ -55,20 +57,8 @@ export function useSiteConfig() {
 // Hook pentru salvarea configurației site-ului
 export function useSiteConfigSaver() {
     const saveToLocalStorage = useCallback((config: SiteConfig): boolean => {
-        // Salvează în localStorage DOAR în modul EDITOR
-        if (!shouldUseLocalStorage()) {
-            console.log('localStorage disabled for VIEWER/ADMIN mode');
-            return false;
-        }
-
-        try {
-            localStorage.setItem('site-config', JSON.stringify(config));
-            console.log('Configurația salvată în localStorage');
-            return true;
-        } catch (error) {
-            console.error('Error saving to localStorage:', error);
-            return false;
-        }
+        // Folosește noul serviciu localStorage cu restricții de domeniu
+        return localStorageService.saveSiteConfig(config);
     }, []);
 
     const saveToServer = useCallback(async (config: SiteConfig, domain: string): Promise<boolean> => {

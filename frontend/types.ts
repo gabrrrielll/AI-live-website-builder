@@ -103,6 +103,7 @@ export interface Article {
   metaDescription: LocalizedString;
   createdAt: string; // ISO 8601 date string
   updatedAt: string; // ISO 8601 date string
+  tags?: string[]; // Optional tags array
 }
 
 export interface SiteConfig {
@@ -122,6 +123,7 @@ export interface SiteConfig {
   images?: {
     [id: string]: string; // image ID -> base64 data URL
   };
+  'plans-config'?: PlansConfig;
 }
 
 // Literal types for template names for AI prompt generation
@@ -134,3 +136,35 @@ export type PricingTemplate = 'default' | 'detailed' | 'top-highlight' | 'simple
 export type TestimonialTemplate = 'default' | 'image-left' | 'centered-image' | 'simple-quote' | 'boxed' | 'modern';
 export type BlogTemplate = 'default' | 'image-left' | 'overlay' | 'minimalist' | 'centered';
 export type PortfolioTemplate = 'default' | 'hover' | 'text-below' | 'overlay' | 'minimalist' | 'detailed';
+
+// Plans configuration types
+export interface ServiceLimit {
+  type: 'unlimited' | 'daily_limit' | 'monthly_limit' | 'total_limit';
+  value: number | null;
+  description: string;
+}
+
+export interface ServiceConfig {
+  name: string;
+  description: string;
+  limits: {
+    localhost: ServiceLimit;
+    test_domain: ServiceLimit;
+    public_domain: ServiceLimit;
+  };
+  enabled: boolean;
+  provider: string;
+  fallback_provider?: string;
+}
+
+export interface PlansConfig {
+  isEditable: boolean;
+  show_import_export_config: boolean;
+  show_save_button: boolean;
+  services: Record<string, ServiceConfig>;
+  domain_types: Record<string, { pattern: string; description: string }>;
+  billing: Record<string, any>;
+  version: string;
+  last_updated: string;
+  useLocal_site_config?: boolean;
+}

@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { usePlansConfig } from '@/context/ConfigProvider';
-import { useLocalStorage as shouldUseLocalStorage } from '@/constants.js';
+import { localStorageService } from '@/services/localStorageService';
 
 type SiteMode = 'edit' | 'view';
 
@@ -33,7 +33,7 @@ export function SiteModeProvider({ children }: { children: React.ReactNode }) {
         // Încarcă configurația și verifică dacă site-ul poate fi editat
         const initializeAndCheck = async () => {
             await loadConfig();
-            
+
             if (!isSiteEditable) {
                 // Dacă site-ul nu este editabil, forțează modul view
                 setMode('view');
@@ -46,9 +46,9 @@ export function SiteModeProvider({ children }: { children: React.ReactNode }) {
         // Detectează modul bazat pe URL sau localStorage (doar în modul EDITOR)
         const urlParams = new URLSearchParams(location.search);
         const editMode = urlParams.get('edit') === 'true';
-        
-        // Verifică localStorage DOAR dacă suntem în modul EDITOR
-        const hasLocalConfig = shouldUseLocalStorage() && localStorage.getItem('site-config') !== null;
+
+        // Verifică localStorage prin noul serviciu cu restricții de domeniu
+        const hasLocalConfig = localStorageService.hasSiteConfig();
 
         if (editMode || hasLocalConfig) {
             setMode('edit');

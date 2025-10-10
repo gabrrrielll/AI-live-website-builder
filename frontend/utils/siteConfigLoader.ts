@@ -1,9 +1,10 @@
 import type { SiteConfig } from '@/types';
-import { siteConfigService } from '@/services/siteConfigService';
+import { configService } from '@/services/ConfigService';
 
 export async function getSiteConfig(): Promise<SiteConfig> {
     try {
-        const siteConfig = await siteConfigService.loadSiteConfig();
+        await configService.loadConfig();
+        const siteConfig = configService.getState().siteConfig;
         if (!siteConfig) {
             throw new Error('Site config not found');
         }

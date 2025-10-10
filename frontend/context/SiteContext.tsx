@@ -13,7 +13,7 @@ import { translations } from '@/utils/translations';
 import { toast } from 'sonner';
 import { useHistory } from '@/hooks/useHistory';
 import { slugify } from '@/utils/slugify';
-import { useLocalStorage as shouldUseLocalStorage } from '@/constants.js';
+import { localStorageService } from '@/services/localStorageService';
 
 interface SiteContextType {
     siteConfig: SiteConfig | null;
@@ -109,16 +109,11 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, [initialConfig, initializeHistory, isLoading, error]);
 
-    // Salvează configurația în localStorage când se trece în mod editare (doar în modul EDITOR)
+    // Salvează configurația în localStorage când se trece în mod editare prin noul serviciu cu restricții de domeniu
     useEffect(() => {
-        // Verifică dacă trebuie să folosim localStorage (doar pentru EDITOR mode)
-        if (!shouldUseLocalStorage()) {
-            return; // Skip localStorage pentru VIEWER/ADMIN mode
-        }
-
         // Așteptăm ca configurația să se încarce complet și să fim în mod editare
         if (siteConfig && isEditMode && !isLoading) {
-            const hasLocalConfig = localStorage.getItem('site-config') !== null;
+            const hasLocalConfig = localStorageService.hasSiteConfig();
             if (!hasLocalConfig) {
                 // Salvează configurația actuală în localStorage pentru a activa modul editare
                 saveToLocalStorage(siteConfig);
@@ -141,10 +136,8 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
             updateHistory(newConfig);
         }
 
-        // Salvează automat în localStorage DOAR în modul EDITOR
-        if (shouldUseLocalStorage()) {
-            saveToLocalStorage(newConfig);
-        }
+        // Salvează automat în localStorage prin noul serviciu cu restricții de domeniu
+        saveToLocalStorage(newConfig);
     }, [saveToLocalStorage, updateHistory, updateGlobalConfig]);
 
     // Funcție pentru salvarea configurației pe server
@@ -307,7 +300,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Salvează imaginea ca base64 în configurație
         newConfig.images[id] = dataUrl;
 
-        // Actualizează configurația (care se salvează automat în localStorage)
+        // Actualizează configurația (care se salvează automat în localStorage prin noul serviciu)
         updateSiteConfig(newConfig);
 
         return id;

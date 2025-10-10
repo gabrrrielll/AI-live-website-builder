@@ -1,22 +1,23 @@
 "use client";
 
-import React from 'react';
+import type { PlansConfig, ServiceConfig, ServiceLimit } from '@/types';
 
 // plansConfig va fi încărcat din API
-let plansConfig: any = null;
+let plansConfig: PlansConfig | null = null;
 let isPlansConfigLoaded: boolean = false;
 let plansConfigListeners: (() => void)[] = [];
 
 // Funcție pentru a încărca plansConfig din API
-const loadPlansConfig = async (): Promise<any> => {
+const loadPlansConfig = async (): Promise<PlansConfig | null> => {
     if (plansConfig) {
         return plansConfig;
     }
 
     try {
-        // Import siteConfigService pentru a folosi API-ul
-        const { siteConfigService } = await import('./siteConfigService');
-        const siteConfig = await siteConfigService.loadSiteConfig();
+        // Import configService pentru a folosi API-ul
+        const { configService } = await import('./ConfigService');
+        await configService.loadConfig();
+        const siteConfig = configService.getState().siteConfig;
 
         if (siteConfig && siteConfig['plans-config']) {
             plansConfig = siteConfig['plans-config'];
@@ -39,34 +40,7 @@ const loadPlansConfig = async (): Promise<any> => {
     return null;
 };
 
-export interface ServiceLimit {
-    type: 'unlimited' | 'daily_limit' | 'monthly_limit' | 'total_limit';
-    value: number | null;
-    description: string;
-}
-
-export interface ServiceConfig {
-    name: string;
-    description: string;
-    limits: {
-        localhost: ServiceLimit;
-        test_domain: ServiceLimit;
-        public_domain: ServiceLimit;
-    };
-    enabled: boolean;
-    provider: string;
-    fallback_provider?: string;
-}
-
-export interface PlansConfig {
-    isEditable: boolean;
-    show_import_export_config: boolean;
-    services: Record<string, ServiceConfig>;
-    domain_types: Record<string, { pattern: string; description: string }>;
-    billing: Record<string, any>;
-    version: string;
-    last_updated: string;
-}
+// Types moved to @/types.ts
 
 // Helper pentru localStorage
 const getUsage = (key: string): number => {
@@ -195,7 +169,7 @@ export const getServiceProvider = (serviceName: string): string | null => {
 
 // Obține fallback provider-ul pentru un serviciu
 export const getServiceFallbackProvider = (serviceName: string): string | null => {
-    if (!plansConfig || !plansConfig.services) return null;
+    if (!plansConfig?.services) return null;
     const service = plansConfig.services[serviceName];
     return service ? service.fallback_provider || null : null;
 };
@@ -207,7 +181,7 @@ export const resetServiceUsage = (serviceName?: string): void => {
         localStorage.removeItem(usageKey);
     } else {
         // Resetează toate serviciile
-        if (plansConfig && plansConfig.services) {
+        if (plansConfig?.services) {
             Object.keys(plansConfig.services).forEach(service => {
                 const usageKey = `service_${service}_usage`;
                 localStorage.removeItem(usageKey);
@@ -220,9 +194,9 @@ export const resetServiceUsage = (serviceName?: string): void => {
 export const getUsageStats = (): Record<string, { used: number; left: number; limit: ServiceLimit }> => {
     const stats: Record<string, { used: number; left: number; limit: ServiceLimit }> = {};
 
-    if (plansConfig && plansConfig.services) {
+    if (plansConfig?.services) {
         Object.keys(plansConfig.services).forEach(serviceName => {
-            const service = plansConfig.services[serviceName];
+            const service = plansConfig!.services[serviceName];
             const domainType = getDomainType();
             const limit = service.limits[domainType];
             const usageKey = `service_${serviceName}_usage`;
@@ -260,7 +234,7 @@ export const showSaveButton = (): boolean => {
 
 // Verifică dacă trebuie să salvez configurația local (în public) sau pe server
 export const useLocalSiteConfig = (): boolean => {
-    return plansConfig?.['useLocal_site-config'] === true;
+    return plansConfig?.useLocal_site_config === true;
 };
 
 // Funcție pentru a inițializa plansConfig (trebuie apelată la începutul aplicației)
