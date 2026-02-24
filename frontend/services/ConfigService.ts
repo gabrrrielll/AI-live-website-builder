@@ -1,15 +1,6 @@
 import { API_CONFIG, APP_CONFIG } from '@/constants.js';
-import type { SiteConfig } from '@/types';
+import type { PlansConfig, SiteConfig } from '@/types';
 import { localStorageService } from './localStorageService';
-
-export interface PlansConfig {
-    useLocal_site_config: boolean;
-    show_save_button: boolean;
-    services: Record<string, any>;
-    domain_types: Record<string, any>;
-    version: string;
-    last_updated: string;
-}
 
 export interface ConfigState {
     siteConfig: SiteConfig | null;
@@ -76,10 +67,6 @@ class ConfigService {
     }
 
     // Cache management
-    private getCacheKey(): string {
-        return 'site-config-v2';
-    }
-
     private saveToCache(siteConfig: SiteConfig): void {
         // Folosește noul serviciu localStorage cu restricții de domeniu
         const success = localStorageService.saveSiteConfig(siteConfig);
