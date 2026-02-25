@@ -32,7 +32,10 @@
     "allowJs": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "incremental": true
+    "incremental": true,
+    "types": [
+      "vite/client"
+    ]
   },
   "include": [
     "**/*.ts",

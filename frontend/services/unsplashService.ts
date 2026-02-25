@@ -1,6 +1,7 @@
 "use client";
 
-// Backend Unsplash service integration
+// Unsplash backend endpoint was removed; use a stable image fallback provider
+// so AI flows can continue without 404/CORS errors.
 
 export interface UnsplashPhoto {
     id: string;
@@ -18,38 +19,24 @@ export const searchUnsplashPhotos = async (query: string): Promise<UnsplashPhoto
         throw new Error("Search query is required.");
     }
 
-    try {
-        // Get API base URL from constants
-        const { API_CONFIG } = await import('@/constants.js');
-        const url = `${API_CONFIG.BASE_URL}/ai-service.php`;
+    const normalizedQuery = encodeURIComponent(query.trim().toLowerCase());
 
-        // Call the backend directly
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
+    // Build deterministic image candidates so repeated queries stay coherent.
+    return Array.from({ length: 12 }, (_, index) => {
+        const seed = `${normalizedQuery}-${index + 1}`;
+        const full = `https://picsum.photos/seed/${seed}/1600/900`;
+        const regular = `https://picsum.photos/seed/${seed}/1200/675`;
+        const small = `https://picsum.photos/seed/${seed}/640/360`;
+
+        return {
+            id: `fallback-${seed}`,
+            urls: {
+                full,
+                regular,
+                small,
             },
-            body: JSON.stringify({
-                action: 'search_images',
-                query: query.trim(),
-                per_page: 30
-            })
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const result = await response.json();
-
-        if (!result.success) {
-            throw new Error(result.message || 'Failed to search images');
-        }
-
-        return result.photos || [];
-    } catch (error: any) {
-        console.error("Error fetching from Unsplash:", error);
-        throw new Error(error.message || "An unknown error occurred.");
-    }
+            alt_description: query.trim(),
+            description: `Image result for ${query.trim()}`,
+        };
+    });
 };

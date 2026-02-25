@@ -21,10 +21,6 @@ export const EDITOR_URL: string =
 // Keep empty in production builds.
 export const LOCAL_API_KEY: string = import.meta.env.VITE_LOCAL_API_KEY || "";
 
-// AI key for local development only (exposed in frontend bundle by Vite).
-// Do NOT use this in production. Production must use backend-stored secrets.
-export const GEMINI_API_KEY: string = import.meta.env.VITE_GEMINI_API_KEY || "";
-
 // Development mode flag
 export const IS_DEVELOPMENT: boolean = import.meta.env.DEV;
 

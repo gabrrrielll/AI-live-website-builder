@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 import { toast } from 'sonner';
-import { generateTextWithRetry, generateImage } from '@/services/aiService';
+import { generateTextWithRetry, generateImage, getGeminiModelLimits } from '@/services/aiService';
 import { sanitizeHTML } from '@/utils/sanitize';
 import type { SiteConfig, RichTextElement, ImageElement, LogoElement } from '@/types';
 import type { Translations } from '@/utils/translations';
@@ -33,6 +33,184 @@ type AICommand =
     | { command: 'create_article'; title_ro: string; title_en: string; excerpt_ro: string; excerpt_en: string; content_ro: string; content_en: string; image_query: string; image_alt_ro: string; image_alt_en: string }
     | { command: 'explanation'; text: string };
 
+const DEFAULT_INPUT_TOKEN_LIMIT = 1048576;
+const CHARS_PER_TOKEN_ESTIMATE = 3.2;
+const ABS_MIN_PROMPT_CHARS = 30000;
+const MAX_PROMPT_CONFIG_CHARS_CAP = 380000;
+
+type PromptDetailLevel = 'rich' | 'reduced' | 'minimal';
+
+const truncateString = (value: unknown, max: number): unknown => {
+    if (typeof value !== 'string') return value;
+    if (value.length <= max) return value;
+    return `${value.slice(0, max)}... [truncated]`;
+};
+
+const compactForAIPrompt = (
+    value: any,
+    maxTextChars: number,
+    maxItemsPerSection: number,
+    detailLevel: PromptDetailLevel,
+): any => {
+    if (Array.isArray(value)) {
+        return value.slice(0, maxItemsPerSection).map((item) => compactForAIPrompt(item, maxTextChars, maxItemsPerSection, detailLevel));
+    }
+
+    if (value && typeof value === 'object') {
+        const result: Record<string, any> = {};
+        Object.entries(value).forEach(([key, child]) => {
+            if (key === 'images') {
+                // Exclude large base64 image map to keep prompt under model limits.
+                return;
+            }
+            if (detailLevel !== 'rich' && (key === 'content' || key === 'html' || key === 'rawHtml')) {
+                result[key] = '[omitted-for-token-budget]';
+                return;
+            }
+            result[key] = compactForAIPrompt(child, maxTextChars, maxItemsPerSection, detailLevel);
+        });
+        return result;
+    }
+
+    if (typeof value === 'string') {
+        if (value.startsWith('data:image/')) {
+            return '[image-data-omitted]';
+        }
+        return truncateString(value, maxTextChars);
+    }
+
+    return value;
+};
+
+const createConfigForPrompt = (siteConfig: SiteConfig, maxCharsBudget: number, detailLevel: PromptDetailLevel): string => {
+    const maxTextChars = detailLevel === 'rich' ? 1200 : detailLevel === 'reduced' ? 700 : 240;
+    const maxItemsPerSection = detailLevel === 'rich' ? 20 : detailLevel === 'reduced' ? 10 : 5;
+    const maxArticlesForPrompt = detailLevel === 'rich' ? 8 : detailLevel === 'reduced' ? 4 : 1;
+
+    const compactConfig: SiteConfig = compactForAIPrompt(siteConfig, maxTextChars, maxItemsPerSection, detailLevel);
+
+    if (compactConfig.articles && compactConfig.articles.length > maxArticlesForPrompt) {
+        compactConfig.articles = compactConfig.articles.slice(0, maxArticlesForPrompt);
+    }
+
+    let serialized = JSON.stringify(compactConfig, null, 2);
+    if (serialized.length <= maxCharsBudget) {
+        return serialized;
+    }
+
+    // Fallback for very large websites: keep structure and IDs, omit heavy content.
+    const minimalConfig = {
+        metadata: compactConfig.metadata,
+        sectionOrder: compactConfig.sectionOrder,
+        sections: Object.fromEntries(
+            Object.entries(compactConfig.sections || {}).map(([sectionId, section]) => [
+                sectionId,
+                {
+                    id: section.id,
+                    component: section.component,
+                    visible: section.visible,
+                    elements: Object.fromEntries(
+                        Object.entries(section.elements || {}).map(([elementId, element]) => [
+                            elementId,
+                            {
+                                type: (element as any)?.type || 'unknown',
+                            },
+                        ]),
+                    ),
+                },
+            ]),
+        ),
+    };
+
+    serialized = JSON.stringify(minimalConfig, null, 2);
+    if (serialized.length > maxCharsBudget) {
+        serialized = serialized.slice(0, maxCharsBudget) + '\n/* truncated by token budget */';
+    }
+    return serialized;
+};
+
+const isInputTokenLimitError = (error: unknown): boolean => {
+    const message = error instanceof Error ? error.message : String(error ?? '');
+    const lower = message.toLowerCase();
+    return lower.includes('input token count exceeds') || lower.includes('input_token_limit_exceeded');
+};
+
+const parseAiCommandsFromResponse = (responseText: string): any[] => {
+    const trimmed = (responseText || '').trim();
+    if (!trimmed) return [];
+
+    // 1) Fast path: strict JSONL (one JSON object per line).
+    const jsonlCommands = trimmed
+        .split('\n')
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .map((line) => {
+            try {
+                return JSON.parse(line);
+            } catch {
+                return null;
+            }
+        })
+        .filter(Boolean);
+
+    if (jsonlCommands.length > 0) {
+        return jsonlCommands;
+    }
+
+    // 2) Robust path: extract top-level JSON objects from multiline text.
+    const commands: any[] = [];
+    let depth = 0;
+    let start = -1;
+    let inString = false;
+    let escaped = false;
+
+    for (let i = 0; i < trimmed.length; i++) {
+        const ch = trimmed[i];
+
+        if (inString) {
+            if (escaped) {
+                escaped = false;
+                continue;
+            }
+            if (ch === '\\') {
+                escaped = true;
+                continue;
+            }
+            if (ch === '"') {
+                inString = false;
+            }
+            continue;
+        }
+
+        if (ch === '"') {
+            inString = true;
+            continue;
+        }
+
+        if (ch === '{') {
+            if (depth === 0) {
+                start = i;
+            }
+            depth++;
+            continue;
+        }
+
+        if (ch === '}') {
+            depth--;
+            if (depth === 0 && start !== -1) {
+                const block = trimmed.slice(start, i + 1);
+                try {
+                    commands.push(JSON.parse(block));
+                } catch {
+                    // Ignore malformed block and continue scanning.
+                }
+                start = -1;
+            }
+        }
+    }
+
+    return commands;
+};
 
 // Helper function to find an element by its ID across all sections and pages
 const findElement = (config: SiteConfig, elementId: string) => {
@@ -106,12 +284,51 @@ Now, analyze the user's prompt and the current JSON configuration, and generate 
         try {
             // PHASE 1: Analyzing Request
             onProgress(5, 'analyzing');
-            const fullPrompt = `${systemPrompt}\n\nCURRENT CONFIGURATION:\n${JSON.stringify(siteConfig, null, 2)}\n\nUSER PROMPT:\n${userPrompt}`;
             await new Promise(resolve => setTimeout(resolve, 200)); // Short delay for UI
 
             // PHASE 2: Generating Design Plan
             onProgress(10, 'generatingPlan');
-            const responseText = await generateTextWithRetry(fullPrompt, 'text');
+            const limits = await getGeminiModelLimits();
+            const inputLimit = limits?.inputTokenLimit || DEFAULT_INPUT_TOKEN_LIMIT;
+            const recommendedPromptInputTokens = limits?.recommendedPromptInputTokens || Math.floor(inputLimit * 0.55);
+            const maxCharsBudget = Math.min(
+                MAX_PROMPT_CONFIG_CHARS_CAP,
+                Math.max(ABS_MIN_PROMPT_CHARS, Math.floor(recommendedPromptInputTokens * CHARS_PER_TOKEN_ESTIMATE)),
+            );
+
+            const promptLevels: PromptDetailLevel[] = ['rich', 'reduced', 'minimal'];
+            let responseText = '';
+            let lastError: unknown = null;
+            let usedPromptLevel: PromptDetailLevel = 'rich';
+
+            for (let i = 0; i < promptLevels.length; i++) {
+                const level = promptLevels[i];
+                const configForPrompt = createConfigForPrompt(siteConfig, maxCharsBudget, level);
+                const fullPrompt = `${systemPrompt}\n\nCURRENT CONFIGURATION (compact-${level}):\n${configForPrompt}\n\nUSER PROMPT:\n${userPrompt}`;
+
+                try {
+                    responseText = await generateTextWithRetry(fullPrompt, 'text');
+                    usedPromptLevel = level;
+                    break;
+                } catch (error) {
+                    lastError = error;
+                    if (isInputTokenLimitError(error) && i < promptLevels.length - 1) {
+                        continue;
+                    }
+                    throw error;
+                }
+            }
+
+            if (!responseText && lastError) {
+                throw lastError;
+            }
+
+            if (usedPromptLevel !== 'rich') {
+                const modeLabel = usedPromptLevel === 'reduced' ? 'reduced' : 'minimal';
+                toast('Prompt optimizat automat pentru limita modelului AI.', {
+                    description: `A fost folosit modul ${modeLabel} pentru a evita depășirea limitei de input tokens.`,
+                });
+            }
 
             // PHASE 3: Processing Commands
             onProgress(50, 'processingCommands');
@@ -119,16 +336,9 @@ Now, analyze the user's prompt and the current JSON configuration, and generate 
             console.log("AI Response Lines:", commandLines.length);
             console.log("AI Response:", responseText.substring(0, 500) + "...");
 
-            const allCommands: any[] = commandLines.map(line => {
-                try {
-                    const parsed = JSON.parse(line.trim());
-                    console.log("Parsed command:", parsed.command);
-                    return parsed;
-                } catch (e) {
-                    console.warn("Failed to parse line:", line);
-                    return null;
-                }
-            }).filter(Boolean);
+            const allCommands: any[] = parseAiCommandsFromResponse(responseText)
+                .filter((cmd) => cmd && typeof cmd === 'object' && typeof cmd.command === 'string');
+            allCommands.forEach((cmd) => console.log("Parsed command:", cmd.command));
 
             console.log("Valid commands count:", allCommands.length);
             if (allCommands.length === 0) throw new Error("AI did not return any valid commands.");
