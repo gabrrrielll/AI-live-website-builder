@@ -30,6 +30,11 @@ dist-ssr
 .env.test.local
 .env.production.local
 
+# Local secrets / API smoke tests (never commit)
+frontend/scripts/test-api.local.js
+**/credentials*
+**/*secret*
+
 # Vite
 .vite
 
@@ -48,11 +53,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
-
-# Package manager
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
 
 # Coverage
 coverage/

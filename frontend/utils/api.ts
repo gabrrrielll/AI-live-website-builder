@@ -8,76 +8,24 @@ import { localStorageService } from '@/services/localStorageService';
 // Funcție pentru obținerea nonce-ului WordPress (ETAPA 1)
 async function getWordPressNonce(): Promise<string> {
   try {
-    // Import constants pentru URL-uri
     const { API_CONFIG } = await import('@/constants.js');
 
-    // Verifică dacă suntem în localhost sau production
-    const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-
-    if (isLocalhost) {
-      // Pentru localhost, folosește nonce de testare
-      console.log('🏠 LOCALHOST: Folosesc test nonce pentru development');
-      return 'test-nonce-12345';
-    }
-
-    // Pentru production (editor.ai-web.site), obține nonce real din WordPress
-    console.log('🌐 PRODUCTION: Obțin nonce real din WordPress');
-
-    // Încearcă să obține nonce-ul din meta tag-uri sau script-uri
-    if (typeof window !== 'undefined') {
-      // Caută nonce-ul în meta tag-uri
-      const nonceMeta = document.querySelector('meta[name="wp-nonce"]');
-      if (nonceMeta) {
-        const nonce = nonceMeta.getAttribute('content');
-        if (nonce) {
-          console.log('✅ Nonce obținut din meta tag:', nonce);
-          return nonce;
-        }
-      }
-
-      // Caută în script-uri (wp_localize_script)
-      const nonceScript = document.querySelector('script[data-wp-nonce]');
-      if (nonceScript) {
-        const nonce = nonceScript.getAttribute('data-wp-nonce');
-        if (nonce) {
-          console.log('✅ Nonce obținut din script tag:', nonce);
-          return nonce;
-        }
-      }
-    }
-
-    // Folosește endpoint-ul custom pentru nonce-ul WordPress
-    console.log('🌐 PRODUCTION: Obțin nonce din endpoint-ul custom');
     const response = await fetch(`${API_CONFIG.BASE_URL}/wp-json/ai-web-site/v1/wp-nonce`, {
-      credentials: 'include', // Include cookies pentru autentificare
+      credentials: 'include',
       method: 'GET'
     });
 
     if (response.ok) {
       const data = await response.json();
       if (data.success && data.nonce) {
-        console.log('✅ Nonce obținut din endpoint-ul custom:', data.nonce);
         return data.nonce;
-      } else {
-        console.error('❌ Endpoint-ul custom nu a returnat nonce valid:', data);
-        throw new Error('Invalid nonce response from custom endpoint');
       }
-    } else {
-      console.error('❌ Endpoint-ul custom nu a răspuns OK:', response.status, response.statusText);
-      throw new Error(`Custom nonce endpoint failed: ${response.status}`);
+      throw new Error('Invalid nonce response from custom endpoint');
     }
 
+    throw new Error(`Custom nonce endpoint failed: ${response.status}`);
   } catch (error) {
     console.error('Eroare la obținerea nonce-ului:', error);
-
-    // Pentru localhost, folosește test nonce
-    const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-    if (isLocalhost) {
-      console.log('🏠 LOCALHOST: Fallback la test nonce pentru development');
-      return 'test-nonce-12345';
-    }
-
-    // Pentru production, aruncă eroarea
     throw error;
   }
 }
@@ -164,25 +112,19 @@ export const uploadConfig = async (config: SiteConfig): Promise<{ success: boole
 
     console.log('📤 Trimit POST request către:', url);
 
-    // Configurare headers bazată pe mediu
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
+      'X-WP-Nonce': nonce,
     };
 
-    if (isLocalhost) {
-      // În localhost, folosim cheia locală pentru autentificare
-      const localApiKey = (import.meta as any).env?.VITE_LOCAL_API_KEY || 'dev-local-key-2024';
+    const isLocalDev = isLocalhost && import.meta.env.DEV;
+    if (isLocalDev) {
+      const localApiKey = import.meta.env.VITE_LOCAL_API_KEY;
       if (localApiKey) {
         headers['X-Local-API-Key'] = localApiKey;
-        console.log('🏠 LOCALHOST: Folosesc cheia locală pentru autentificare');
       } else {
         console.warn('🏠 LOCALHOST: Cheia locală nu este definită în .env.local');
-        headers['X-WP-Nonce'] = nonce;
       }
-    } else {
-      // 🔧 TEST: În production, folosim nonce WordPress (backend modificat să folosească get_user_id_from_cookie)
-      headers['X-WP-Nonce'] = nonce;
-      console.log('🌐 PRODUCTION: Folosesc nonce WordPress (testare cu get_user_id_from_cookie)');
     }
 
     console.log('📤 Headers:', headers);

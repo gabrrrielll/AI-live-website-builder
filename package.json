@@ -8,6 +8,9 @@
         "deploy:frontend": "cd frontend && npm run deploy",
         "deploy:plugin": "node scripts/deploy-plugin.js",
         "deploy:all": "npm run deploy:plugin && npm run deploy:frontend",
+        "ci:deploy": "node scripts/ci-deploy.js --all",
+        "ci:deploy:frontend": "node scripts/ci-deploy.js --frontend",
+        "ci:deploy:plugin": "node scripts/ci-deploy.js --plugin",
         "build:frontend": "cd frontend && npm run build",
         "dev:frontend": "cd frontend && npm run dev"
     },

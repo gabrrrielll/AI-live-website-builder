@@ -34,8 +34,8 @@ export default defineConfig({
                 globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
                 runtimeCaching: [
                     {
-                        urlPattern: /^https:\/\/bibic\.ro\/api\//, // TODO: change to ai-web.site
-                        handler: 'NetworkFirst',
+                        urlPattern: /^https:\/\/ai-web\.site\/wp-json\//,
+                        handler: 'NetworkOnly',
                         options: {
                             cacheName: 'api-cache',
                             expiration: {
@@ -57,7 +57,7 @@ export default defineConfig({
         outDir: 'dist',
         assetsDir: 'assets',
         sourcemap: false,
-        chunkSizeWarningLimit: 1000, // Increase warning limit to 1MB
+        chunkSizeWarningLimit: 600,
         minify: 'terser',
         terserOptions: {
             compress: {
@@ -118,12 +118,7 @@ export default defineConfig({
     },
     server: {
         port: 3000,
-        open: {
-            app: {
-                name: 'firefox',
-                arguments: ['--private-window', 'http://localhost:3000']
-            }
-        }
+        open: true
     },
     define: {
         // Suppress source map warnings in development

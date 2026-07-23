@@ -6,6 +6,7 @@ import Editable from '@/components/Editable';
 import { useSite } from '@/context/SiteContext';
 import { resolveBackgroundImage } from '@/utils/styleUtils';
 import { ScrollAnimation, WaterRiseAnimation, StaggerAnimation } from '@/components/animations/ScrollAnimation';
+import { sanitizeHTML } from '@/utils/sanitize';
 
 interface HeroProps {
     sectionId: string;
@@ -256,13 +257,13 @@ const GradientWavesHero: React.FC<{ sectionId: string }> = ({ sectionId }) => {
                         <div
                             className="text-5xl md:text-7xl font-extrabold leading-tight mb-6 bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent drop-shadow-lg"
                             dangerouslySetInnerHTML={{
-                                __html: (section?.elements?.[`${sectionId}-title-1`] as any)?.content?.ro || 'Construiește-ți Viitorul cu AI'
+                                __html: sanitizeHTML((section?.elements?.[`${sectionId}-title-1`] as any)?.content?.ro || 'Construiește-ți Viitorul cu AI')
                             }}
                         />
                         <div
                             className="text-xl md:text-2xl text-gray-100 mb-8 max-w-3xl mx-auto drop-shadow-md"
                             dangerouslySetInnerHTML={{
-                                __html: (section?.elements?.[`${sectionId}-subtitle-1`] as any)?.content?.ro || 'Utilizează puterea inteligenței artificiale generative pentru a crea site-uri web uimitoare, bogate în conținut, în doar câteva minute. <strong>Fără cunoștințe de programare.</strong>'
+                                __html: sanitizeHTML((section?.elements?.[`${sectionId}-subtitle-1`] as any)?.content?.ro || 'Utilizează puterea inteligenței artificiale generative pentru a crea site-uri web uimitoare, bogate în conținut, în doar câteva minute. <strong>Fără cunoștințe de programare.</strong>')
                             }}
                         />
                         <button className="bg-white text-gray-900 font-bold py-4 px-8 rounded-full text-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-xl">

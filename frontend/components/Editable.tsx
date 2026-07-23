@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import type { SiteElement, LogoElement, RichTextElement, IconElement } from '@/types';
 import { useSite } from '@/context/SiteContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { sanitizeHTML } from '@/utils/sanitize';
 
 interface EditableProps {
   sectionId: string;
@@ -128,7 +129,7 @@ const renderWithRouterLinks = (htmlContent: string, navigate: (path: string) => 
       );
     }
 
-    return <span key={index} dangerouslySetInnerHTML={{ __html: part }} />;
+    return <span key={index} dangerouslySetInnerHTML={{ __html: sanitizeHTML(part) }} />;
   });
 };
 

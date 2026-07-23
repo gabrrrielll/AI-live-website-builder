@@ -46,7 +46,7 @@ const APP_CONFIG = {
 
     // Setare pentru modul de încărcare al configurației site-ului
     SITE_CONFIG_LOADING: {
-        useLocal_site_config: false  // Switch pentru încărcarea locală vs API
+        useLocal_site_config: false // Local JSON is only for explicit local testing.
     }
 };
 

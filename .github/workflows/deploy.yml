@@ -1,0 +1,164 @@
+name: Deploy public repos
+
+# On every push to master/main:
+# - frontend/**  → build → push to gabrrrielll/ai-web-site-dist
+# - ai-web-site-plugin/** → push to gabrrrielll/ai-web-site-plugin
+#
+# Required secret (repo Settings → Secrets → Actions):
+#   DEPLOY_PAT — GitHub PAT with contents:write on both public repos
+
+on:
+  push:
+    branches: [master, main]
+  workflow_dispatch:
+    inputs:
+      force_frontend:
+        description: 'Force frontend build + dist deploy'
+        type: boolean
+        default: false
+      force_plugin:
+        description: 'Force plugin deploy'
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy-public-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      plugin: ${{ steps.filter.outputs.plugin }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+              - '.github/workflows/deploy.yml'
+              - 'scripts/ci-deploy.js'
+              - 'package.json'
+            plugin:
+              - 'ai-web-site-plugin'
+              - 'ai-web-site-plugin/**'
+              - '.github/workflows/deploy.yml'
+
+  deploy-frontend:
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' || (github.event_name == 'workflow_dispatch' && inputs.force_frontend) }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Require DEPLOY_PAT
+        env:
+          DEPLOY_PAT: ${{ secrets.DEPLOY_PAT }}
+        run: |
+          if [ -z "$DEPLOY_PAT" ]; then
+            echo "::error::Missing secret DEPLOY_PAT. Add a PAT with write access to gabrrrielll/ai-web-site-dist and ai-web-site-plugin."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install & build
+        working-directory: frontend
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+          npm run build
+
+      - name: Publish to ai-web-site-dist
+        env:
+          DEPLOY_PAT: ${{ secrets.DEPLOY_PAT }}
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          set -euo pipefail
+          DIST_DIR="${RUNNER_TEMP}/ai-web-site-dist"
+          git clone --depth 1 "https://x-access-token:${DEPLOY_PAT}@github.com/gabrrrielll/ai-web-site-dist.git" "$DIST_DIR"
+
+          # Replace published files, keep .git
+          find "$DIST_DIR" -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+          cp -a frontend/dist/. "$DIST_DIR/"
+
+          # Keep README if build did not include one
+          if [ ! -f "$DIST_DIR/README.md" ] && [ -f ai-web-site-dist/README.md ]; then
+            cp ai-web-site-dist/README.md "$DIST_DIR/README.md"
+          fi
+
+          cd "$DIST_DIR"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No dist changes to publish."
+            exit 0
+          fi
+
+          git commit -m "ci: deploy frontend build from ${GITHUB_SHA::7}
+
+Source: ${GITHUB_REPOSITORY}@${GITHUB_REF_NAME}
+"
+          git push origin HEAD:main
+
+  deploy-plugin:
+    needs: changes
+    if: ${{ needs.changes.outputs.plugin == 'true' || (github.event_name == 'workflow_dispatch' && inputs.force_plugin) }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Require DEPLOY_PAT
+        env:
+          DEPLOY_PAT: ${{ secrets.DEPLOY_PAT }}
+        run: |
+          if [ -z "$DEPLOY_PAT" ]; then
+            echo "::error::Missing secret DEPLOY_PAT. Add a PAT with write access to gabrrrielll/ai-web-site-dist and ai-web-site-plugin."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Publish to ai-web-site-plugin
+        env:
+          DEPLOY_PAT: ${{ secrets.DEPLOY_PAT }}
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          set -euo pipefail
+          PLUGIN_DIR="${RUNNER_TEMP}/ai-web-site-plugin"
+          git clone --depth 1 "https://x-access-token:${DEPLOY_PAT}@github.com/gabrrrielll/ai-web-site-plugin.git" "$PLUGIN_DIR"
+
+          # Sync tracked plugin tree into public repo (preserve .git)
+          rsync -a --delete \
+            --exclude '.git' \
+            --exclude 'node_modules' \
+            --exclude '.DS_Store' \
+            ai-web-site-plugin/ "$PLUGIN_DIR/"
+
+          cd "$PLUGIN_DIR"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No plugin changes to publish."
+            exit 0
+          fi
+
+          git commit -m "ci: deploy plugin from ${GITHUB_SHA::7}
+
+Source: ${GITHUB_REPOSITORY}@${GITHUB_REF_NAME}
+"
+          git push origin HEAD:main

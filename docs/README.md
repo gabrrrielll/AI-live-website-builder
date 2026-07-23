@@ -1,136 +1,64 @@
 # AI Live Website Builder
 
-Un website builder inteligent cu React.js frontend și WordPress backend pentru crearea și gestionarea subdomeniilor.
+Website builder multi-tenant: un singur SPA React servește editorul și toate site-urile live; un plugin WordPress stochează config-urile, proxy-uiește AI-ul și creează subdomenii prin cPanel.
 
-## 🏗️ Arhitectura Proiectului
+> **Structură curentă (sursă de adevăr):** `frontend/` + submodule `ai-web-site-plugin/` + `ai-web-site-dist/`. Layout-ul vechi `backend/` / `shared/` nu mai există.
+
+## Arhitectură
 
 ```
 AI-live-website-builder/
-├── backend/                    # WordPress + API-uri PHP
-│   ├── api/                   # API-uri pentru AI și configurări
-│   │   ├── ai-service.php     # Servicii AI (Gemini, Unsplash)
-│   │   └── (WordPress REST API) # API pentru configurații site
-│   ├── config/                # Configurații backend
-│   │   └── constants.php      # Chei API și configurări
-│   └── wordpress/             # WordPress cu plugin
-│       └── wp-content/plugins/ai-web-site/
-├── frontend/                  # React.js cu Vite
-│   ├── src/                   # Codul sursă React
-│   ├── components/            # Componente React
-│   ├── context/               # Context providers
-│   ├── hooks/                 # Custom hooks
-│   ├── services/              # Servicii frontend
-│   ├── utils/                 # Utilități
-│   ├── dist/                  # Build-ul static pentru producție
-│   └── package.json           # Dependențe NPM
-├── shared/                    # Resurse comune
-│   ├── constants/             # Constante partajate
-│   └── types/                 # Tipuri TypeScript
-└── docs/                      # Documentație
+├── frontend/               # React + Vite SPA (sursă)
+├── ai-web-site-plugin/     # Plugin WordPress (submodule public)
+├── ai-web-site-dist/       # Build static pentru cPanel (submodule public)
+├── docs/                   # Documentație
+└── scripts/                # Deploy helpers
 ```
 
-## 🚀 Tehnologii
+| Host | Mod | Rol |
+|------|-----|-----|
+| `localhost` / `editor.ai-web.site` | EDITOR | Editare, toolbar, save |
+| `admin.ai-web.site` | ADMIN | Administrare |
+| `*.ai-web.site` (alt host) | VIEWER | Site live read-only |
 
-### Frontend
-- **React 18** - Framework principal
-- **Vite** - Build tool rapid
-- **TypeScript** - Tipizare statică
-- **Tailwind CSS** - Framework CSS
-- **React Router** - Routing SPA
+## Stack
 
-### Backend
-- **WordPress** - CMS și gestionare utilizatori
-- **PHP** - API-uri pentru AI și configurări
-- **MySQL** - Baza de date pentru subdomenii
-- **cPanel API** - Gestionare automată subdomenii
+- **Frontend:** React 18, TypeScript, Vite, Tailwind, Radix, PWA
+- **Backend:** WordPress REST (`ai-web-site/v1`), MySQL, cPanel UAPI, Gemini, UMP/IHC
 
-## 💡 Concept
+## Development
 
-### Modul de Funcționare
-
-1. **Editor**: `editor.ai-web.site` - interfața de editare ReactJS
-2. **Subdomenii**: `subdom1.ai-web.site`, `subdom2.ai-web.site` - site-uri live
-3. **Backend**: WordPress pentru gestionare și API-uri PHP pentru AI
-
-### Fluxul de Date
-
-```
-Editor (React) → WordPress API → Subdomeniu Live
-      ↓              ↓              ↓
-  Editare       Stocare       Afișare
-```
-
-## 🔧 Configurare Dezvoltare
-
-### 1. Frontend
 ```bash
-cd frontend
-npm install
-npm run dev
+# Frontend
+cd frontend && npm install && npm run dev
+
+# Plugin: clone/activate în wp-content/plugins/
+# Configurează în WP Admin → AI Web Site: cPanel, Gemini, UMP
+# WP_DEBUG + local_dev_api_key (min 16 chars) doar pentru local
 ```
 
-### 2. Backend
-- Instalează WordPress în `backend/wordpress/`
-- Activează plugin-ul din `backend/wordpress/wp-content/plugins/ai-web-site/`
-- Configurează `backend/config/constants.php` cu cheile API
+## Deploy
 
-### 3. cPanel
-- Creează API token în cPanel
-- Configurează în WordPress Admin → Settings → AI Web Site
-
-## 📦 Deployment
-
-### Frontend (editor.ai-web.site)
 ```bash
-cd frontend
-npm run build
-# Upload dist/ la /editor.ai-web.site/
+npm run deploy:all        # plugin + frontend
+npm run deploy:frontend   # build → ai-web-site-dist
+npm run deploy:plugin     # push submodule plugin
 ```
 
-### Backend (ai-web.site)
-- Upload WordPress în root
-- Upload API-uri PHP în `/api/`
-- Configurează baza de date
+## Securitate (important)
 
-## 🎯 Funcționalități
+- Cheile AI / cPanel doar în WP options — niciodată în frontend sau git
+- Auth: cookies WP validate HMAC + nonce `save_site_config`
+- CORS allowlist (editor / ai-web.site / localhost doar cu WP_DEBUG)
+- `/logs` doar pentru `manage_options`
+- Cote AI zilnice server-side (`ai_text_daily_limit`, `ai_image_daily_limit`)
+- Nu embeda imagini base64 mari în SiteConfig — folosește Media/CDN + URL
 
-### ✅ Implementate
-- [x] Arhitectură backend/frontend separată
-- [x] Plugin WordPress pentru gestionare subdomenii
-- [x] API-uri PHP pentru AI și configurări
-- [x] Interface React pentru editare
-- [x] Integrare cPanel API
+Detalii frontend: [`frontend/README.md`](../frontend/README.md)  
+Detalii plugin: [`ai-web-site-plugin/README.md`](../ai-web-site-plugin/README.md)
 
-### 🚧 În Dezvoltare
-- [ ] Dashboard utilizatori în WordPress
-- [ ] Sistem de plăți pentru subdomenii
-- [ ] Template marketplace
-- [ ] Analytics pentru site-uri
+## Documente aferente
 
-## 🔐 Securitate
-
-- Toate cheile API sunt stocate securizat în backend
-- Autentificare prin WordPress
-- Validare input-uri și sanitizare
-- Rate limiting pentru API-uri
-
-## 📱 Subdomenii
-
-Fiecare utilizator poate crea subdomenii care:
-- Pointează către același build ReactJS (`editor.ai-web.site`)
-- Încarcă configurații diferite din WordPress
-- Afișează site-uri complet personalizate
-- Sunt gestionate automat prin cPanel API
-
-## 🛠️ Dezvoltare
-
-Pentru a adăuga noi funcționalități:
-
-1. **Frontend**: Lucrează în `frontend/src/`
-2. **Backend**: Extinde plugin-ul WordPress
-3. **API**: Adaugă endpoint-uri în `backend/api/`
-4. **Shared**: Constante comune în `shared/`
-
-## 📞 Support
-
-Pentru probleme sau întrebări, consultă documentația din folderul `docs/`.
+- `ARCHITECTURE.md` — poate conține path-uri vechi; preferă acest README + cod
+- `WEBSITE_MANAGEMENT.md` — workflow-uri subdomain / DB
+- `BACKEND_SETUP.md` — setup WP / cPanel (opțiunile sunt în WP Admin, nu în `constants.php`)

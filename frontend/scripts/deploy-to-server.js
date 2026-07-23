@@ -77,9 +77,15 @@ function copyBuildFiles() {
         }
     }
 
-    // Copiază toate fișierele din dist/
+    // Copiază toate fișierele din dist/ (cross-platform)
     log('📋 Copying build files...', 'blue');
-    runCommand(`xcopy /E /I /Y "${distPath}\\*" "${DEPLOY_CONFIG.publicRepoPath}"`);
+    fs.cpSync(distPath, DEPLOY_CONFIG.publicRepoPath, {
+        recursive: true,
+        filter: (src) => {
+            const base = path.basename(src);
+            return base !== '.git';
+        },
+    });
 
     log(`✅ Build files copied to public repository`, 'green');
 }

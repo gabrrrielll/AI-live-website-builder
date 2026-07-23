@@ -6,6 +6,7 @@ import { X, Bot, Sparkles, CheckCircle } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import { useTestMode } from '@/context/TestModeContext';
+import { sanitizeHTML } from '@/utils/sanitize';
 
 type ModalView = 'prompt' | 'loading' | 'explanation' | 'error';
 
@@ -137,7 +138,7 @@ const AIRebuildModal: React.FC = () => {
                                 <CheckCircle size={22} className="mr-2 text-green-600" />
                                 {t.success}
                             </h3>
-                            <div className="prose prose-sm max-w-none text-gray-800" dangerouslySetInnerHTML={{ __html: explanation }} />
+                            <div className="prose prose-sm max-w-none text-gray-800" dangerouslySetInnerHTML={{ __html: sanitizeHTML(explanation) }} />
                         </div>
                         <div className="flex justify-end p-3 sm:p-4 border-t bg-gray-50 rounded-b-lg flex-shrink-0">
                             <button
